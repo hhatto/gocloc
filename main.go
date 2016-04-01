@@ -169,6 +169,7 @@ func main() {
 	vim_script := NewLanguage("Vim script", "\"", "", "")
 	xml := NewLanguage("XML", "<!--", "<!--", "-->")
 	yaml := NewLanguage("YAML", "#", "", "")
+	yacc := NewLanguage("Yacc", "//", "/*", "*/")
 	zsh := NewLanguage("Zsh", "#", "", "")
 
 	languages := map[string]*Language{
@@ -262,6 +263,7 @@ func main() {
 		"xml":      xml,
 		"yaml":     yaml,
 		"yml":      yaml,
+		"y":        yacc,
 		"zsh":      zsh,
 	}
 
