@@ -304,7 +304,6 @@ func main() {
 
 					if isInComments {
 						if strings.Contains(line, language.multi_line_end) {
-							fmt.Println("is in comment end")
 							isInComments = false
 						}
 						language.comments += 1
