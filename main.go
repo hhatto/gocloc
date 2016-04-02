@@ -65,7 +65,7 @@ func containComments(line, commentStart, commentEnd string) bool {
 
 func getFileType(path string) string {
 	ext := filepath.Ext(path)
-	if strings.ToLower(path) == "makefile" {
+	if strings.ToLower(filepath.Base(path)) == "makefile" {
 		return "makefile"
 	}
 	if len(ext) >= 2 {
