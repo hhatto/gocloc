@@ -2,10 +2,13 @@ package main
 
 import (
 	"bufio"
+	"crypto/md5"
 	"fmt"
+	"io/ioutil"
 	"os"
 	"path/filepath"
 	"regexp"
+	"sort"
 	"strings"
 
 	flags "github.com/jessevdk/go-flags"
@@ -23,6 +26,17 @@ type Language struct {
 	lines          int32
 	total          int32
 	printed        bool
+}
+type Languages []Language
+
+func (ls Languages) Len() int {
+	return len(ls)
+}
+func (ls Languages) Swap(i, j int) {
+	ls[i].code, ls[j].code = ls[j].code, ls[i].code
+}
+func (ls Languages) Less(i, j int) bool {
+	return ls[i].code < ls[i].code
 }
 
 type ClocFile struct {
@@ -352,6 +366,7 @@ func main() {
 	}
 
 	clocFiles := make(map[string]*ClocFile, num)
+	fileCache := make(map[string]bool)
 
 	for _, language := range languages {
 		if language.printed {
@@ -414,6 +429,15 @@ func main() {
 
 					clocFiles[file].code += 1
 				}
+
+				if ret, err := fp.Seek(0, 0); ret != 0 || err != nil {
+					panic(err)
+				}
+				if d, err := ioutil.ReadAll(fp); err == nil {
+					hash := md5.Sum(d)
+					c := fmt.Sprintf("%x", hash)
+					fileCache[c] = true
+				}
 			}()
 
 			language.code += clocFiles[file].code
@@ -427,21 +451,33 @@ func main() {
 			}
 		}
 
-		language.printed = true
-
 		files := int32(len(language.files))
 		if len(language.files) <= 0 {
 			continue
 		}
 
-		if !opts.Byfile {
-			fmt.Printf("%-27v %6v %14v %14v %14v\n",
-				language.name, files, language.blanks, language.comments, language.code)
-		}
+		language.printed = true
+
 		total.total += files
 		total.blanks += language.blanks
 		total.comments += language.comments
 		total.code += language.code
+	}
+
+	if !opts.Byfile {
+		var sortedLanguages Languages
+		for _, language := range languages {
+			if len(language.files) != 0 && language.printed {
+				fmt.Println(language)
+				sortedLanguages = append(sortedLanguages, *language)
+			}
+		}
+		sort.Sort(sortedLanguages)
+
+		for _, language := range sortedLanguages {
+			fmt.Printf("%-27v %6v %14v %14v %14v\n",
+				language.name, len(language.files), language.blanks, language.comments, language.code)
+		}
 	}
 
 	if opts.Byfile {
