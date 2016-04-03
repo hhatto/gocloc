@@ -2,11 +2,12 @@ package main
 
 import (
 	"bufio"
-	"flag"
 	"fmt"
 	"os"
 	"path/filepath"
 	"strings"
+
+	flags "github.com/jessevdk/go-flags"
 )
 
 type Language struct {
@@ -31,8 +32,11 @@ type ClocFile struct {
 	lines    int32
 }
 
-const LANG_HEADER string = "Language                     files          blank        comment           code"
+const FILE_HEADER string = "File                         "
+const LANG_HEADER string = "Language                     "
+const COMMON_HEADER string = "files          blank        comment           code"
 const ROW string = "-------------------------------------------------------------------------" +
+	"-------------------------------------------------------------------------" +
 	"-------------------------------------------------------------------------"
 
 var rowLen = 79
@@ -74,7 +78,8 @@ func getFileType(path string) string {
 	return ext
 }
 
-func getAllFiles(paths []string, languages map[string]*Language) {
+func getAllFiles(paths []string, languages map[string]*Language) (filenum, maxPathLen int) {
+	maxPathLen = 0
 	for _, root := range paths {
 		walkCallback := func(path string, info os.FileInfo, err error) error {
 			if info.IsDir() {
@@ -88,7 +93,13 @@ func getAllFiles(paths []string, languages map[string]*Language) {
 
 			if ext := getFileType(rel); ext != "" {
 				if _, ok := languages[ext]; ok {
-					languages[ext].files = append(languages[ext].files, path)
+					p := filepath.Join(root, rel)
+					languages[ext].files = append(languages[ext].files, p)
+					filenum += 1
+					l := len(p)
+					if maxPathLen < l {
+						maxPathLen = l
+					}
 				}
 			}
 			return nil
@@ -97,13 +108,21 @@ func getAllFiles(paths []string, languages map[string]*Language) {
 			fmt.Println(err)
 		}
 	}
+	return
 }
 
 func main() {
-	flag.Parse()
-	paths := flag.Args()
+	parser := flags.NewParser(&opts, flags.Default)
+	parser.Name = "gocloc"
+	parser.Usage = "[OPTIONS] PATH[...]"
+
+	paths, err := flags.Parse(&opts)
+	if err != nil {
+		parser.WriteHelp(os.Stdout)
+		return
+	}
 	if len(paths) <= 0 {
-		flag.PrintDefaults()
+		parser.WriteHelp(os.Stdout)
 		return
 	}
 
@@ -267,21 +286,36 @@ func main() {
 	}
 
 	total := NewLanguage("TOTAL", "", "", "")
-	fmt.Printf("%.[2]*[1]s\n", ROW, rowLen)
-	fmt.Printf("%.[2]*[1]s\n", LANG_HEADER, rowLen)
-	fmt.Printf("%.[2]*[1]s\n", ROW, rowLen)
+	num, maxPathLen := getAllFiles(paths, languages)
+	headerLen := 40
 
-	getAllFiles(paths, languages)
+	if opts.Byfile {
+		headerLen := maxPathLen
+		rowLen = maxPathLen + len(COMMON_HEADER) + 2
+		fmt.Printf("%.[2]*[1]s\n", ROW, rowLen)
+		fmt.Printf("%-[2]*[1]s  %[3]s\n", FILE_HEADER, headerLen, COMMON_HEADER)
+		fmt.Printf("%.[2]*[1]s\n", ROW, rowLen)
+	} else {
+		fmt.Printf("%.[2]*[1]s\n", ROW, rowLen)
+		fmt.Printf("%.[2]*[1]s%[3]s\n", LANG_HEADER, headerLen, COMMON_HEADER)
+		fmt.Printf("%.[2]*[1]s\n", ROW, rowLen)
+	}
+
+	clocFiles := make(map[string]*ClocFile, num)
+
 	for _, language := range languages {
 		if language.printed {
 			continue
 		}
 
 		for _, file := range language.files {
+			clocFiles[file] = &ClocFile{
+				name: file,
+			}
 			isInComments := false
 
-			func(filename string) {
-				fp, err := os.Open(filename)
+			func() {
+				fp, err := os.Open(file)
 				if err != nil {
 					panic(err)
 				}
@@ -292,7 +326,7 @@ func main() {
 					line := strings.TrimSpace(scanner.Text())
 
 					if len(strings.TrimSpace(line)) == 0 {
-						language.blanks += 1
+						clocFiles[file].blanks += 1
 						continue
 					}
 
@@ -301,7 +335,7 @@ func main() {
 							isInComments = true
 						} else if containComments(line, language.multi_line, language.multi_line_end) {
 							isInComments = true
-							language.code += 1
+							clocFiles[file].code += 1
 						}
 					}
 
@@ -309,7 +343,7 @@ func main() {
 						if strings.Contains(line, language.multi_line_end) {
 							isInComments = false
 						}
-						language.comments += 1
+						clocFiles[file].comments += 1
 						continue
 					}
 
@@ -318,7 +352,7 @@ func main() {
 						isSingleComment := false
 						for _, single_comment := range single_comments {
 							if strings.HasPrefix(line, single_comment) {
-								language.comments += 1
+								clocFiles[file].comments += 1
 								isSingleComment = true
 								break
 							}
@@ -328,9 +362,19 @@ func main() {
 						}
 					}
 
-					language.code += 1
+					clocFiles[file].code += 1
 				}
-			}(file)
+			}()
+
+			language.code += clocFiles[file].code
+			language.comments += clocFiles[file].comments
+			language.blanks += clocFiles[file].blanks
+
+			if opts.Byfile {
+				clocFile := clocFiles[file]
+				fmt.Printf("%-[1]*[2]s %21[3]v %14[4]v %14[5]v\n",
+					maxPathLen, file, clocFile.blanks, clocFile.comments, clocFile.code)
+			}
 		}
 
 		language.printed = true
@@ -340,16 +384,25 @@ func main() {
 			continue
 		}
 
-		fmt.Printf("%-27v %6v %14v %14v %14v\n",
-			language.name, files, language.blanks, language.comments, language.code)
+		if !opts.Byfile {
+			fmt.Printf("%-27v %6v %14v %14v %14v\n",
+				language.name, files, language.blanks, language.comments, language.code)
+		}
 		total.total += files
 		total.blanks += language.blanks
 		total.comments += language.comments
 		total.code += language.code
 	}
 
-	fmt.Printf("%.[2]*[1]s\n", ROW, rowLen)
-	fmt.Printf("%-27v %6v %14v %14v %14v\n",
-		"TOTAL", total.total, total.blanks, total.comments, total.code)
-	fmt.Printf("%.[2]*[1]s\n", ROW, rowLen)
+	if opts.Byfile {
+		fmt.Printf("%.[2]*[1]s\n", ROW, rowLen)
+		fmt.Printf("%-[1]*[2]v %6[3]v %14[4]v %14[5]v %14[6]v\n",
+			maxPathLen, "TOTAL", total.total, total.blanks, total.comments, total.code)
+		fmt.Printf("%.[2]*[1]s\n", ROW, rowLen)
+	} else {
+		fmt.Printf("%.[2]*[1]s\n", ROW, rowLen)
+		fmt.Printf("%-27v %6v %14v %14v %14v\n",
+			"TOTAL", total.total, total.blanks, total.comments, total.code)
+		fmt.Printf("%.[2]*[1]s\n", ROW, rowLen)
+	}
 }
