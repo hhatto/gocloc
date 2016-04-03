@@ -89,7 +89,6 @@ func getAllFiles(paths []string, languages map[string]*Language) {
 			if ext := getFileType(rel); ext != "" {
 				if _, ok := languages[ext]; ok {
 					languages[ext].files = append(languages[ext].files, path)
-					//fmt.Printf("match rel=[%v] path=[%v] ext=[%v]\n", rel, path, ext)
 				}
 			}
 			return nil
