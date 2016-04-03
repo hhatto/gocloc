@@ -367,7 +367,7 @@ func main() {
 			func() {
 				fp, err := os.Open(file)
 				if err != nil {
-					panic(err)
+					return // ignore error
 				}
 				defer fp.Close()
 
