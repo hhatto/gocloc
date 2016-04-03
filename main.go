@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"regexp"
 	"strings"
 
 	flags "github.com/jessevdk/go-flags"
@@ -39,7 +40,10 @@ const ROW string = "------------------------------------------------------------
 	"-------------------------------------------------------------------------" +
 	"-------------------------------------------------------------------------"
 
+var ReShebangEnv *regexp.Regexp = regexp.MustCompile("^#!(\\S+/env) ([a-zA-Z]+)")
+var ReShebangLang *regexp.Regexp = regexp.MustCompile("^#!/[\\w/]([a-zA-Z]+)")
 var rowLen = 79
+var LanguageByScript map[string]string
 
 func NewLanguage(name, line_comment, multi_line, multi_line_end string) *Language {
 	return &Language{
@@ -67,15 +71,56 @@ func containComments(line, commentStart, commentEnd string) bool {
 	return inComments != 0
 }
 
-func getFileType(path string) string {
-	ext := filepath.Ext(path)
+func getFileTypeByShebang(path string) (shebangLang string, ok bool) {
+	func() {
+		fp, err := os.Open(path)
+		if err != nil {
+			return // ignore error
+		}
+		defer fp.Close()
+
+		scanner := bufio.NewScanner(fp)
+		for scanner.Scan() {
+			line := scanner.Text()
+			l := strings.TrimSpace(line)
+
+			if ReShebangEnv.MatchString(l) {
+				ret := ReShebangEnv.FindAllStringSubmatch(l, -1)
+				if len(ret[0]) == 3 {
+					shebangLang = ret[0][2]
+					break
+				}
+			}
+
+			if ReShebangLang.MatchString(l) {
+				ret := ReShebangLang.FindAllStringSubmatch(l, -1)
+				if len(ret) == 3 {
+					shebangLang = ret[0][1]
+					break
+				}
+			}
+
+			break
+		}
+	}()
+
+	sl, ok := LanguageByScript[shebangLang]
+	if ok {
+		return sl, ok
+	}
+	return shebangLang, false
+}
+
+func getFileType(path string) (ext string, ok bool) {
+	ext = filepath.Ext(path)
 	if strings.ToLower(filepath.Base(path)) == "makefile" {
-		return "makefile"
+		return "makefile", true
 	}
 	if len(ext) >= 2 {
-		return ext[1:]
+		return ext[1:], true
 	}
-	return ext
+	ext, ok = getFileTypeByShebang(path)
+	return ext, ok
 }
 
 func getAllFiles(paths []string, languages map[string]*Language) (filenum, maxPathLen int) {
@@ -91,9 +136,9 @@ func getAllFiles(paths []string, languages map[string]*Language) (filenum, maxPa
 				return nil
 			}
 
-			if ext := getFileType(rel); ext != "" {
+			p := filepath.Join(root, rel)
+			if ext, ok := getFileType(p); ok {
 				if _, ok := languages[ext]; ok {
-					p := filepath.Join(root, rel)
 					languages[ext].files = append(languages[ext].files, p)
 					filenum += 1
 					l := len(p)
@@ -283,6 +328,11 @@ func main() {
 		"yml":      yaml,
 		"y":        yacc,
 		"zsh":      zsh,
+	}
+	LanguageByScript = map[string]string{
+		"perl":   "pl",
+		"python": "py",
+		"ruby":   "rb",
 	}
 
 	total := NewLanguage("TOTAL", "", "", "")
