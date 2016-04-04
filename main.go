@@ -13,28 +13,8 @@ import (
 	flags "github.com/jessevdk/go-flags"
 )
 
-type ClocFile struct {
-	name     string
-	code     int32
-	comments int32
-	blanks   int32
-	lines    int32
-}
-
-type ClocFiles []ClocFile
-
-func (cf ClocFiles) Len() int {
-	return len(cf)
-}
-func (cf ClocFiles) Swap(i, j int) {
-	cf[i], cf[j] = cf[j], cf[i]
-}
-func (cf ClocFiles) Less(i, j int) bool {
-	return cf[i].code > cf[j].code
-}
-
-const FILE_HEADER string = "File                         "
-const LANG_HEADER string = "Language                     "
+const FILE_HEADER string = "File"
+const LANG_HEADER string = "Language"
 const COMMON_HEADER string = "files          blank        comment           code"
 const ROW string = "-------------------------------------------------------------------------" +
 	"-------------------------------------------------------------------------" +
@@ -256,7 +236,7 @@ func main() {
 
 	total := NewLanguage("TOTAL", "", "", "")
 	num, maxPathLen := getAllFiles(paths, languages)
-	headerLen := 40
+	headerLen := 28
 
 	if opts.Byfile {
 		headerLen := maxPathLen
@@ -266,7 +246,7 @@ func main() {
 		fmt.Printf("%.[2]*[1]s\n", ROW, rowLen)
 	} else {
 		fmt.Printf("%.[2]*[1]s\n", ROW, rowLen)
-		fmt.Printf("%.[2]*[1]s%[3]s\n", LANG_HEADER, headerLen, COMMON_HEADER)
+		fmt.Printf("%-[2]*[1]s %[3]s\n", LANG_HEADER, headerLen, COMMON_HEADER)
 		fmt.Printf("%.[2]*[1]s\n", ROW, rowLen)
 	}
 
@@ -398,15 +378,13 @@ func main() {
 		}
 	}
 
+	fmt.Printf("%.[2]*[1]s\n", ROW, rowLen)
 	if opts.Byfile {
-		fmt.Printf("%.[2]*[1]s\n", ROW, rowLen)
 		fmt.Printf("%-[1]*[2]v %6[3]v %14[4]v %14[5]v %14[6]v\n",
 			maxPathLen, "TOTAL", total.total, total.blanks, total.comments, total.code)
-		fmt.Printf("%.[2]*[1]s\n", ROW, rowLen)
 	} else {
-		fmt.Printf("%.[2]*[1]s\n", ROW, rowLen)
 		fmt.Printf("%-27v %6v %14v %14v %14v\n",
 			"TOTAL", total.total, total.blanks, total.comments, total.code)
-		fmt.Printf("%.[2]*[1]s\n", ROW, rowLen)
 	}
+	fmt.Printf("%.[2]*[1]s\n", ROW, rowLen)
 }
