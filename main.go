@@ -307,7 +307,7 @@ func main() {
 					}
 
 					// shebang line is 'code'
-					if isFirstLine && strings.HasPrefix(line, "#!/") {
+					if isFirstLine && strings.HasPrefix(line, "#!") {
 						clocFiles[file].Code += 1
 						isFirstLine = false
 						continue
