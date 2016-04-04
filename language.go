@@ -125,6 +125,8 @@ var Exts map[string]string = map[string]string{
 	"ts":       "ts",
 	"vim":      "vim",
 	"xml":      "xml",
+	"xsl":      "xsl",
+	"xslt":     "xsl",
 	"yaml":     "yaml",
 	"yml":      "yaml",
 	"y":        "y",

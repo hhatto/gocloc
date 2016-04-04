@@ -180,6 +180,7 @@ func main() {
 	type_script := NewLanguage("TypeScript", "//", "/*", "*/")
 	vim_script := NewLanguage("Vim script", "\"", "", "")
 	xml := NewLanguage("XML", "<!--", "<!--", "-->")
+	xsl := NewLanguage("XSLT", "<!--", "<!--", "-->")
 	yaml := NewLanguage("YAML", "#", "", "")
 	yacc := NewLanguage("Yacc", "//", "/*", "*/")
 	zsh := NewLanguage("Zsh", "#", "", "")
@@ -247,6 +248,7 @@ func main() {
 		"ts":       type_script,
 		"vim":      vim_script,
 		"xml":      xml,
+		"xsl":      xsl,
 		"yaml":     yaml,
 		"y":        yacc,
 		"zsh":      zsh,
