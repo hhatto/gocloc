@@ -44,7 +44,7 @@ var Exts map[string]string = map[string]string{
 	"btm":      "btm",
 	"cmd":      "cmd",
 	"bash":     "bash",
-	"sh":       "bash",
+	"sh":       "sh",
 	"c":        "c",
 	"csh":      "csh",
 	"ec":       "c",

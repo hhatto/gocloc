@@ -171,6 +171,7 @@ func main() {
 	ruby_html := NewLanguage("Ruby HTML", "<!--", "<!--", "-->")
 	rust := NewLanguage("Rust", "//,///,//!", "/*", "*/")
 	sass := NewLanguage("Sass", "//", "/*", "*/")
+	sh := NewLanguage("Bourne Shell", "#", "", "")
 	sml := NewLanguage("Standard ML", "", "(*", "*)")
 	sql := NewLanguage("SQL", "--", "/*", "*/")
 	swift := NewLanguage("Swift", "//", "/*", "*/")
@@ -239,6 +240,7 @@ func main() {
 		"rhtml":    ruby_html,
 		"rs":       rust,
 		"scss":     sass,
+		"sh":       sh,
 		"sml":      sml,
 		"sql":      sql,
 		"swift":    swift,
