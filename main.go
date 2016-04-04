@@ -7,37 +7,11 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
-	"regexp"
 	"sort"
 	"strings"
 
 	flags "github.com/jessevdk/go-flags"
 )
-
-type Language struct {
-	name           string
-	line_comment   string
-	multi_line     string
-	multi_line_end string
-	files          []string
-	code           int32
-	comments       int32
-	blanks         int32
-	lines          int32
-	total          int32
-	printed        bool
-}
-type Languages []Language
-
-func (ls Languages) Len() int {
-	return len(ls)
-}
-func (ls Languages) Swap(i, j int) {
-	ls[i].code, ls[j].code = ls[j].code, ls[i].code
-}
-func (ls Languages) Less(i, j int) bool {
-	return ls[i].code < ls[i].code
-}
 
 type ClocFile struct {
 	name     string
@@ -47,6 +21,18 @@ type ClocFile struct {
 	lines    int32
 }
 
+type ClocFiles []ClocFile
+
+func (cf ClocFiles) Len() int {
+	return len(cf)
+}
+func (cf ClocFiles) Swap(i, j int) {
+	cf[i], cf[j] = cf[j], cf[i]
+}
+func (cf ClocFiles) Less(i, j int) bool {
+	return cf[i].code > cf[j].code
+}
+
 const FILE_HEADER string = "File                         "
 const LANG_HEADER string = "Language                     "
 const COMMON_HEADER string = "files          blank        comment           code"
@@ -54,8 +40,6 @@ const ROW string = "------------------------------------------------------------
 	"-------------------------------------------------------------------------" +
 	"-------------------------------------------------------------------------"
 
-var ReShebangEnv *regexp.Regexp = regexp.MustCompile("^#!(\\S+/env) ([a-zA-Z]+)")
-var ReShebangLang *regexp.Regexp = regexp.MustCompile("^#!/[\\w/]([a-zA-Z]+)")
 var rowLen = 79
 var LanguageByScript map[string]string
 
@@ -85,58 +69,6 @@ func containComments(line, commentStart, commentEnd string) bool {
 	return inComments != 0
 }
 
-func getFileTypeByShebang(path string) (shebangLang string, ok bool) {
-	func() {
-		fp, err := os.Open(path)
-		if err != nil {
-			return // ignore error
-		}
-		defer fp.Close()
-
-		scanner := bufio.NewScanner(fp)
-		for scanner.Scan() {
-			line := scanner.Text()
-			l := strings.TrimSpace(line)
-
-			if ReShebangEnv.MatchString(l) {
-				ret := ReShebangEnv.FindAllStringSubmatch(l, -1)
-				if len(ret[0]) == 3 {
-					shebangLang = ret[0][2]
-					break
-				}
-			}
-
-			if ReShebangLang.MatchString(l) {
-				ret := ReShebangLang.FindAllStringSubmatch(l, -1)
-				if len(ret) == 3 {
-					shebangLang = ret[0][1]
-					break
-				}
-			}
-
-			break
-		}
-	}()
-
-	sl, ok := LanguageByScript[shebangLang]
-	if ok {
-		return sl, ok
-	}
-	return shebangLang, false
-}
-
-func getFileType(path string) (ext string, ok bool) {
-	ext = filepath.Ext(path)
-	if strings.ToLower(filepath.Base(path)) == "makefile" {
-		return "makefile", true
-	}
-	if len(ext) >= 2 {
-		return ext[1:], true
-	}
-	ext, ok = getFileTypeByShebang(path)
-	return ext, ok
-}
-
 func getAllFiles(paths []string, languages map[string]*Language) (filenum, maxPathLen int) {
 	maxPathLen = 0
 	for _, root := range paths {
@@ -152,8 +84,8 @@ func getAllFiles(paths []string, languages map[string]*Language) (filenum, maxPa
 
 			p := filepath.Join(root, rel)
 			if ext, ok := getFileType(p); ok {
-				if _, ok := languages[ext]; ok {
-					languages[ext].files = append(languages[ext].files, p)
+				if targetExt, ok := Exts[ext]; ok {
+					languages[targetExt].files = append(languages[targetExt].files, p)
 					filenum += 1
 					l := len(p)
 					if maxPathLen < l {
@@ -254,50 +186,29 @@ func main() {
 		"s":        asm,
 		"awk":      awk,
 		"bat":      batch,
-		"btm":      batch,
-		"cmd":      batch,
 		"bash":     bash,
-		"sh":       bash,
 		"c":        c,
 		"csh":      c_shell,
-		"ec":       c,
-		"pgc":      c,
 		"cs":       c_sharp,
 		"clj":      clojure,
 		"coffee":   coffee_script,
 		"cfm":      cold_fusion,
 		"cfc":      cf_script,
-		"cc":       cpp,
 		"cpp":      cpp,
-		"cxx":      cpp,
-		"pcc":      cpp,
-		"c++":      cpp,
 		"css":      css,
 		"d":        d,
 		"dart":     dart,
 		"dts":      device_tree,
-		"dtsi":     device_tree,
 		"el":       lisp,
-		"lisp":     lisp,
-		"lsp":      lisp,
 		"lua":      lua,
 		"sc":       lisp,
-		"f":        fortran_legacy,
 		"f77":      fortran_legacy,
-		"for":      fortran_legacy,
-		"ftn":      fortran_legacy,
-		"pfo":      fortran_legacy,
 		"f90":      fortran_modern,
-		"f95":      fortran_modern,
-		"f03":      fortran_modern,
-		"f08":      fortran_modern,
 		"go":       golang,
 		"h":        c_header,
 		"hs":       haskell,
 		"hpp":      cpp_header,
-		"hh":       cpp_header,
 		"html":     html,
-		"hxx":      cpp_header,
 		"jai":      jai,
 		"java":     java,
 		"js":       java_script,
@@ -308,9 +219,7 @@ func main() {
 		"less":     less,
 		"m":        objective_c,
 		"md":       markdown,
-		"markdown": markdown,
 		"ml":       ocaml,
-		"mli":      ocaml,
 		"mm":       objective_cpp,
 		"makefile": makefile,
 		"mustache": mustache,
@@ -318,16 +227,13 @@ func main() {
 		"pas":      pascal,
 		"pl":       perl,
 		"text":     text,
-		"txt":      text,
 		"polly":    polly,
 		"proto":    protobuf,
 		"py":       python,
 		"r":        r,
-		"rake":     ruby,
 		"rb":       ruby,
 		"rhtml":    ruby_html,
 		"rs":       rust,
-		"sass":     sass,
 		"scss":     sass,
 		"sml":      sml,
 		"sql":      sql,
@@ -339,7 +245,6 @@ func main() {
 		"vim":      vim_script,
 		"xml":      xml,
 		"yaml":     yaml,
-		"yml":      yaml,
 		"y":        yacc,
 		"zsh":      zsh,
 	}
@@ -386,6 +291,7 @@ func main() {
 				}
 				defer fp.Close()
 
+				isFirstLine := true
 				scanner := bufio.NewScanner(fp)
 				for scanner.Scan() {
 					line := strings.TrimSpace(scanner.Text())
@@ -409,6 +315,12 @@ func main() {
 							isInComments = false
 						}
 						clocFiles[file].comments += 1
+						continue
+					}
+
+					if isFirstLine && strings.HasPrefix(line, "#!/") {
+						clocFiles[file].code += 1
+						isFirstLine = false
 						continue
 					}
 
@@ -444,11 +356,6 @@ func main() {
 			language.comments += clocFiles[file].comments
 			language.blanks += clocFiles[file].blanks
 
-			if opts.Byfile {
-				clocFile := clocFiles[file]
-				fmt.Printf("%-[1]*[2]s %21[3]v %14[4]v %14[5]v\n",
-					maxPathLen, file, clocFile.blanks, clocFile.comments, clocFile.code)
-			}
 		}
 
 		files := int32(len(language.files))
@@ -464,11 +371,22 @@ func main() {
 		total.code += language.code
 	}
 
-	if !opts.Byfile {
+	if opts.Byfile {
+		var sortedFiles ClocFiles
+		for _, file := range clocFiles {
+			sortedFiles = append(sortedFiles, *file)
+		}
+		sort.Sort(sortedFiles)
+		for _, file := range sortedFiles {
+			clocFile := file
+			fmt.Printf("%-[1]*[2]s %21[3]v %14[4]v %14[5]v\n",
+				maxPathLen, file.name, clocFile.blanks, clocFile.comments, clocFile.code)
+		}
+
+	} else {
 		var sortedLanguages Languages
 		for _, language := range languages {
 			if len(language.files) != 0 && language.printed {
-				fmt.Println(language)
 				sortedLanguages = append(sortedLanguages, *language)
 			}
 		}
