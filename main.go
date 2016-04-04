@@ -38,6 +38,7 @@ func main() {
 		return
 	}
 
+	// setup option for exclude extensions
 	ExcludeExts = make(map[string]struct{})
 	for _, ext := range strings.Split(opts.ExcludeExt, ",") {
 		e, ok := Exts[ext]
@@ -48,6 +49,7 @@ func main() {
 		}
 	}
 
+	// setup option for not match directory
 	if opts.NotMatchDir != "" {
 		reNotMatchDir = regexp.MustCompile(opts.NotMatchDir)
 	}
