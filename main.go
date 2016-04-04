@@ -55,11 +55,16 @@ func getAllFiles(paths []string, languages map[string]*Language) (filenum, maxPa
 			}
 
 			p := filepath.Join(root, rel)
-			if root == "." || root == "./" {
+			if strings.HasPrefix(root, ".") || strings.HasPrefix(root, "./") {
 				p = "./" + p
 			}
 			if ext, ok := getFileType(p); ok {
 				if targetExt, ok := Exts[ext]; ok {
+					// check exclude extension
+					if _, ok := ExcludeExts[targetExt]; ok {
+						return nil
+					}
+
 					languages[targetExt].files = append(languages[targetExt].files, p)
 					filenum += 1
 					l := len(p)
@@ -91,6 +96,16 @@ func main() {
 	if len(paths) <= 0 {
 		parser.WriteHelp(os.Stdout)
 		return
+	}
+
+	ExcludeExts = make(map[string]struct{})
+	for _, ext := range strings.Split(opts.ExcludeExt, ",") {
+		e, ok := Exts[ext]
+		if ok {
+			ExcludeExts[e] = struct{}{}
+		} else {
+			ExcludeExts[ext] = struct{}{}
+		}
 	}
 
 	// define languages
@@ -373,8 +388,11 @@ func main() {
 		case OutputTypeSloccount:
 			for _, file := range sortedFiles {
 				p := ""
-				if !strings.HasPrefix(file.Name, "./") {
-					p = strings.Split(file.Name, string(os.PathSeparator))[1]
+				if strings.HasPrefix(file.Name, "./") || string(file.Name[0]) == "/" {
+					splitPaths := strings.Split(file.Name, string(os.PathSeparator))
+					if len(splitPaths) >= 3 {
+						p = splitPaths[1]
+					}
 				}
 				fmt.Printf("%v\t%v\t%v\t%v\n",
 					file.Code, file.Lang, p, file.Name)
