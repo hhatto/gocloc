@@ -7,6 +7,7 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
+	"regexp"
 	"sort"
 	"strings"
 
@@ -55,6 +56,12 @@ func getAllFiles(paths []string, languages map[string]*Language) (filenum, maxPa
 			}
 
 			p := filepath.Join(root, rel)
+
+			// check not-match directory
+			if reNotMatchDir != nil && reNotMatchDir.MatchString(p) {
+				return nil
+			}
+
 			if strings.HasPrefix(root, ".") || strings.HasPrefix(root, "./") {
 				p = "./" + p
 			}
@@ -106,6 +113,10 @@ func main() {
 		} else {
 			ExcludeExts[ext] = struct{}{}
 		}
+	}
+
+	if opts.NotMatchDir != "" {
+		reNotMatchDir = regexp.MustCompile(opts.NotMatchDir)
 	}
 
 	// define languages
