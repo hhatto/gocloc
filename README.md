@@ -13,6 +13,7 @@ $ go get github.com/hhatto/gocloc
 
 ## Usage
 
+### Basic Usage
 ```
 $ gocloc .
 ```
@@ -28,6 +29,24 @@ Go                               1             29              1            323
 TOTAL                            4             37              1            341
 -------------------------------------------------------------------------------
 ```
+
+### Integration Jenkins CI
+use [SLOCCount Plugin](https://wiki.jenkins-ci.org/display/JENKINS/SLOCCount+Plugin).
+
+```
+$ cloc --by-file --output-type=sloccount . > sloccount.scc
+```
+
+```
+$ cat sloccount.scc
+398 Go      ./main.go
+190 Go      ./language.go
+132 Markdown        ./README.md
+24  Go      ./xml.go
+18  Go      ./file.go
+15  Go      ./option.go
+```
+
 
 ## Performance
 * cloc 1.66
