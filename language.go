@@ -131,6 +131,12 @@ var Exts map[string]string = map[string]string{
 	"zsh":      "zsh",
 }
 
+var LanguageByScript map[string]string = map[string]string{
+	"perl":   "pl",
+	"python": "py",
+	"ruby":   "rb",
+}
+
 func getFileTypeByShebang(path string) (shebangLang string, ok bool) {
 	func() {
 		fp, err := os.Open(path)

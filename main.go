@@ -21,7 +21,6 @@ const ROW string = "------------------------------------------------------------
 	"-------------------------------------------------------------------------"
 
 var rowLen = 79
-var LanguageByScript map[string]string
 
 func NewLanguage(name, line_comment, multi_line, multi_line_end string) *Language {
 	return &Language{
@@ -83,6 +82,7 @@ func getAllFiles(paths []string, languages map[string]*Language) (filenum, maxPa
 }
 
 func main() {
+	// parse command line options
 	parser := flags.NewParser(&opts, flags.Default)
 	parser.Name = "gocloc"
 	parser.Usage = "[OPTIONS] PATH[...]"
@@ -97,6 +97,7 @@ func main() {
 		return
 	}
 
+	// define languages
 	action_script := NewLanguage("ActionScript", "//", "/*", "*/")
 	asm := NewLanguage("Assembly", "", "", "")
 	awk := NewLanguage("Awk", "#", "", "")
@@ -161,6 +162,7 @@ func main() {
 	yacc := NewLanguage("Yacc", "//", "/*", "*/")
 	zsh := NewLanguage("Zsh", "#", "", "")
 
+	// value for language result
 	languages := map[string]*Language{
 		"as":       action_script,
 		"s":        asm,
@@ -228,17 +230,13 @@ func main() {
 		"y":        yacc,
 		"zsh":      zsh,
 	}
-	LanguageByScript = map[string]string{
-		"perl":   "pl",
-		"python": "py",
-		"ruby":   "rb",
-	}
 
 	total := NewLanguage("TOTAL", "", "", "")
 	num, maxPathLen := getAllFiles(paths, languages)
 	headerLen := 28
 	header := LANG_HEADER
 
+	// write header
 	if opts.Byfile {
 		headerLen = maxPathLen + 1
 		rowLen = maxPathLen + len(COMMON_HEADER) + 2
@@ -296,6 +294,7 @@ func main() {
 						continue
 					}
 
+					// shebang line is 'code'
 					if isFirstLine && strings.HasPrefix(line, "#!/") {
 						clocFiles[file].code += 1
 						isFirstLine = false
@@ -320,6 +319,8 @@ func main() {
 					clocFiles[file].code += 1
 				}
 
+				// uniq file detect & ignore
+				// FIXME: not used, now
 				if ret, err := fp.Seek(0, 0); ret != 0 || err != nil {
 					panic(err)
 				}
@@ -349,6 +350,7 @@ func main() {
 		total.code += language.code
 	}
 
+	// write result
 	if opts.Byfile {
 		var sortedFiles ClocFiles
 		for _, file := range clocFiles {
@@ -376,6 +378,7 @@ func main() {
 		}
 	}
 
+	// write footer
 	fmt.Printf("%.[2]*[1]s\n", ROW, rowLen)
 	if opts.Byfile {
 		fmt.Printf("%-[1]*[2]v %6[3]v %14[4]v %14[5]v %14[6]v\n",
