@@ -23,8 +23,8 @@ type Language struct {
 }
 type Languages []Language
 
-var reShebangEnv *regexp.Regexp = regexp.MustCompile("^#!(\\S+/env) ([a-zA-Z]+)")
-var reShebangLang *regexp.Regexp = regexp.MustCompile("^#!/[a-zA-Z/]+/([a-zA-Z]+)")
+var reShebangEnv *regexp.Regexp = regexp.MustCompile("^#! *(\\S+/env) ([a-zA-Z]+)")
+var reShebangLang *regexp.Regexp = regexp.MustCompile("^#! */[a-zA-Z/]+/([a-zA-Z]+)")
 
 func (ls Languages) Len() int {
 	return len(ls)
@@ -139,7 +139,34 @@ var LanguageByScript map[string]string = map[string]string{
 	"ruby":   "rb",
 }
 
+func getShebang(line string) (shebangLang string, ok bool) {
+	if reShebangEnv.MatchString(line) {
+		ret := reShebangEnv.FindAllStringSubmatch(line, -1)
+		if len(ret[0]) == 3 {
+			shebangLang = ret[0][2]
+			if sl, ok := LanguageByScript[shebangLang]; ok {
+				return sl, ok
+			}
+			return shebangLang, true
+		}
+	}
+
+	if reShebangLang.MatchString(line) {
+		ret := reShebangLang.FindAllStringSubmatch(line, -1)
+		if len(ret[0]) >= 2 {
+			shebangLang = ret[0][1]
+			if sl, ok := LanguageByScript[shebangLang]; ok {
+				return sl, ok
+			}
+			return shebangLang, true
+		}
+	}
+
+	return "", false
+}
+
 func getFileTypeByShebang(path string) (shebangLang string, ok bool) {
+	line := ""
 	func() {
 		fp, err := os.Open(path)
 		if err != nil {
@@ -149,36 +176,14 @@ func getFileTypeByShebang(path string) (shebangLang string, ok bool) {
 
 		scanner := bufio.NewScanner(fp)
 		for scanner.Scan() {
-			line := scanner.Text()
-			l := strings.TrimSpace(line)
-
-			if reShebangEnv.MatchString(l) {
-				ret := reShebangEnv.FindAllStringSubmatch(l, -1)
-				if len(ret[0]) == 3 {
-					shebangLang = ret[0][2]
-					ok = true
-					break
-				}
-			}
-
-			if reShebangLang.MatchString(l) {
-				ret := reShebangLang.FindAllStringSubmatch(l, -1)
-				if len(ret[0]) >= 2 {
-					shebangLang = ret[0][1]
-					ok = true
-					break
-				}
-			}
-
+			l := scanner.Text()
+			line = strings.TrimSpace(l)
 			break
 		}
 	}()
 
-	sl, ok := LanguageByScript[shebangLang]
-	if ok {
-		return sl, ok
-	}
-	return shebangLang, true
+	shebangLang, ok = getShebang(line)
+	return shebangLang, ok
 }
 
 func getFileType(path string) (ext string, ok bool) {
