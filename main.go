@@ -55,6 +55,9 @@ func containComments(line, commentStart, commentEnd string) bool {
 func getAllFiles(paths []string, languages map[string]*Language) (filenum, maxPathLen int) {
 	maxPathLen = 0
 	for _, root := range paths {
+		if _, err := os.Stat(root); err != nil {
+			continue
+		}
 		walkCallback := func(path string, info os.FileInfo, err error) error {
 			if info.IsDir() {
 				return nil
