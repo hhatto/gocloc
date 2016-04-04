@@ -20,21 +20,7 @@ const ROW string = "------------------------------------------------------------
 	"-------------------------------------------------------------------------" +
 	"-------------------------------------------------------------------------"
 
-const OutputTypeDefault string = "default"
-const OutputTypeClocXml string = "cloc-xml"
-const OutputTypeSloccount string = "sloccount"
-
 var rowLen = 79
-
-func NewLanguage(name, line_comment, multi_line, multi_line_end string) *Language {
-	return &Language{
-		name:           name,
-		line_comment:   line_comment,
-		multi_line:     multi_line,
-		multi_line_end: multi_line_end,
-		files:          []string{},
-	}
-}
 
 func containComments(line, commentStart, commentEnd string) bool {
 	inComments := 0

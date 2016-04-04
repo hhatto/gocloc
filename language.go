@@ -190,3 +190,13 @@ func getFileType(path string) (ext string, ok bool) {
 	ext, ok = getFileTypeByShebang(path)
 	return ext, ok
 }
+
+func NewLanguage(name, line_comment, multi_line, multi_line_end string) *Language {
+	return &Language{
+		name:           name,
+		line_comment:   line_comment,
+		multi_line:     multi_line,
+		multi_line_end: multi_line_end,
+		files:          []string{},
+	}
+}
