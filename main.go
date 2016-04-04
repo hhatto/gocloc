@@ -237,18 +237,16 @@ func main() {
 	total := NewLanguage("TOTAL", "", "", "")
 	num, maxPathLen := getAllFiles(paths, languages)
 	headerLen := 28
+	header := LANG_HEADER
 
 	if opts.Byfile {
-		headerLen := maxPathLen
+		headerLen = maxPathLen + 1
 		rowLen = maxPathLen + len(COMMON_HEADER) + 2
-		fmt.Printf("%.[2]*[1]s\n", ROW, rowLen)
-		fmt.Printf("%-[2]*[1]s  %[3]s\n", FILE_HEADER, headerLen, COMMON_HEADER)
-		fmt.Printf("%.[2]*[1]s\n", ROW, rowLen)
-	} else {
-		fmt.Printf("%.[2]*[1]s\n", ROW, rowLen)
-		fmt.Printf("%-[2]*[1]s %[3]s\n", LANG_HEADER, headerLen, COMMON_HEADER)
-		fmt.Printf("%.[2]*[1]s\n", ROW, rowLen)
+		header = FILE_HEADER
 	}
+	fmt.Printf("%.[2]*[1]s\n", ROW, rowLen)
+	fmt.Printf("%-[2]*[1]s %[3]s\n", header, headerLen, COMMON_HEADER)
+	fmt.Printf("%.[2]*[1]s\n", ROW, rowLen)
 
 	clocFiles := make(map[string]*ClocFile, num)
 	fileCache := make(map[string]bool)
