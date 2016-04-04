@@ -1,0 +1,5 @@
+gocloc
+*.sw?
+GTAGS
+GPATH
+GRTAGS
