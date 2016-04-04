@@ -20,6 +20,10 @@ const ROW string = "------------------------------------------------------------
 	"-------------------------------------------------------------------------" +
 	"-------------------------------------------------------------------------"
 
+const OutputTypeDefault string = "default"
+const OutputTypeClocXml string = "cloc-xml"
+const OutputTypeSloccount string = "sloccount"
+
 var rowLen = 79
 
 func NewLanguage(name, line_comment, multi_line, multi_line_end string) *Language {
@@ -62,6 +66,9 @@ func getAllFiles(paths []string, languages map[string]*Language) (filenum, maxPa
 			}
 
 			p := filepath.Join(root, rel)
+			if root == "." || root == "./" {
+				p = "./" + p
+			}
 			if ext, ok := getFileType(p); ok {
 				if targetExt, ok := Exts[ext]; ok {
 					languages[targetExt].files = append(languages[targetExt].files, p)
@@ -181,9 +188,8 @@ func main() {
 		"d":        d,
 		"dart":     dart,
 		"dts":      device_tree,
-		"el":       lisp,
 		"lua":      lua,
-		"sc":       lisp,
+		"lisp":     lisp,
 		"f77":      fortran_legacy,
 		"f90":      fortran_modern,
 		"go":       golang,
@@ -242,9 +248,11 @@ func main() {
 		rowLen = maxPathLen + len(COMMON_HEADER) + 2
 		header = FILE_HEADER
 	}
-	fmt.Printf("%.[2]*[1]s\n", ROW, rowLen)
-	fmt.Printf("%-[2]*[1]s %[3]s\n", header, headerLen, COMMON_HEADER)
-	fmt.Printf("%.[2]*[1]s\n", ROW, rowLen)
+	if opts.OutputType == OutputTypeDefault {
+		fmt.Printf("%.[2]*[1]s\n", ROW, rowLen)
+		fmt.Printf("%-[2]*[1]s %[3]s\n", header, headerLen, COMMON_HEADER)
+		fmt.Printf("%.[2]*[1]s\n", ROW, rowLen)
+	}
 
 	clocFiles := make(map[string]*ClocFile, num)
 	fileCache := make(map[string]bool)
@@ -256,7 +264,7 @@ func main() {
 
 		for _, file := range language.files {
 			clocFiles[file] = &ClocFile{
-				name: file,
+				Name: file,
 			}
 			isInComments := false
 
@@ -273,7 +281,7 @@ func main() {
 					line := strings.TrimSpace(scanner.Text())
 
 					if len(strings.TrimSpace(line)) == 0 {
-						clocFiles[file].blanks += 1
+						clocFiles[file].Blanks += 1
 						continue
 					}
 
@@ -282,7 +290,7 @@ func main() {
 							isInComments = true
 						} else if containComments(line, language.multi_line, language.multi_line_end) {
 							isInComments = true
-							clocFiles[file].code += 1
+							clocFiles[file].Code += 1
 						}
 					}
 
@@ -290,13 +298,13 @@ func main() {
 						if strings.Contains(line, language.multi_line_end) {
 							isInComments = false
 						}
-						clocFiles[file].comments += 1
+						clocFiles[file].Comments += 1
 						continue
 					}
 
 					// shebang line is 'code'
 					if isFirstLine && strings.HasPrefix(line, "#!/") {
-						clocFiles[file].code += 1
+						clocFiles[file].Code += 1
 						isFirstLine = false
 						continue
 					}
@@ -306,7 +314,7 @@ func main() {
 						isSingleComment := false
 						for _, single_comment := range single_comments {
 							if strings.HasPrefix(line, single_comment) {
-								clocFiles[file].comments += 1
+								clocFiles[file].Comments += 1
 								isSingleComment = true
 								break
 							}
@@ -316,7 +324,7 @@ func main() {
 						}
 					}
 
-					clocFiles[file].code += 1
+					clocFiles[file].Code += 1
 				}
 
 				// uniq file detect & ignore
@@ -331,10 +339,10 @@ func main() {
 				}
 			}()
 
-			language.code += clocFiles[file].code
-			language.comments += clocFiles[file].comments
-			language.blanks += clocFiles[file].blanks
-
+			language.code += clocFiles[file].Code
+			language.comments += clocFiles[file].Comments
+			language.blanks += clocFiles[file].Blanks
+			clocFiles[file].Lang = language.name
 		}
 
 		files := int32(len(language.files))
@@ -357,12 +365,38 @@ func main() {
 			sortedFiles = append(sortedFiles, *file)
 		}
 		sort.Sort(sortedFiles)
-		for _, file := range sortedFiles {
-			clocFile := file
-			fmt.Printf("%-[1]*[2]s %21[3]v %14[4]v %14[5]v\n",
-				maxPathLen, file.name, clocFile.blanks, clocFile.comments, clocFile.code)
-		}
 
+		switch opts.OutputType {
+		case OutputTypeClocXml:
+			t := XmlTotal{
+				Code:    total.code,
+				Comment: total.comments,
+				Blank:   total.blanks,
+			}
+			f := XmlResultFiles{
+				Files: sortedFiles,
+				Total: t,
+			}
+			xmlResult := XmlResult{
+				XmlFiles: f,
+			}
+			xmlResult.Encode()
+		case OutputTypeSloccount:
+			for _, file := range sortedFiles {
+				p := ""
+				if !strings.HasPrefix(file.Name, "./") {
+					p = strings.Split(file.Name, string(os.PathSeparator))[1]
+				}
+				fmt.Printf("%v\t%v\t%v\t%v\n",
+					file.Code, file.Lang, p, file.Name)
+			}
+		default:
+			for _, file := range sortedFiles {
+				clocFile := file
+				fmt.Printf("%-[1]*[2]s %21[3]v %14[4]v %14[5]v\n",
+					maxPathLen, file.Name, clocFile.Blanks, clocFile.Comments, clocFile.Code)
+			}
+		}
 	} else {
 		var sortedLanguages Languages
 		for _, language := range languages {
@@ -379,13 +413,15 @@ func main() {
 	}
 
 	// write footer
-	fmt.Printf("%.[2]*[1]s\n", ROW, rowLen)
-	if opts.Byfile {
-		fmt.Printf("%-[1]*[2]v %6[3]v %14[4]v %14[5]v %14[6]v\n",
-			maxPathLen, "TOTAL", total.total, total.blanks, total.comments, total.code)
-	} else {
-		fmt.Printf("%-27v %6v %14v %14v %14v\n",
-			"TOTAL", total.total, total.blanks, total.comments, total.code)
+	if opts.OutputType == OutputTypeDefault {
+		fmt.Printf("%.[2]*[1]s\n", ROW, rowLen)
+		if opts.Byfile {
+			fmt.Printf("%-[1]*[2]v %6[3]v %14[4]v %14[5]v %14[6]v\n",
+				maxPathLen, "TOTAL", total.total, total.blanks, total.comments, total.code)
+		} else {
+			fmt.Printf("%-27v %6v %14v %14v %14v\n",
+				"TOTAL", total.total, total.blanks, total.comments, total.code)
+		}
+		fmt.Printf("%.[2]*[1]s\n", ROW, rowLen)
 	}
-	fmt.Printf("%.[2]*[1]s\n", ROW, rowLen)
 }
