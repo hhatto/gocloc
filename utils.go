@@ -9,6 +9,8 @@ import (
 	"strings"
 )
 
+var fileCache map[string]struct{}
+
 func containComments(line, commentStart, commentEnd string) bool {
 	inComments := 0
 	for i := 0; i < len(line)/len(commentStart); i += len(commentStart) {

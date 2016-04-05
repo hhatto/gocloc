@@ -27,8 +27,6 @@ func (cf ClocFiles) Less(i, j int) bool {
 	return cf[i].Code > cf[j].Code
 }
 
-var fileCache map[string]struct{}
-
 func analyzeFile(filename string, language *Language) *ClocFile {
 	if opts.Debug {
 		fmt.Printf("filename=%v\n", filename)
