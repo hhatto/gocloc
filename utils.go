@@ -1,7 +1,9 @@
 package main
 
 import (
+	"crypto/md5"
 	"fmt"
+	"io/ioutil"
 	"os"
 	"path/filepath"
 	"strings"
@@ -21,6 +23,34 @@ func containComments(line, commentStart, commentEnd string) bool {
 		}
 	}
 	return inComments != 0
+}
+
+func checkMD5Sum(filename string) (ignore bool) {
+	fp, err := os.Open(filename)
+	if err != nil {
+		// because don't open file
+		fmt.Printf("os.Open() error. err=[%v]\n", err)
+		return true
+	}
+	defer fp.Close()
+
+	// uniq file detect & ignore
+	d, err := ioutil.ReadAll(fp)
+	if err != nil {
+		// because don't read file
+		fmt.Printf("ioutil.ReadAll() error. err=[%v]\n", err)
+		return true
+	}
+
+	// calc md5sum
+	hash := md5.Sum(d)
+	c := fmt.Sprintf("%x", hash)
+	if _, ok := fileCache[c]; ok {
+		return true
+	}
+
+	fileCache[c] = struct{}{}
+	return false
 }
 
 func getAllFiles(paths []string, languages map[string]*Language) (filenum, maxPathLen int) {
@@ -53,6 +83,13 @@ func getAllFiles(paths []string, languages map[string]*Language) (filenum, maxPa
 				if targetExt, ok := Exts[ext]; ok {
 					// check exclude extension
 					if _, ok := ExcludeExts[targetExt]; ok {
+						return nil
+					}
+
+					if ignore := checkMD5Sum(p); ignore {
+						if opts.Debug {
+							fmt.Printf("[ignore=%v] find same md5\n", p)
+						}
 						return nil
 					}
 

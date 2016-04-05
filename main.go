@@ -189,11 +189,13 @@ func main() {
 		"y":        yacc,
 		"zsh":      zsh,
 	}
+	fileCache = make(map[string]struct{})
 
 	total := NewLanguage("TOTAL", "", "", "")
 	num, maxPathLen := getAllFiles(paths, languages)
 	headerLen := 28
 	header := LANG_HEADER
+	clocFiles := make(map[string]*ClocFile, num)
 
 	// write header
 	if opts.Byfile {
@@ -206,9 +208,6 @@ func main() {
 		fmt.Printf("%-[2]*[1]s %[3]s\n", header, headerLen, COMMON_HEADER)
 		fmt.Printf("%.[2]*[1]s\n", ROW, rowLen)
 	}
-
-	clocFiles := make(map[string]*ClocFile, num)
-	fileCache = make(map[string]struct{})
 
 	for _, language := range languages {
 		if language.printed {

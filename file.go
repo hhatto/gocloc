@@ -2,9 +2,7 @@ package main
 
 import (
 	"bufio"
-	"crypto/md5"
 	"fmt"
-	"io/ioutil"
 	"os"
 	"strings"
 )
@@ -131,17 +129,6 @@ func analyzeFile(filename string, language *Language) *ClocFile {
 			fmt.Printf("[CODE,cd:%d,cm:%d,bk:%d,iscm:%v] %s\n",
 				clocFile.Code, clocFile.Comments, clocFile.Blanks, isInComments, lineOrg)
 		}
-	}
-
-	// uniq file detect & ignore
-	// FIXME: not used, now
-	if ret, err := fp.Seek(0, 0); ret != 0 || err != nil {
-		panic(err)
-	}
-	if d, err := ioutil.ReadAll(fp); err == nil {
-		hash := md5.Sum(d)
-		c := fmt.Sprintf("%x", hash)
-		fileCache[c] = struct{}{}
 	}
 
 	return clocFile
