@@ -56,7 +56,7 @@ func main() {
 	asm := NewLanguage("Assembly", "//,;,#,@,|,!", "/*", "*/")
 	awk := NewLanguage("Awk", "#", "", "")
 	bash := NewLanguage("BASH", "#", "", "")
-	batch := NewLanguage("Batch", "REM", "", "")
+	batch := NewLanguage("Batch", "REM,rem", "", "")
 	c := NewLanguage("C", "//", "/*", "*/")
 	c_header := NewLanguage("C Header", "//", "/*", "*/")
 	c_sharp := NewLanguage("C#", "//", "/*", "*/")
