@@ -106,6 +106,7 @@ var Exts map[string]string = map[string]string{
 	"php":      "php",
 	"pas":      "pas",
 	"pl":       "pl",
+	"plan9sh":  "plan9sh",
 	"text":     "text",
 	"txt":      "text",
 	"polly":    "polly",
@@ -139,6 +140,7 @@ var LanguageByScript map[string]string = map[string]string{
 	"perl":   "pl",
 	"python": "py",
 	"ruby":   "rb",
+	"rc":     "plan9sh",
 }
 
 func getShebang(line string) (shebangLang string, ok bool) {

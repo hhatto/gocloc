@@ -71,3 +71,17 @@ func TestGetShebangBashWithSpace(t *testing.T) {
 		t.Errorf("invalid logic. lang=[%v] shebang=[%v]", lang, s)
 	}
 }
+
+func TestGetShebangPlan9Shell(t *testing.T) {
+	lang := "plan9sh"
+	shebang := "#!/usr/rc"
+
+	s, ok := getShebang(shebang)
+	if !ok {
+		t.Errorf("invalid logic. shebang=[%v]", shebang)
+	}
+
+	if lang != s {
+		t.Errorf("invalid logic. lang=[%v] shebang=[%v]", lang, s)
+	}
+}

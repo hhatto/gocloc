@@ -94,6 +94,7 @@ func main() {
 	ocaml := NewLanguage("OCaml", "", "(*", "*)")
 	php := NewLanguage("PHP", "#,//", "/*", "*/")
 	pascal := NewLanguage("Pascal", "//,(*", "{", ")")
+	plan9_shell := NewLanguage("Plan9 Shell", "#", "", "")
 	polly := NewLanguage("Polly", "<!--", "<!--", "-->")
 	perl := NewLanguage("Perl", "#", ":=", ":=cut")
 	protobuf := NewLanguage("Protocol Buffers", "//", "", "")
@@ -164,6 +165,7 @@ func main() {
 		"pas":      pascal,
 		"pl":       perl,
 		"text":     text,
+		"plan9sh":  plan9_shell,
 		"polly":    polly,
 		"proto":    protobuf,
 		"py":       python,
