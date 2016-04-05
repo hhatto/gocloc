@@ -8,6 +8,7 @@ type Options struct {
 	OutputType  string `long:"output-type" default:"default" description:"output type [values: default,cloc-xml,sloccount]"`
 	ExcludeExt  string `long:"exclude-ext" description:"exclude file name extensions (separated commas)"`
 	NotMatchDir string `long:"not-match-d" description:"exclude dir name (regex)"`
+	Debug       bool   `long:"debug" description:"dump debug log for developer"`
 }
 
 const OutputTypeDefault string = "default"

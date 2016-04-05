@@ -1,10 +1,7 @@
 package main
 
 import (
-	"bufio"
-	"crypto/md5"
 	"fmt"
-	"io/ioutil"
 	"os"
 	"regexp"
 	"sort"
@@ -100,7 +97,7 @@ func main() {
 	polly := NewLanguage("Polly", "<!--", "<!--", "-->")
 	perl := NewLanguage("Perl", "#", ":=", ":=cut")
 	protobuf := NewLanguage("Protocol Buffers", "//", "", "")
-	python := NewLanguage("Python", "#", "'''", "'''")
+	python := NewLanguage("Python", "#", "\"\"\"", "\"\"\"")
 	r := NewLanguage("R", "#", "", "")
 	ruby := NewLanguage("Ruby", "#", ":=begin", ":=end")
 	ruby_html := NewLanguage("Ruby HTML", "<!--", "<!--", "-->")
@@ -209,7 +206,7 @@ func main() {
 	}
 
 	clocFiles := make(map[string]*ClocFile, num)
-	fileCache := make(map[string]bool)
+	fileCache = make(map[string]struct{})
 
 	for _, language := range languages {
 		if language.printed {
@@ -217,81 +214,7 @@ func main() {
 		}
 
 		for _, file := range language.files {
-			clocFiles[file] = &ClocFile{
-				Name: file,
-			}
-			isInComments := false
-
-			func() {
-				fp, err := os.Open(file)
-				if err != nil {
-					return // ignore error
-				}
-				defer fp.Close()
-
-				isFirstLine := true
-				scanner := bufio.NewScanner(fp)
-				for scanner.Scan() {
-					line := strings.TrimSpace(scanner.Text())
-
-					if len(strings.TrimSpace(line)) == 0 {
-						clocFiles[file].Blanks += 1
-						continue
-					}
-
-					if language.multi_line != "" {
-						if strings.HasPrefix(line, language.multi_line) {
-							isInComments = true
-						} else if containComments(line, language.multi_line, language.multi_line_end) {
-							isInComments = true
-							clocFiles[file].Code += 1
-						}
-					}
-
-					if isInComments {
-						if strings.Contains(line, language.multi_line_end) {
-							isInComments = false
-						}
-						clocFiles[file].Comments += 1
-						continue
-					}
-
-					// shebang line is 'code'
-					if isFirstLine && strings.HasPrefix(line, "#!") {
-						clocFiles[file].Code += 1
-						isFirstLine = false
-						continue
-					}
-
-					if language.line_comment != "" {
-						single_comments := strings.Split(language.line_comment, ",")
-						isSingleComment := false
-						for _, single_comment := range single_comments {
-							if strings.HasPrefix(line, single_comment) {
-								clocFiles[file].Comments += 1
-								isSingleComment = true
-								break
-							}
-						}
-						if isSingleComment {
-							continue
-						}
-					}
-
-					clocFiles[file].Code += 1
-				}
-
-				// uniq file detect & ignore
-				// FIXME: not used, now
-				if ret, err := fp.Seek(0, 0); ret != 0 || err != nil {
-					panic(err)
-				}
-				if d, err := ioutil.ReadAll(fp); err == nil {
-					hash := md5.Sum(d)
-					c := fmt.Sprintf("%x", hash)
-					fileCache[c] = true
-				}
-			}()
+			clocFiles[file] = analyzeFile(file, language)
 
 			language.code += clocFiles[file].Code
 			language.comments += clocFiles[file].Comments
