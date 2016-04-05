@@ -32,6 +32,10 @@ func (cf ClocFiles) Less(i, j int) bool {
 var fileCache map[string]struct{}
 
 func analyzeFile(filename string, language *Language) *ClocFile {
+	if opts.Debug {
+		fmt.Printf("filename=%v\n", filename)
+	}
+
 	clocFile := &ClocFile{
 		Name: filename,
 	}
