@@ -88,7 +88,8 @@ func getAllFiles(paths []string, languages map[string]*Language) (filenum, maxPa
 						return nil
 					}
 
-					if ignore := checkMD5Sum(p); ignore {
+					ignore := checkMD5Sum(p)
+					if !opts.SkipUniqueness && ignore {
 						if opts.Debug {
 							fmt.Printf("[ignore=%v] find same md5\n", p)
 						}
