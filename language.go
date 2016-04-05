@@ -38,6 +38,8 @@ func (ls Languages) Less(i, j int) bool {
 
 var Exts map[string]string = map[string]string{
 	"as":       "as",
+	"asm":      "s",
+	"S":        "s",
 	"s":        "s",
 	"awk":      "awk",
 	"bat":      "bat",

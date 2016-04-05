@@ -53,7 +53,7 @@ func main() {
 
 	// define languages
 	action_script := NewLanguage("ActionScript", "//", "/*", "*/")
-	asm := NewLanguage("Assembly", "", "", "")
+	asm := NewLanguage("Assembly", "//,;,#,@,|,!", "/*", "*/")
 	awk := NewLanguage("Awk", "#", "", "")
 	bash := NewLanguage("BASH", "#", "", "")
 	batch := NewLanguage("Batch", "REM", "", "")
