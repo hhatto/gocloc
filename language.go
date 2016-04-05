@@ -193,10 +193,15 @@ func getFileType(path string) (ext string, ok bool) {
 	if strings.ToLower(filepath.Base(path)) == "makefile" {
 		return "makefile", true
 	}
+
+	shebangLang, ok := getFileTypeByShebang(path)
+	if ok {
+		return shebangLang, true
+	}
+
 	if len(ext) >= 2 {
 		return ext[1:], true
 	}
-	ext, ok = getFileTypeByShebang(path)
 	return ext, ok
 }
 
