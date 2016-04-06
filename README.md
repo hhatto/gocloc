@@ -96,7 +96,7 @@ cloc .  13.57s user 7.89s system 105% cpu 20.413 total
 ### tokei
 
 ```
-$ tokei --sort code .
+$ time tokei --sort code .
 -------------------------------------------------------------------------------
  Language            Files        Total       Blanks     Comments         Code
 -------------------------------------------------------------------------------
@@ -128,36 +128,36 @@ tokei --sort code .  1.27s user 0.06s system 99% cpu 1.328 total
 ### gocloc
 
 ```
-$ gocloc .
+$ time gocloc --not-match-d=".git" --exclude-ext=txt .
 -------------------------------------------------------------------------------
 Language                     files          blank        comment           code
 -------------------------------------------------------------------------------
-Go                            4272         103241         136154         788685
-Plain Text                      28           2066              0         135647
-Assembly                       329           6092              0          54906
+Go                            4195         101132         133695         772935
+Assembly                       331           6128          14694          40510
 HTML                            41           4927            198          33316
-C                               92           1081            996           7409
-Perl                            11            170            167           1065
-BASH                            25            209            266            933
+C                               90           1076            991           7389
+BASH                            28            257            539           1330
+Perl                            12            185            177           1135
 XML                              4             85              9            623
-Bourne Shell                     8             71            302            467
-Python                           1            121             56            327
-Batch                            5             55              0            239
+Batch                            5             55              1            238
 JavaScript                       4             48            122            231
 C Header                        15             50            147            211
 CSS                              3             51              9            176
+Python                           1            121            210            173
 Yacc                             1             27             20            155
 Protocol Buffers                 1              1              0            144
 Markdown                         3             29              0             86
+Plan9 Shell                      4             25             42             74
+Bourne Shell                     4             17             19             60
 JSON                             2              0              0             36
 Makefile                         7             13             10             34
 FORTRAN Modern                   2              1              3              8
-Awk                              1              1              6              7
 C++                              1              3              5              7
+Awk                              1              1              6              7
 -------------------------------------------------------------------------------
-TOTAL                         4856         118342         138470        1024712
+TOTAL                         4755         114232         150897         858878
 -------------------------------------------------------------------------------
-gocloc .  0.72s user 0.10s system 114% cpu 0.715 total
+gocloc --not-match-d=".git" --exclude-ext=txt .  0.67s user 0.14s system 111% cpu 0.725 total
 ```
 
 ## License
