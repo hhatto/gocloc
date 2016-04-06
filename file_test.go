@@ -12,7 +12,6 @@ func TestAnalayzeFile4Python(t *testing.T) {
 		t.Logf("ioutil.TempFile() error. err=[%v]", err)
 		return
 	}
-	t.Log(tmpfile.Name())
 	defer os.Remove(tmpfile.Name())
 
 	tmpfile.Write([]byte(`#!/bin/python
@@ -47,7 +46,6 @@ func TestAnalayzeFile4PythonInvalid(t *testing.T) {
 		t.Logf("ioutil.TempFile() error. err=[%v]", err)
 		return
 	}
-	t.Log(tmpfile.Name())
 	defer os.Remove(tmpfile.Name())
 
 	tmpfile.Write([]byte(`#!/bin/python
