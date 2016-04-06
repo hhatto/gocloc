@@ -85,3 +85,17 @@ func TestGetShebangPlan9Shell(t *testing.T) {
 		t.Errorf("invalid logic. lang=[%v] shebang=[%v]", lang, s)
 	}
 }
+
+func TestGetShebangStartDot(t *testing.T) {
+	lang := "pl"
+	shebang := "#!./perl -o"
+
+	s, ok := getShebang(shebang)
+	if !ok {
+		t.Errorf("invalid logic. shebang=[%v]", shebang)
+	}
+
+	if lang != s {
+		t.Errorf("invalid logic. lang=[%v] shebang=[%v]", lang, s)
+	}
+}

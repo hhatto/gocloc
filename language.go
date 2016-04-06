@@ -24,7 +24,7 @@ type Language struct {
 type Languages []Language
 
 var reShebangEnv *regexp.Regexp = regexp.MustCompile("^#! *(\\S+/env) ([a-zA-Z]+)")
-var reShebangLang *regexp.Regexp = regexp.MustCompile("^#! */[a-zA-Z/]+/([a-zA-Z]+)")
+var reShebangLang *regexp.Regexp = regexp.MustCompile("^#! *[.a-zA-Z/]+/([a-zA-Z]+)")
 
 func (ls Languages) Len() int {
 	return len(ls)
@@ -105,7 +105,9 @@ var Exts map[string]string = map[string]string{
 	"mustache": "mustache",
 	"php":      "php",
 	"pas":      "pas",
+	"PL":       "pl",
 	"pl":       "pl",
+	"pm":       "pl",
 	"plan9sh":  "plan9sh",
 	"text":     "text",
 	"txt":      "text",
