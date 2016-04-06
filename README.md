@@ -128,7 +128,7 @@ tokei --sort code .  1.27s user 0.06s system 99% cpu 1.328 total
 ### gocloc
 
 ```
-$ time gocloc --not-match-d=".git" --exclude-ext=txt .
+$ time gocloc --exclude-ext=txt .
 -------------------------------------------------------------------------------
 Language                     files          blank        comment           code
 -------------------------------------------------------------------------------
@@ -157,7 +157,7 @@ Awk                              1              1              6              7
 -------------------------------------------------------------------------------
 TOTAL                         4755         114232         150897         858878
 -------------------------------------------------------------------------------
-gocloc --not-match-d=".git" --exclude-ext=txt .  0.67s user 0.14s system 111% cpu 0.725 total
+gocloc --exclude-ext=txt .  0.70s user 0.14s system 111% cpu 0.754 total
 ```
 
 ## License
