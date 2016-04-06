@@ -32,7 +32,6 @@ func checkMD5Sum(filename string) (ignore bool) {
 	fp, err := os.Open(filename)
 	if err != nil {
 		// because don't open file
-		fmt.Printf("os.Open() error. err=[%v]\n", err)
 		return true
 	}
 	defer fp.Close()
