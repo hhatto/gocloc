@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
+	"regexp"
 	"strings"
 )
 
@@ -56,11 +57,13 @@ func checkMD5Sum(filename string) (ignore bool) {
 }
 
 func getAllFiles(paths []string, languages map[string]*Language) (filenum, maxPathLen int) {
+	reVCS := regexp.MustCompile("(.bzr|.cvs|.hg|.git|.svn)")
 	maxPathLen = 0
 	for _, root := range paths {
 		if _, err := os.Stat(root); err != nil {
 			continue
 		}
+		vcsInRoot := reVCS.MatchString(root)
 		walkCallback := func(path string, info os.FileInfo, err error) error {
 			if info.IsDir() {
 				return nil
@@ -68,6 +71,10 @@ func getAllFiles(paths []string, languages map[string]*Language) (filenum, maxPa
 
 			rel, err := filepath.Rel(root, path)
 			if err != nil {
+				return nil
+			}
+
+			if !vcsInRoot && reVCS.MatchString(path) {
 				return nil
 			}
 
