@@ -52,6 +52,7 @@ $ cat sloccount.scc
 * CPU 3.1GHz Intel Core i7 / 16GB 1600MHz DDR3 / MacOSX 10.11.3
 * cloc 1.66
 * tokei 1.5.1
+* gocloc [6a9d4f5](https://github.com/hhatto/gocloc/commit/6a9d4f5b3d4e5df28fe78a04e8741595e22ada50)
 * target repository is [golang/go commit:633ab74](https://github.com/golang/go/tree/633ab7426a906b72dcf6f1d54e87f4ae926dc4e1)
 
 ### cloc
@@ -139,11 +140,11 @@ C                               90           1076            991           7389
 BASH                            28            257            539           1330
 Perl                            12            185            177           1135
 XML                              4             85              9            623
+Python                           1            121             88            295
 Batch                            5             55              1            238
 JavaScript                       4             48            122            231
 C Header                        15             50            147            211
 CSS                              3             51              9            176
-Python                           1            121            210            173
 Yacc                             1             27             20            155
 Protocol Buffers                 1              1              0            144
 Markdown                         3             29              0             86
@@ -152,12 +153,12 @@ Bourne Shell                     4             17             19             60
 JSON                             2              0              0             36
 Makefile                         7             13             10             34
 FORTRAN Modern                   2              1              3              8
-C++                              1              3              5              7
 Awk                              1              1              6              7
+C++                              1              3              5              7
 -------------------------------------------------------------------------------
-TOTAL                         4755         114232         150897         858878
+TOTAL                         4755         114232         150775         859000
 -------------------------------------------------------------------------------
-gocloc --exclude-ext=txt .  0.70s user 0.14s system 111% cpu 0.754 total
+gocloc --exclude-ext=txt .  0.69s user 0.14s system 111% cpu 0.753 total
 ```
 
 ## License
