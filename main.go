@@ -89,6 +89,7 @@ func main() {
 	makefile := NewLanguage("Makefile", "#", "", "")
 	markdown := NewLanguage("Markdown", "", "", "")
 	mustache := NewLanguage("Mustache", "", "{{!", "))")
+	lex := NewLanguage("lex", "", "/*", "*/")
 	objective_c := NewLanguage("Objective C", "//", "/*", "*/")
 	objective_cpp := NewLanguage("Objective C++", "//", "/*", "*/")
 	ocaml := NewLanguage("OCaml", "", "(*", "*)")
@@ -161,6 +162,7 @@ func main() {
 		"mm":       objective_cpp,
 		"makefile": makefile,
 		"mustache": mustache,
+		"lex":      lex,
 		"php":      php,
 		"pas":      pascal,
 		"pl":       perl,

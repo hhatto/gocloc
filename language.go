@@ -103,6 +103,7 @@ var Exts map[string]string = map[string]string{
 	"mm":       "mm",
 	"makefile": "makefile",
 	"mustache": "mustache",
+	"l":        "lex",
 	"php":      "php",
 	"pas":      "pas",
 	"PL":       "pl",
