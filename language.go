@@ -56,6 +56,7 @@ var Exts map[string]string = map[string]string{
 	"coffee":   "coffee",
 	"cfm":      "cfm",
 	"cfc":      "cfc",
+	"cmake":    "cmake",
 	"cc":       "cpp",
 	"cpp":      "cpp",
 	"cxx":      "cpp",
@@ -195,7 +196,15 @@ func getFileTypeByShebang(path string) (shebangLang string, ok bool) {
 
 func getFileType(path string) (ext string, ok bool) {
 	ext = filepath.Ext(path)
-	if strings.ToLower(filepath.Base(path)) == "makefile" {
+	base := filepath.Base(path)
+
+	switch base {
+	case "CMakeLists.txt":
+		return "cmake", true
+	}
+
+	switch strings.ToLower(base) {
+	case "makefile":
 		return "makefile", true
 	}
 

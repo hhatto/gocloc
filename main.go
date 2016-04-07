@@ -65,6 +65,7 @@ func main() {
 	coffee_script := NewLanguage("CoffeeScript", "#", "###", "###")
 	cold_fusion := NewLanguage("ColdFusion", "", "<!---", "--->")
 	cf_script := NewLanguage("ColdFusion CFScript", "//", "/*", "*/")
+	cmake := NewLanguage("CMake", "#", "", "")
 	cpp := NewLanguage("C++", "//", "/*", "*/")
 	cpp_header := NewLanguage("C++ Header", "//", "/*", "*/")
 	css := NewLanguage("CSS", "//", "/*", "*/")
@@ -134,6 +135,7 @@ func main() {
 		"coffee":   coffee_script,
 		"cfm":      cold_fusion,
 		"cfc":      cf_script,
+		"cmake":    cmake,
 		"cpp":      cpp,
 		"css":      css,
 		"d":        d,
