@@ -111,6 +111,7 @@ func main() {
 	sass := NewLanguage("Sass", "//", "/*", "*/")
 	sed := NewLanguage("sed", "#", "", "")
 	sh := NewLanguage("Bourne Shell", "#", "", "")
+	skill := NewLanguage("SKILL", ";", "/*", "*/")
 	sml := NewLanguage("Standard ML", "", "(*", "*)")
 	sql := NewLanguage("SQL", "--", "/*", "*/")
 	swift := NewLanguage("Swift", "//", "/*", "*/")
@@ -120,6 +121,7 @@ func main() {
 	type_script := NewLanguage("TypeScript", "//", "/*", "*/")
 	vcproj := NewLanguage("MSBuild script", "<!--", "<!--", "-->")
 	vim_script := NewLanguage("Vim script", "\"", "", "")
+	wix := NewLanguage("WiX", "<!--", "<!--", "-->")
 	xml := NewLanguage("XML", "<!--", "<!--", "-->")
 	xsl := NewLanguage("XSLT", "<!--", "<!--", "-->")
 	yaml := NewLanguage("YAML", "#", "", "")
@@ -157,6 +159,7 @@ func main() {
 		"hs":       haskell,
 		"hpp":      cpp_header,
 		"html":     html,
+		"il":       skill,
 		"jai":      jai,
 		"java":     java,
 		"js":       java_script,
@@ -197,6 +200,7 @@ func main() {
 		"ts":       type_script,
 		"vcproj":   vcproj,
 		"vim":      vim_script,
+		"wxs":      wix,
 		"xml":      xml,
 		"xsl":      xsl,
 		"yaml":     yaml,
