@@ -124,6 +124,7 @@ var Exts map[string]string = map[string]string{
 	"rs":       "rs",
 	"sass":     "sass",
 	"scss":     "sass",
+	"sed":      "sed",
 	"sml":      "sml",
 	"sql":      "sql",
 	"swift":    "swift",
