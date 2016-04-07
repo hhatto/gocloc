@@ -68,6 +68,7 @@ var Exts map[string]string = map[string]string{
 	"dts":      "dts",
 	"dtsi":     "dts",
 	"el":       "lisp",
+	"exp":      "exp",
 	"lisp":     "lisp",
 	"lsp":      "lisp",
 	"lua":      "lua",
