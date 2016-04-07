@@ -104,6 +104,7 @@ var Exts map[string]string = map[string]string{
 	"mm":       "mm",
 	"makefile": "makefile",
 	"mustache": "mustache",
+	"m4":       "m4",
 	"l":        "lex",
 	"php":      "php",
 	"pas":      "pas",
@@ -201,6 +202,8 @@ func getFileType(path string) (ext string, ok bool) {
 	switch base {
 	case "CMakeLists.txt":
 		return "cmake", true
+	case "configure.ac":
+		return "m4", true
 	}
 
 	switch strings.ToLower(base) {
