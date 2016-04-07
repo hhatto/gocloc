@@ -73,7 +73,8 @@ func analyzeFile(filename string, language *Language) *ClocFile {
 				if strings.Count(line, language.multi_line_end) == 2 {
 					isInComments = false
 					isInCommentsSame = false
-				} else if strings.HasPrefix(line, language.multi_line_end) {
+				} else if strings.HasPrefix(line, language.multi_line_end) ||
+					strings.HasSuffix(line, language.multi_line_end) {
 					if isInCommentsSame {
 						isInComments = false
 					}

@@ -40,7 +40,6 @@ class A:
 }
 
 func TestAnalayzeFile4PythonInvalid(t *testing.T) {
-	t.SkipNow()
 	tmpfile, err := ioutil.TempFile("", "tmp.py")
 	if err != nil {
 		t.Logf("ioutil.TempFile() error. err=[%v]", err)
