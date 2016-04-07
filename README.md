@@ -1,9 +1,7 @@
 # gocloc [![](https://travis-ci.org/hhatto/gocloc.svg?branch=master)](https://travis-ci.org/hhatto/gocloc)
 
-A little fast cloc(Count Lines Of Code), written in Go.
+A little fast [cloc(Count Lines Of Code)](https://github.com/AlDanial/cloc), written in Go.
 Inspired by [tokei](https://github.com/Aaronepower/tokei).
-
-**This is experimental module. Highly under development.**
 
 ## Installation
 
