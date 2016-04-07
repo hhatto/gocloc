@@ -118,6 +118,7 @@ func main() {
 	text := NewLanguage("Plain Text", "", "", "")
 	toml := NewLanguage("TOML", "#", "", "")
 	type_script := NewLanguage("TypeScript", "//", "/*", "*/")
+	vcproj := NewLanguage("MSBuild script", "<!--", "<!--", "-->")
 	vim_script := NewLanguage("Vim script", "\"", "", "")
 	xml := NewLanguage("XML", "<!--", "<!--", "-->")
 	xsl := NewLanguage("XSLT", "<!--", "<!--", "-->")
@@ -194,6 +195,7 @@ func main() {
 		"sty":      tex,
 		"toml":     toml,
 		"ts":       type_script,
+		"vcproj":   vcproj,
 		"vim":      vim_script,
 		"xml":      xml,
 		"xsl":      xsl,
