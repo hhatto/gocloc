@@ -71,6 +71,7 @@ func main() {
 	css := NewLanguage("CSS", "//", "/*", "*/")
 	d := NewLanguage("D", "//", "/*", "*/")
 	dart := NewLanguage("Dart", "//", "/*", "*/")
+	dtrace := NewLanguage("DTrace", "#", "/*", "*/")
 	device_tree := NewLanguage("Device Tree", "//", "/*", "*/")
 	expect := NewLanguage("Expect", "#", "", "")
 	lisp := NewLanguage("LISP", "", "#|", "|#")
@@ -143,6 +144,7 @@ func main() {
 		"css":      css,
 		"d":        d,
 		"dart":     dart,
+		"dtrace":   dtrace,
 		"dts":      device_tree,
 		"exp":      expect,
 		"lua":      lua,
