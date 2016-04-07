@@ -142,10 +142,11 @@ var Exts map[string]string = map[string]string{
 }
 
 var LanguageByScript map[string]string = map[string]string{
+	"make":   "make",
 	"perl":   "pl",
+	"rc":     "plan9sh",
 	"python": "py",
 	"ruby":   "rb",
-	"rc":     "plan9sh",
 }
 
 func getShebang(line string) (shebangLang string, ok bool) {
@@ -204,6 +205,8 @@ func getFileType(path string) (ext string, ok bool) {
 		return "cmake", true
 	case "configure.ac":
 		return "m4", true
+	case "Makefile.am":
+		return "makefile", true
 	}
 
 	switch strings.ToLower(base) {
