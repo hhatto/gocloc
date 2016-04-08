@@ -75,7 +75,7 @@ func main() {
 	device_tree := NewLanguage("Device Tree", "//", "/*", "*/")
 	erlang := NewLanguage("Erlang", "%", "", "")
 	expect := NewLanguage("Expect", "#", "", "")
-	lisp := NewLanguage("LISP", "", "#|", "|#")
+	lisp := NewLanguage("LISP", ";;", "#|", "|#")
 	fortran_legacy := NewLanguage("FORTRAN Legacy", "c,C,!,*", "", "")
 	fortran_modern := NewLanguage("FORTRAN Modern", "!", "", "")
 	golang := NewLanguage("Go", "//", "/*", "*/")
