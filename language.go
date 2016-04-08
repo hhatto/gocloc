@@ -221,7 +221,7 @@ func getFileType(path string) (ext string, ok bool) {
 	switch strings.ToLower(base) {
 	case "makefile":
 		return "makefile", true
-	case "rebar":
+	case "rebar": // skip
 		return "", false
 	}
 
