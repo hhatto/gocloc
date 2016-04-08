@@ -73,6 +73,7 @@ func main() {
 	dart := NewLanguage("Dart", "//", "/*", "*/")
 	dtrace := NewLanguage("DTrace", "#", "/*", "*/")
 	device_tree := NewLanguage("Device Tree", "//", "/*", "*/")
+	erlang := NewLanguage("Erlang", "%", "", "")
 	expect := NewLanguage("Expect", "#", "", "")
 	lisp := NewLanguage("LISP", "", "#|", "|#")
 	fortran_legacy := NewLanguage("FORTRAN Legacy", "c,C,!,*", "", "")
@@ -149,6 +150,7 @@ func main() {
 		"dart":     dart,
 		"dtrace":   dtrace,
 		"dts":      device_tree,
+		"erl":      erlang,
 		"exp":      expect,
 		"lua":      lua,
 		"lisp":     lisp,
