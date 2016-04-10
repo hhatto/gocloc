@@ -28,19 +28,19 @@ func containComments(line, commentStart, commentEnd string) bool {
 	return inComments != 0
 }
 
-func checkMD5Sum(filename string) (ignore bool) {
-	fp, err := os.Open(filename)
+func getContents(path string) ([]byte, error) {
+	fp, err := os.Open(path)
 	if err != nil {
-		// because don't open file
-		return true
+		return nil, err
 	}
 	defer fp.Close()
 
-	// uniq file detect & ignore
-	d, err := ioutil.ReadAll(fp)
+	return ioutil.ReadAll(fp)
+}
+
+func checkMD5Sum(filename string) (ignore bool) {
+	d, err := getContents(filename)
 	if err != nil {
-		// because don't read file
-		fmt.Printf("ioutil.ReadAll() error. err=[%v]\n", err)
 		return true
 	}
 
