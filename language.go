@@ -113,6 +113,8 @@ var Exts map[string]string = map[string]string{
 	"markdown":    "md",
 	"ml":          "ml",
 	"mli":         "ml",
+	"mll":         "ml",
+	"mly":         "ml",
 	"mm":          "mm",
 	"maven":       "maven",
 	"makefile":    "makefile",
