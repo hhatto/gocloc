@@ -100,6 +100,7 @@ var Exts map[string]string = map[string]string{
 	"html":        "html",
 	"hxx":         "hpp",
 	"il":          "il",
+	"ipynb":       "ipynb",
 	"jai":         "jai",
 	"java":        "java",
 	"js":          "js",

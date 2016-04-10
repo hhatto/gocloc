@@ -88,6 +88,7 @@ func main() {
 	java := NewLanguage("Java", "//", "/*", "*/")
 	java_script := NewLanguage("JavaScript", "//", "/*", "*/")
 	julia := NewLanguage("Julia", "#", "#:=", ":=#")
+	jupyter_notebook := NewLanguage("Jupyter Notebook", "#", "", "")
 	json := NewLanguage("JSON", "", "", "")
 	jsx := NewLanguage("JSX", "//", "/*", "*/")
 	less := NewLanguage("LESS", "//", "/*", "*/")
@@ -178,6 +179,7 @@ func main() {
 		"java":        java,
 		"js":          java_script,
 		"jl":          julia,
+		"ipynb":       jupyter_notebook,
 		"json":        json,
 		"jsx":         jsx,
 		"lds":         linker_script,
