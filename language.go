@@ -119,6 +119,7 @@ var Exts map[string]string = map[string]string{
 	"pl":       "pl",
 	"pm":       "pl",
 	"plan9sh":  "plan9sh",
+	"ps1":      "ps1",
 	"text":     "text",
 	"txt":      "text",
 	"polly":    "polly",

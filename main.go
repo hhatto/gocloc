@@ -104,6 +104,7 @@ func main() {
 	plan9_shell := NewLanguage("Plan9 Shell", "#", "", "")
 	polly := NewLanguage("Polly", "<!--", "<!--", "-->")
 	perl := NewLanguage("Perl", "#", ":=", ":=cut")
+	powershell := NewLanguage("PowerShell", "#", "<#", "#>")
 	protobuf := NewLanguage("Protocol Buffers", "//", "", "")
 	python := NewLanguage("Python", "#", "\"\"\"", "\"\"\"")
 	r := NewLanguage("R", "#", "", "")
@@ -187,6 +188,7 @@ func main() {
 		"pl":       perl,
 		"text":     text,
 		"plan9sh":  plan9_shell,
+		"ps1":      powershell,
 		"polly":    polly,
 		"proto":    protobuf,
 		"py":       python,
