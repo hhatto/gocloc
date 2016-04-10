@@ -92,7 +92,7 @@ func main() {
 	less := NewLanguage("LESS", "//", "/*", "*/")
 	linker_script := NewLanguage("LD Script", "//", "/*", "*/")
 	lua := NewLanguage("Lua", "--", "--[[", "]]")
-	makefile := NewLanguage("Makefile", "#", "", "")
+	makefile := NewLanguage("make", "#", "", "")
 	markdown := NewLanguage("Markdown", "", "", "")
 	maven := NewLanguage("Maven", "<!--", "<!--", "-->")
 	mustache := NewLanguage("Mustache", "", "{{!", "))")
