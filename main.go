@@ -53,6 +53,7 @@ func main() {
 
 	// define languages
 	action_script := NewLanguage("ActionScript", "//", "/*", "*/")
+	ant := NewLanguage("Ant", "<!--", "<!--", "-->")
 	asm := NewLanguage("Assembly", "//,;,#,@,|,!", "/*", "*/")
 	awk := NewLanguage("Awk", "#", "", "")
 	bash := NewLanguage("BASH", "#", "", "")
@@ -140,6 +141,7 @@ func main() {
 	// value for language result
 	languages := map[string]*Language{
 		"as":          action_script,
+		"Ant":         ant,
 		"s":           asm,
 		"awk":         awk,
 		"bat":         batch,

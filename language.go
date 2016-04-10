@@ -41,6 +41,7 @@ func (ls Languages) Less(i, j int) bool {
 
 var Exts map[string]string = map[string]string{
 	"as":          "as",
+	"Ant":         "Ant",
 	"asm":         "s",
 	"S":           "s",
 	"s":           "s",
@@ -247,6 +248,8 @@ func getFileType(path string) (ext string, ok bool) {
 		return "m4", true
 	case "Makefile.am":
 		return "makefile", true
+	case "build.xml":
+		return "Ant", true
 	case "pom.xml":
 		return "maven", true
 	}
