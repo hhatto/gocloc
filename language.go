@@ -132,6 +132,7 @@ var Exts map[string]string = map[string]string{
 	"rhtml":    "rhtml",
 	"rs":       "rs",
 	"sass":     "sass",
+	"scala":    "scala",
 	"scss":     "sass",
 	"scm":      "scm",
 	"sed":      "sed",

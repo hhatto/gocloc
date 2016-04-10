@@ -113,6 +113,7 @@ func main() {
 	ruby_html := NewLanguage("Ruby HTML", "<!--", "<!--", "-->")
 	rust := NewLanguage("Rust", "//,///,//!", "/*", "*/")
 	sass := NewLanguage("Sass", "//", "/*", "*/")
+	scala := NewLanguage("Scala", "//", "/*", "*/")
 	sed := NewLanguage("sed", "#", "", "")
 	sh := NewLanguage("Bourne Shell", "#", "", "")
 	scheme := NewLanguage("Scheme", ";", "#|", "|#")
@@ -197,6 +198,7 @@ func main() {
 		"rb":       ruby,
 		"rhtml":    ruby_html,
 		"rs":       rust,
+		"scala":    scala,
 		"scss":     sass,
 		"scm":      scheme,
 		"sed":      sed,
