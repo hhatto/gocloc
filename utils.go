@@ -56,7 +56,7 @@ func checkMD5Sum(filename string) (ignore bool) {
 }
 
 func getAllFiles(paths []string, languages map[string]*Language) (filenum, maxPathLen int) {
-	reVCS := regexp.MustCompile("(.bzr|.cvs|.hg|.git|.svn)")
+	reVCS := regexp.MustCompile("\\.(bzr|cvs|hg|git|svn)")
 	maxPathLen = 0
 	for _, root := range paths {
 		if _, err := os.Stat(root); err != nil {
