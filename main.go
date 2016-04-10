@@ -106,12 +106,14 @@ func main() {
 	protobuf := NewLanguage("Protocol Buffers", "//", "", "")
 	python := NewLanguage("Python", "#", "\"\"\"", "\"\"\"")
 	r := NewLanguage("R", "#", "", "")
+	racket := NewLanguage("Racket", ";", "#|", "|#")
 	ruby := NewLanguage("Ruby", "#", ":=begin", ":=end")
 	ruby_html := NewLanguage("Ruby HTML", "<!--", "<!--", "-->")
 	rust := NewLanguage("Rust", "//,///,//!", "/*", "*/")
 	sass := NewLanguage("Sass", "//", "/*", "*/")
 	sed := NewLanguage("sed", "#", "", "")
 	sh := NewLanguage("Bourne Shell", "#", "", "")
+	scheme := NewLanguage("Scheme", ";", "#|", "|#")
 	skill := NewLanguage("SKILL", ";", "/*", "*/")
 	sml := NewLanguage("Standard ML", "", "(*", "*)")
 	sql := NewLanguage("SQL", "--", "/*", "*/")
@@ -187,10 +189,12 @@ func main() {
 		"proto":    protobuf,
 		"py":       python,
 		"r":        r,
+		"rkt":      racket,
 		"rb":       ruby,
 		"rhtml":    ruby_html,
 		"rs":       rust,
 		"scss":     sass,
+		"scm":      scheme,
 		"sed":      sed,
 		"sh":       sh,
 		"sml":      sml,

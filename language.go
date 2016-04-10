@@ -125,10 +125,12 @@ var Exts map[string]string = map[string]string{
 	"r":        "r",
 	"rake":     "rb",
 	"rb":       "rb",
+	"rkt":      "rkt",
 	"rhtml":    "rhtml",
 	"rs":       "rs",
 	"sass":     "sass",
 	"scss":     "sass",
+	"scm":      "scm",
 	"sed":      "sed",
 	"sml":      "sml",
 	"sql":      "sql",
@@ -151,6 +153,7 @@ var Exts map[string]string = map[string]string{
 }
 
 var LanguageByScript map[string]string = map[string]string{
+	"gosh":    "scm",
 	"make":    "make",
 	"perl":    "pl",
 	"rc":      "plan9sh",
