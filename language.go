@@ -109,6 +109,7 @@ var Exts map[string]string = map[string]string{
 	"ml":       "ml",
 	"mli":      "ml",
 	"mm":       "mm",
+	"maven":    "maven",
 	"makefile": "makefile",
 	"mustache": "mustache",
 	"m4":       "m4",
@@ -224,6 +225,8 @@ func getFileType(path string) (ext string, ok bool) {
 		return "m4", true
 	case "Makefile.am":
 		return "makefile", true
+	case "pom.xml":
+		return "maven", true
 	}
 
 	switch strings.ToLower(base) {

@@ -93,6 +93,7 @@ func main() {
 	lua := NewLanguage("Lua", "--", "--[[", "]]")
 	makefile := NewLanguage("Makefile", "#", "", "")
 	markdown := NewLanguage("Markdown", "", "", "")
+	maven := NewLanguage("Maven", "<!--", "<!--", "-->")
 	mustache := NewLanguage("Mustache", "", "{{!", "))")
 	m4 := NewLanguage("M4", "#", "", "")
 	lex := NewLanguage("lex", "", "/*", "*/")
@@ -181,6 +182,7 @@ func main() {
 		"ml":       ocaml,
 		"mm":       objective_cpp,
 		"makefile": makefile,
+		"maven":    maven,
 		"mustache": mustache,
 		"m4":       m4,
 		"lex":      lex,
