@@ -50,6 +50,9 @@ func main() {
 	if opts.NotMatchDir != "" {
 		reNotMatchDir = regexp.MustCompile(opts.NotMatchDir)
 	}
+	if opts.MatchDir != "" {
+		reMatchDir = regexp.MustCompile(opts.MatchDir)
+	}
 
 	// define languages
 	action_script := NewLanguage("ActionScript", "//", "/*", "*/")

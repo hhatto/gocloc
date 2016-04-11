@@ -84,6 +84,10 @@ func getAllFiles(paths []string, languages map[string]*Language) (filenum, maxPa
 				return nil
 			}
 
+			if reMatchDir != nil && !reMatchDir.MatchString(filepath.Dir(p)) {
+				return nil
+			}
+
 			if strings.HasPrefix(root, ".") || strings.HasPrefix(root, "./") {
 				p = "./" + p
 			}
