@@ -51,7 +51,7 @@ func analyzeFile(filename string, language *Language) *ClocFile {
 		line := strings.TrimSpace(lineOrg)
 
 		if len(strings.TrimSpace(line)) == 0 {
-			clocFile.Blanks += 1
+			clocFile.Blanks++
 			if opts.Debug {
 				fmt.Printf("[BLNK,cd:%d,cm:%d,bk:%d,iscm:%v] %s\n",
 					clocFile.Code, clocFile.Comments, clocFile.Blanks, isInComments, lineOrg)
@@ -59,33 +59,33 @@ func analyzeFile(filename string, language *Language) *ClocFile {
 			continue
 		}
 
-		if language.multi_line != "" {
-			if strings.HasPrefix(line, language.multi_line) {
+		if language.multiLine != "" {
+			if strings.HasPrefix(line, language.multiLine) {
 				isInComments = true
-			} else if containComments(line, language.multi_line, language.multi_line_end) {
+			} else if containComments(line, language.multiLine, language.multiLineEnd) {
 				isInComments = true
-				clocFile.Code += 1
+				clocFile.Code++
 			}
 		}
 
 		if isInComments {
-			if language.multi_line == language.multi_line_end {
-				if strings.Count(line, language.multi_line_end) == 2 {
+			if language.multiLine == language.multiLineEnd {
+				if strings.Count(line, language.multiLineEnd) == 2 {
 					isInComments = false
 					isInCommentsSame = false
-				} else if strings.HasPrefix(line, language.multi_line_end) ||
-					strings.HasSuffix(line, language.multi_line_end) {
+				} else if strings.HasPrefix(line, language.multiLineEnd) ||
+					strings.HasSuffix(line, language.multiLineEnd) {
 					if isInCommentsSame {
 						isInComments = false
 					}
 					isInCommentsSame = !isInCommentsSame
 				}
 			} else {
-				if strings.Contains(line, language.multi_line_end) {
+				if strings.Contains(line, language.multiLineEnd) {
 					isInComments = false
 				}
 			}
-			clocFile.Comments += 1
+			clocFile.Comments++
 			if opts.Debug {
 				fmt.Printf("[COMM,cd:%d,cm:%d,bk:%d,iscm:%v,iscms:%v] %s\n",
 					clocFile.Code, clocFile.Comments, clocFile.Blanks, isInComments, isInCommentsSame, lineOrg)
@@ -95,7 +95,7 @@ func analyzeFile(filename string, language *Language) *ClocFile {
 
 		// shebang line is 'code'
 		if isFirstLine && strings.HasPrefix(line, "#!") {
-			clocFile.Code += 1
+			clocFile.Code++
 			isFirstLine = false
 			if opts.Debug {
 				fmt.Printf("[CODE,cd:%d,cm:%d,bk:%d,iscm:%v] %s\n",
@@ -104,12 +104,12 @@ func analyzeFile(filename string, language *Language) *ClocFile {
 			continue
 		}
 
-		if language.line_comment != "" {
-			single_comments := strings.Split(language.line_comment, ",")
+		if language.lineComment != "" {
+			single_comments := strings.Split(language.lineComment, ",")
 			isSingleComment := false
 			for _, single_comment := range single_comments {
 				if strings.HasPrefix(line, single_comment) {
-					clocFile.Comments += 1
+					clocFile.Comments++
 					isSingleComment = true
 					break
 				}
@@ -123,7 +123,7 @@ func analyzeFile(filename string, language *Language) *ClocFile {
 			}
 		}
 
-		clocFile.Code += 1
+		clocFile.Code++
 		if opts.Debug {
 			fmt.Printf("[CODE,cd:%d,cm:%d,bk:%d,iscm:%v] %s\n",
 				clocFile.Code, clocFile.Comments, clocFile.Blanks, isInComments, lineOrg)

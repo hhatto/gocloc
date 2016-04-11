@@ -12,17 +12,17 @@ import (
 )
 
 type Language struct {
-	name           string
-	line_comment   string
-	multi_line     string
-	multi_line_end string
-	files          []string
-	code           int32
-	comments       int32
-	blanks         int32
-	lines          int32
-	total          int32
-	printed        bool
+	name         string
+	lineComment  string
+	multiLine    string
+	multiLineEnd string
+	files        []string
+	code         int32
+	comments     int32
+	blanks       int32
+	lines        int32
+	total        int32
+	printed      bool
 }
 type Languages []Language
 
@@ -276,12 +276,12 @@ func getFileType(path string) (ext string, ok bool) {
 	return ext, ok
 }
 
-func NewLanguage(name, line_comment, multi_line, multi_line_end string) *Language {
+func NewLanguage(name, lineComment, multiLine, multiLineEnd string) *Language {
 	return &Language{
-		name:           name,
-		line_comment:   line_comment,
-		multi_line:     multi_line,
-		multi_line_end: multi_line_end,
-		files:          []string{},
+		name:         name,
+		lineComment:  lineComment,
+		multiLine:    multiLine,
+		multiLineEnd: multiLineEnd,
+		files:        []string{},
 	}
 }
