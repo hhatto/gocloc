@@ -71,6 +71,7 @@ func main() {
 	cpp_header := NewLanguage("C++ Header", "//", "/*", "*/")
 	css := NewLanguage("CSS", "//", "/*", "*/")
 	cuda := NewLanguage("CUDA", "//", "/*", "*/")
+	cython := NewLanguage("Cython", "#", "\"\"\"", "\"\"\"")
 	d := NewLanguage("D", "//", "/*", "*/")
 	dart := NewLanguage("Dart", "//", "/*", "*/")
 	dtrace := NewLanguage("DTrace", "#", "/*", "*/")
@@ -157,6 +158,7 @@ func main() {
 		"cmake":       cmake,
 		"cpp":         cpp,
 		"css":         css,
+		"Cython":      cython,
 		"cu":          cuda,
 		"d":           d,
 		"dart":        dart,

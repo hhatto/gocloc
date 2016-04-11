@@ -135,6 +135,8 @@ var Exts map[string]string = map[string]string{
 	"polly":       "polly",
 	"proto":       "proto",
 	"py":          "py",
+	"pxd":         "Cython",
+	"pyx":         "Cython",
 	"r":           "r",
 	"R":           "r",
 	"rake":        "rb",
