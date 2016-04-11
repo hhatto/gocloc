@@ -68,6 +68,7 @@ var Exts map[string]string = map[string]string{
 	"cxx":         "cpp",
 	"pcc":         "cpp",
 	"c++":         "cpp",
+	"cr":          "Crystal",
 	"css":         "css",
 	"cu":          "cu",
 	"d":           "d",

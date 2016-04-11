@@ -69,6 +69,7 @@ func main() {
 	cmake := NewLanguage("CMake", "#", "", "")
 	cpp := NewLanguage("C++", "//", "/*", "*/")
 	cpp_header := NewLanguage("C++ Header", "//", "/*", "*/")
+	crystal := NewLanguage("Crystal", "#", "", "")
 	css := NewLanguage("CSS", "//", "/*", "*/")
 	cuda := NewLanguage("CUDA", "//", "/*", "*/")
 	cython := NewLanguage("Cython", "#", "\"\"\"", "\"\"\"")
@@ -157,6 +158,7 @@ func main() {
 		"cfc":         cf_script,
 		"cmake":       cmake,
 		"cpp":         cpp,
+		"Crystal":     crystal,
 		"css":         css,
 		"Cython":      cython,
 		"cu":          cuda,
