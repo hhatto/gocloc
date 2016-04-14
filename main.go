@@ -27,7 +27,6 @@ func main() {
 
 	paths, err := flags.Parse(&opts)
 	if err != nil {
-		parser.WriteHelp(os.Stdout)
 		return
 	}
 	if len(paths) <= 0 {
