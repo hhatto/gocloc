@@ -18,10 +18,10 @@ func containComments(line, commentStart, commentEnd string) bool {
 		section := line[i : i+len(commentStart)]
 
 		if section == commentStart {
-			inComments += 1
+			inComments++
 		} else if section == commentEnd {
 			if inComments != 0 {
-				inComments -= 1
+				inComments--
 			}
 		}
 	}
@@ -84,6 +84,10 @@ func getAllFiles(paths []string, languages map[string]*Language) (filenum, maxPa
 				return nil
 			}
 
+			if reMatchDir != nil && !reMatchDir.MatchString(filepath.Dir(p)) {
+				return nil
+			}
+
 			if strings.HasPrefix(root, ".") || strings.HasPrefix(root, "./") {
 				p = "./" + p
 			}
@@ -103,7 +107,7 @@ func getAllFiles(paths []string, languages map[string]*Language) (filenum, maxPa
 					}
 
 					languages[targetExt].files = append(languages[targetExt].files, p)
-					filenum += 1
+					filenum++
 					l := len(p)
 					if maxPathLen < l {
 						maxPathLen = l

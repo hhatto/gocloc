@@ -49,6 +49,9 @@ func main() {
 	if opts.NotMatchDir != "" {
 		reNotMatchDir = regexp.MustCompile(opts.NotMatchDir)
 	}
+	if opts.MatchDir != "" {
+		reMatchDir = regexp.MustCompile(opts.MatchDir)
+	}
 
 	// define languages
 	action_script := NewLanguage("ActionScript", "//", "/*", "*/")
@@ -289,17 +292,17 @@ func main() {
 
 		switch opts.OutputType {
 		case OutputTypeClocXml:
-			t := XmlTotal{
+			t := XMLTotal{
 				Code:    total.code,
 				Comment: total.comments,
 				Blank:   total.blanks,
 			}
-			f := XmlResultFiles{
+			f := XMLResultFiles{
 				Files: sortedFiles,
 				Total: t,
 			}
-			xmlResult := XmlResult{
-				XmlFiles: f,
+			xmlResult := XMLResult{
+				XMLFiles: f,
 			}
 			xmlResult.Encode()
 		case OutputTypeSloccount:

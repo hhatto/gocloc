@@ -5,22 +5,21 @@ import (
 	"fmt"
 )
 
-type XmlTotal struct {
+type XMLTotal struct {
 	Code    int32 `xml:"code"`
 	Comment int32 `xml:"comment"`
 	Blank   int32 `xml:"blank"`
 }
-type XmlResultFiles struct {
+type XMLResultFiles struct {
 	Files []ClocFile `xml:"file"`
-	Total XmlTotal   `xml:"total"`
+	Total XMLTotal   `xml:"total"`
 }
-type XmlResult struct {
-	XMLName xml.Name `xml:"results"`
-	//XmlHeader XmlResultHeader
-	XmlFiles XmlResultFiles `xml:"files"`
+type XMLResult struct {
+	XMLName  xml.Name       `xml:"results"`
+	XMLFiles XMLResultFiles `xml:"files"`
 }
 
-func (x *XmlResult) Encode() {
+func (x *XMLResult) Encode() {
 	if output, err := xml.MarshalIndent(x, "", "  "); err == nil {
 		fmt.Printf(xml.Header)
 		fmt.Println(string(output))
