@@ -94,6 +94,8 @@ var Exts map[string]string = map[string]string{
 	"f03":         "f90",
 	"f08":         "f90",
 	"go":          "go",
+	"groovy":      "Groovy",
+	"gradle":      "Groovy",
 	"h":           "h",
 	"hs":          "hs",
 	"hpp":         "hpp",
