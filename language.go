@@ -108,6 +108,7 @@ var Exts map[string]string = map[string]string{
 	"jl":          "jl",
 	"json":        "json",
 	"jsx":         "jsx",
+	"kt":          "Kotlin",
 	"lds":         "lds",
 	"less":        "less",
 	"Objective-C": "Objective-C", // deplicated Obj-C/Matlab

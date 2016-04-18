@@ -95,6 +95,7 @@ func main() {
 	jupyter_notebook := NewLanguage("Jupyter Notebook", "#", "", "")
 	json := NewLanguage("JSON", "", "", "")
 	jsx := NewLanguage("JSX", "//", "/*", "*/")
+	kotlin := NewLanguage("Kotlin", "//", "/*", "*/")
 	less := NewLanguage("LESS", "//", "/*", "*/")
 	linker_script := NewLanguage("LD Script", "//", "/*", "*/")
 	lua := NewLanguage("Lua", "--", "--[[", "]]")
@@ -188,6 +189,7 @@ func main() {
 		"ipynb":       jupyter_notebook,
 		"json":        json,
 		"jsx":         jsx,
+		"Kotlin":      kotlin,
 		"lds":         linker_script,
 		"less":        less,
 		"Objective-C": objective_c,
