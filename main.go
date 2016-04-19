@@ -140,6 +140,7 @@ func main() {
 	vim_script := NewLanguage("Vim script", "\"", "", "")
 	wix := NewLanguage("WiX", "<!--", "<!--", "-->")
 	xml := NewLanguage("XML", "<!--", "<!--", "-->")
+	xsd := NewLanguage("XSD", "<!--", "<!--", "-->")
 	xsl := NewLanguage("XSLT", "<!--", "<!--", "-->")
 	yaml := NewLanguage("YAML", "#", "", "")
 	yacc := NewLanguage("Yacc", "//", "/*", "*/")
@@ -235,6 +236,7 @@ func main() {
 		"wxs":         wix,
 		"xml":         xml,
 		"xsl":         xsl,
+		"XSD":         xsd,
 		"yaml":        yaml,
 		"y":           yacc,
 		"zsh":         zsh,
