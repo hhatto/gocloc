@@ -86,6 +86,7 @@ func main() {
 	fortran_legacy := NewLanguage("FORTRAN Legacy", "c,C,!,*", "", "")
 	fortran_modern := NewLanguage("FORTRAN Modern", "!", "", "")
 	golang := NewLanguage("Go", "//", "/*", "*/")
+	groovy := NewLanguage("Groovy", "//", "/*", "*/")
 	haskell := NewLanguage("Haskell", "--", "", "")
 	html := NewLanguage("HTML", "<!--", "<!--", "-->")
 	jai := NewLanguage("JAI", "//", "/*", "*/")
@@ -177,6 +178,7 @@ func main() {
 		"f77":         fortran_legacy,
 		"f90":         fortran_modern,
 		"go":          golang,
+		"Groovy":      groovy,
 		"h":           c_header,
 		"hs":          haskell,
 		"hpp":         cpp_header,
