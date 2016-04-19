@@ -88,6 +88,7 @@ func main() {
 	golang := NewLanguage("Go", "//", "/*", "*/")
 	groovy := NewLanguage("Groovy", "//", "/*", "*/")
 	haskell := NewLanguage("Haskell", "--", "", "")
+	haxe := NewLanguage("Haxe", "//", "/*", "*/")
 	html := NewLanguage("HTML", "<!--", "<!--", "-->")
 	jai := NewLanguage("JAI", "//", "/*", "*/")
 	java := NewLanguage("Java", "//", "/*", "*/")
@@ -182,6 +183,7 @@ func main() {
 		"Groovy":      groovy,
 		"h":           c_header,
 		"hs":          haskell,
+		"Haxe":        haxe,
 		"hpp":         cpp_header,
 		"html":        html,
 		"il":          skill,

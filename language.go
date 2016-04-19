@@ -101,6 +101,7 @@ var Exts map[string]string = map[string]string{
 	"hpp":         "hpp",
 	"hh":          "hpp",
 	"html":        "html",
+	"hx":          "Haxe",
 	"hxx":         "hpp",
 	"il":          "il",
 	"ipynb":       "ipynb",
