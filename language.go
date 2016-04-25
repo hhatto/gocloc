@@ -163,6 +163,8 @@ var Exts map[string]string = map[string]string{
 	"sty":         "tex",
 	"toml":        "toml",
 	"ts":          "ts",
+	"Coq":         "Coq",
+	"Verilog":     "Verilog",
 	"csproj":      "vcproj",
 	"vcproj":      "vcproj",
 	"vim":         "vim",
@@ -239,7 +241,7 @@ func getFileType(path string) (ext string, ok bool) {
 	base := filepath.Base(path)
 
 	switch ext {
-	case ".m":
+	case ".m", ".v":
 		hints := linguist.LanguageHints(path)
 		cont, err := getContents(path)
 		if err != nil {

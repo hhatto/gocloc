@@ -70,6 +70,7 @@ func main() {
 	cold_fusion := NewLanguage("ColdFusion", "", "<!---", "--->")
 	cf_script := NewLanguage("ColdFusion CFScript", "//", "/*", "*/")
 	cmake := NewLanguage("CMake", "#", "", "")
+	coq := NewLanguage("Coq", "(*", "(*", "*)")
 	cpp := NewLanguage("C++", "//", "/*", "*/")
 	cpp_header := NewLanguage("C++ Header", "//", "/*", "*/")
 	crystal := NewLanguage("Crystal", "#", "", "")
@@ -140,6 +141,7 @@ func main() {
 	toml := NewLanguage("TOML", "#", "", "")
 	type_script := NewLanguage("TypeScript", "//", "/*", "*/")
 	vcproj := NewLanguage("MSBuild script", "<!--", "<!--", "-->")
+	verilog := NewLanguage("Verilog", "//", "/*", "*/")
 	vim_script := NewLanguage("Vim script", "\"", "", "")
 	wix := NewLanguage("WiX", "<!--", "<!--", "-->")
 	xml := NewLanguage("XML", "<!--", "<!--", "-->")
@@ -163,6 +165,7 @@ func main() {
 		"cs":          c_sharp,
 		"clj":         clojure,
 		"coffee":      coffee_script,
+		"Coq":         coq,
 		"cfm":         cold_fusion,
 		"cfc":         cf_script,
 		"cmake":       cmake,
@@ -238,6 +241,7 @@ func main() {
 		"toml":        toml,
 		"ts":          type_script,
 		"vcproj":      vcproj,
+		"Verilog":     verilog,
 		"vim":         vim_script,
 		"wxs":         wix,
 		"xml":         xml,
