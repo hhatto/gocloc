@@ -242,6 +242,7 @@ func getFileType(path string) (ext string, ok bool) {
 
 	switch ext {
 	case ".m", ".v":
+		// TODO: this is slow. parallelize...
 		hints := linguist.LanguageHints(path)
 		cont, err := getContents(path)
 		if err != nil {
