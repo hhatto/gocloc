@@ -137,6 +137,7 @@ func main() {
 	sql := NewLanguage("SQL", "--", "/*", "*/")
 	swift := NewLanguage("Swift", "//", "/*", "*/")
 	tex := NewLanguage("TeX", "%", "", "")
+	tcl := NewLanguage("Tcl/Tk", "#", "", "")
 	text := NewLanguage("Plain Text", "", "", "")
 	toml := NewLanguage("TOML", "#", "", "")
 	type_script := NewLanguage("TypeScript", "//", "/*", "*/")
@@ -236,8 +237,9 @@ func main() {
 		"sml":         sml,
 		"sql":         sql,
 		"swift":       swift,
-		"tex":         tex,
 		"sty":         tex,
+		"tex":         tex,
+		"Tcl/Tk":      tcl,
 		"toml":        toml,
 		"ts":          type_script,
 		"vcproj":      vcproj,

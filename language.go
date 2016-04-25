@@ -161,6 +161,7 @@ var Exts map[string]string = map[string]string{
 	"swift":       "swift",
 	"tex":         "tex",
 	"sty":         "tex",
+	"tcl":         "Tcl/Tk",
 	"toml":        "toml",
 	"ts":          "ts",
 	"Coq":         "Coq",
