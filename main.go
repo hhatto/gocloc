@@ -64,6 +64,7 @@ func main() {
 	c_header := NewLanguage("C Header", "//", "/*", "*/")
 	c_sharp := NewLanguage("C#", "//", "/*", "*/")
 	c_shell := NewLanguage("C Shell", "#", "", "")
+	capnproto := NewLanguage("Cap'n Proto", "#", "", "")
 	clojure := NewLanguage("Clojure", ",#,#_", "", "")
 	coffee_script := NewLanguage("CoffeeScript", "#", "###", "###")
 	cold_fusion := NewLanguage("ColdFusion", "", "<!---", "--->")
@@ -158,6 +159,7 @@ func main() {
 		"bash":        bash,
 		"c":           c,
 		"csh":         c_shell,
+		"Cap'n Proto": capnproto,
 		"cs":          c_sharp,
 		"clj":         clojure,
 		"coffee":      coffee_script,

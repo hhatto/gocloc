@@ -57,6 +57,7 @@ var Exts map[string]string = map[string]string{
 	"erl":         "erl",
 	"hrl":         "erl",
 	"pgc":         "c",
+	"capnp":       "Cap'n Proto",
 	"cs":          "cs",
 	"clj":         "clj",
 	"coffee":      "coffee",
