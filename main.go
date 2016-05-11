@@ -207,7 +207,7 @@ func main() {
 		"less":        less,
 		"Objective-C": objective_c,
 		"md":          markdown,
-		"ml":          ocaml,
+		"OCaml":       ocaml,
 		"mm":          objective_cpp,
 		"makefile":    makefile,
 		"Matlab":      matlab,
