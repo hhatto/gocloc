@@ -104,13 +104,14 @@ func main() {
 	less := NewLanguage("LESS", "//", "/*", "*/")
 	linker_script := NewLanguage("LD Script", "//", "/*", "*/")
 	lua := NewLanguage("Lua", "--", "--[[", "]]")
+	lex := NewLanguage("lex", "", "/*", "*/")
 	makefile := NewLanguage("make", "#", "", "")
 	markdown := NewLanguage("Markdown", "", "", "")
 	matlab := NewLanguage("MATLAB", "%", "%{", "}%")
 	maven := NewLanguage("Maven", "<!--", "<!--", "-->")
 	mustache := NewLanguage("Mustache", "", "{{!", "))")
 	m4 := NewLanguage("M4", "#", "", "")
-	lex := NewLanguage("lex", "", "/*", "*/")
+	nim := NewLanguage("Nim", "#", "#[", "]#")
 	objective_c := NewLanguage("Objective C", "//", "/*", "*/")
 	objective_cpp := NewLanguage("Objective C++", "//", "/*", "*/")
 	ocaml := NewLanguage("OCaml", "", "(*", "*)")
@@ -214,6 +215,7 @@ func main() {
 		"maven":       maven,
 		"mustache":    mustache,
 		"m4":          m4,
+		"Nim":         nim,
 		"lex":         lex,
 		"php":         php,
 		"pas":         pascal,

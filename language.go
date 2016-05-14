@@ -131,6 +131,7 @@ var Exts map[string]string = map[string]string{
 	"mustache":    "mustache",
 	"m4":          "m4",
 	"l":           "lex",
+	"nim":         "Nim",
 	"php":         "php",
 	"pas":         "pas",
 	"PL":          "pl",
