@@ -11,6 +11,7 @@ type Options struct {
 	NotMatchDir    string `long:"not-match-d" description:"exclude dir name (regex)"`
 	Debug          bool   `long:"debug" description:"dump debug log for developer"`
 	SkipUniqueness bool   `long:"skip-uniqueness" description:"skip uniqueness files"`
+	ShowLang       bool   `long:"show-lang" description:"print about all languages and extensions"`
 }
 
 const OutputTypeDefault string = "default"
