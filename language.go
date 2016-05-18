@@ -387,7 +387,7 @@ func GetDefinitionLanguages() map[string]*Language {
 		"Makefle":             NewLanguage("Makefile", "#", "", ""),
 		"MATLAB":              NewLanguage("MATLAB", "%", "%{", "}%"),
 		"Maven":               NewLanguage("Maven", "<!--", "<!--", "-->"),
-		"Mustache":            NewLanguage("Mustache", "", "{{!", "))"),
+		"Mustache":            NewLanguage("Mustache", "", "{{!", "}}"),
 		"M4":                  NewLanguage("M4", "#", "", ""),
 		"Nim":                 NewLanguage("Nim", "#", "#[", "]#"),
 		"lex":                 NewLanguage("lex", "", "/*", "*/"),
