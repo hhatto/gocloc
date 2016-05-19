@@ -84,6 +84,9 @@ var Exts map[string]string = map[string]string{
 	"exp":         "Expect",
 	"ex":          "Elixir",
 	"exs":         "Elixir",
+	"F#":          "F#",   // deplicated F#/GLSL
+	"GLSL":        "GLSL", // both use ext '.fs'
+	"vs":          "GLSL",
 	"lisp":        "LISP",
 	"lsp":         "LISP",
 	"lua":         "Lua",
@@ -246,7 +249,7 @@ func getFileType(path string) (ext string, ok bool) {
 	base := filepath.Base(path)
 
 	switch ext {
-	case ".m", ".v":
+	case ".m", ".v", ".fs":
 		// TODO: this is slow. parallelize...
 		hints := linguist.LanguageHints(path)
 		cont, err := getContents(path)
@@ -308,6 +311,12 @@ func lang2exts(lang string) (exts string) {
 			switch lang {
 			case "Objective-C", "MATLAB":
 				ext = "m"
+			case "F#":
+				ext = "fs"
+			case "GLSL":
+				if ext == "GLSL" {
+					ext = "fs"
+				}
 			}
 			es = append(es, ext)
 		}
@@ -337,6 +346,7 @@ func GetDefinitionLanguages() map[string]*Language {
 		"Batch":               NewLanguage("Batch", "REM,rem", "", ""),
 		"BASH":                NewLanguage("BASH", "#", "", ""),
 		"C":                   NewLanguage("C", "//", "/*", "*/"),
+		"C Header":            NewLanguage("C Header", "//", "/*", "*/"),
 		"C Shell":             NewLanguage("C Shell", "#", "", ""),
 		"Cap'n Proto":         NewLanguage("Cap'n Proto", "#", "", ""),
 		"C#":                  NewLanguage("C#", "//", "/*", "*/"),
@@ -348,6 +358,7 @@ func GetDefinitionLanguages() map[string]*Language {
 		"ColdFusion CFScript": NewLanguage("ColdFusion CFScript", "//", "/*", "*/"),
 		"CMake":               NewLanguage("CMake", "#", "", ""),
 		"C++":                 NewLanguage("C++", "//", "/*", "*/"),
+		"C++ Header":          NewLanguage("C++ Header", "//", "/*", "*/"),
 		"Crystal":             NewLanguage("Crystal", "#", "", ""),
 		"CSS":                 NewLanguage("CSS", "//", "/*", "*/"),
 		"Cython":              NewLanguage("Cython", "#", "\"\"\"", "\"\"\""),
@@ -360,16 +371,16 @@ func GetDefinitionLanguages() map[string]*Language {
 		"Elixir":              NewLanguage("Elixir", "#", "", ""),
 		"Erlang":              NewLanguage("Erlang", "%", "", ""),
 		"Expect":              NewLanguage("Expect", "#", "", ""),
+		"F#":                  NewLanguage("F#", "(*", "(*", "*)"),
 		"Lua":                 NewLanguage("Lua", "--", "--[[", "]]"),
 		"LISP":                NewLanguage("LISP", ";;", "#|", "|#"),
 		"FORTRAN Legacy":      NewLanguage("FORTRAN Legacy", "c,C,!,*", "", ""),
 		"FORTRAN Modern":      NewLanguage("FORTRAN Modern", "!", "", ""),
+		"GLSL":                NewLanguage("GLSL", "//", "/*", "*/"),
 		"Go":                  NewLanguage("Go", "//", "/*", "*/"),
 		"Groovy":              NewLanguage("Groovy", "//", "/*", "*/"),
-		"C Header":            NewLanguage("C Header", "//", "/*", "*/"),
 		"Haskell":             NewLanguage("Haskell", "--", "", ""),
 		"Haxe":                NewLanguage("Haxe", "//", "/*", "*/"),
-		"C++ Header":          NewLanguage("C++ Header", "//", "/*", "*/"),
 		"HTML":                NewLanguage("HTML", "<!--", "<!--", "-->"),
 		"SKILL":               NewLanguage("SKILL", ";", "/*", "*/"),
 		"JAI":                 NewLanguage("JAI", "//", "/*", "*/"),
