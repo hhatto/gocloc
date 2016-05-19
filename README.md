@@ -45,6 +45,12 @@ $ cat sloccount.scc
 15  Go      ./option.go
 ```
 
+## Support Languages
+use `--show-lang` option
+
+```
+$ gocloc --show-lang
+```
 
 ## Performance
 * CPU 3.1GHz Intel Core i7 / 16GB 1600MHz DDR3 / MacOSX 10.11.3
