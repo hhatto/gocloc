@@ -98,6 +98,12 @@ func getAllFiles(paths []string, languages map[string]*Language) (filenum, maxPa
 						return nil
 					}
 
+					if len(IncludeLangs) != 0 {
+						if _, ok = IncludeLangs[targetExt]; !ok {
+							return nil
+						}
+					}
+
 					ignore := checkMD5Sum(p)
 					if !opts.SkipUniqueness && ignore {
 						if opts.Debug {
