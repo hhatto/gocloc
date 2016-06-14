@@ -87,6 +87,10 @@ var Exts map[string]string = map[string]string{
 	"F#":          "F#",   // deplicated F#/GLSL
 	"GLSL":        "GLSL", // both use ext '.fs'
 	"vs":          "GLSL",
+	"shader":      "HLSL",
+	"cg":          "HLSL",
+	"cginc":       "HLSL",
+	"hlsl":        "HLSL",
 	"lisp":        "LISP",
 	"lsp":         "LISP",
 	"lua":         "Lua",
@@ -384,6 +388,7 @@ func GetDefinitionLanguages() map[string]*Language {
 		"Groovy":              NewLanguage("Groovy", "//", "/*", "*/"),
 		"Haskell":             NewLanguage("Haskell", "--", "", ""),
 		"Haxe":                NewLanguage("Haxe", "//", "/*", "*/"),
+		"HLSL":                NewLanguage("HLSL", "//", "/*", "*/"),
 		"HTML":                NewLanguage("HTML", "<!--", "<!--", "-->"),
 		"SKILL":               NewLanguage("SKILL", ";", "/*", "*/"),
 		"JAI":                 NewLanguage("JAI", "//", "/*", "*/"),
