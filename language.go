@@ -184,6 +184,7 @@ var Exts map[string]string = map[string]string{
 	"vcproj":      "MSBuild script",
 	"vim":         "VimL",
 	"xml":         "XML",
+	"XML":         "XML",
 	"xsd":         "XSD",
 	"xsl":         "XSLT",
 	"xslt":        "XSLT",
