@@ -63,6 +63,14 @@ func main() {
 	languages := GetDefinitionLanguages()
 	fileCache = make(map[string]struct{})
 
+	// setup option for include languages
+	IncludeLangs = make(map[string]struct{})
+	for _, lang := range strings.Split(opts.IncludeLang, ",") {
+		if _, ok := languages[lang]; ok {
+			IncludeLangs[lang] = struct{}{}
+		}
+	}
+
 	total := NewLanguage("TOTAL", "", "", "")
 	num, maxPathLen := getAllFiles(paths, languages)
 	headerLen := 28

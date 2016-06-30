@@ -60,7 +60,7 @@ var Exts map[string]string = map[string]string{
 	"hrl":         "Erlang",
 	"pgc":         "C",
 	"capnp":       "Cap'n Proto",
-	"cs":          "cs",
+	"cs":          "C#",
 	"clj":         "Clojure",
 	"coffee":      "CoffeeScript",
 	"cfm":         "ColdFusion",
@@ -84,6 +84,13 @@ var Exts map[string]string = map[string]string{
 	"exp":         "Expect",
 	"ex":          "Elixir",
 	"exs":         "Elixir",
+	"F#":          "F#",   // deplicated F#/GLSL
+	"GLSL":        "GLSL", // both use ext '.fs'
+	"vs":          "GLSL",
+	"shader":      "HLSL",
+	"cg":          "HLSL",
+	"cginc":       "HLSL",
+	"hlsl":        "HLSL",
 	"lisp":        "LISP",
 	"lsp":         "LISP",
 	"lua":         "Lua",
@@ -164,17 +171,21 @@ var Exts map[string]string = map[string]string{
 	"sml":         "Standard ML",
 	"sql":         "SQL",
 	"swift":       "Swift",
+	"t":           "Terra",
 	"tex":         "TeX",
 	"sty":         "TeX",
 	"tcl":         "Tcl/Tk",
 	"toml":        "TOML",
 	"ts":          "TypeScript",
+	"mat":         "Unity-Prefab",
+	"prefab":      "Unity-Prefab",
 	"Coq":         "Coq",
 	"Verilog":     "Verilog",
 	"csproj":      "MSBuild script",
 	"vcproj":      "MSBuild script",
 	"vim":         "VimL",
 	"xml":         "XML",
+	"XML":         "XML",
 	"xsd":         "XSD",
 	"xsl":         "XSLT",
 	"xslt":        "XSLT",
@@ -247,7 +258,7 @@ func getFileType(path string) (ext string, ok bool) {
 	base := filepath.Base(path)
 
 	switch ext {
-	case ".m", ".v":
+	case ".m", ".v", ".fs":
 		// TODO: this is slow. parallelize...
 		hints := linguist.LanguageHints(path)
 		cont, err := getContents(path)
@@ -309,6 +320,12 @@ func lang2exts(lang string) (exts string) {
 			switch lang {
 			case "Objective-C", "MATLAB":
 				ext = "m"
+			case "F#":
+				ext = "fs"
+			case "GLSL":
+				if ext == "GLSL" {
+					ext = "fs"
+				}
 			}
 			es = append(es, ext)
 		}
@@ -338,9 +355,10 @@ func GetDefinitionLanguages() map[string]*Language {
 		"Batch":               NewLanguage("Batch", "REM,rem", "", ""),
 		"BASH":                NewLanguage("BASH", "#", "", ""),
 		"C":                   NewLanguage("C", "//", "/*", "*/"),
+		"C Header":            NewLanguage("C Header", "//", "/*", "*/"),
 		"C Shell":             NewLanguage("C Shell", "#", "", ""),
 		"Cap'n Proto":         NewLanguage("Cap'n Proto", "#", "", ""),
-		"cs":                  NewLanguage("C#", "//", "/*", "*/"),
+		"C#":                  NewLanguage("C#", "//", "/*", "*/"),
 		"Clojure":             NewLanguage("Clojure", ",#,#_", "", ""),
 		"COBOL":               NewLanguage("COBOL", "*,/", "", ""),
 		"CoffeeScript":        NewLanguage("CoffeeScript", "#", "###", "###"),
@@ -349,6 +367,7 @@ func GetDefinitionLanguages() map[string]*Language {
 		"ColdFusion CFScript": NewLanguage("ColdFusion CFScript", "//", "/*", "*/"),
 		"CMake":               NewLanguage("CMake", "#", "", ""),
 		"C++":                 NewLanguage("C++", "//", "/*", "*/"),
+		"C++ Header":          NewLanguage("C++ Header", "//", "/*", "*/"),
 		"Crystal":             NewLanguage("Crystal", "#", "", ""),
 		"CSS":                 NewLanguage("CSS", "//", "/*", "*/"),
 		"Cython":              NewLanguage("Cython", "#", "\"\"\"", "\"\"\""),
@@ -360,17 +379,18 @@ func GetDefinitionLanguages() map[string]*Language {
 		"Elm":                 NewLanguage("Elm", "--", "{-", "-}"),
 		"Elixir":              NewLanguage("Elixir", "#", "", ""),
 		"Erlang":              NewLanguage("Erlang", "%", "", ""),
-		"exp":                 NewLanguage("Expect", "#", "", ""),
+		"Expect":              NewLanguage("Expect", "#", "", ""),
+		"F#":                  NewLanguage("F#", "(*", "(*", "*)"),
 		"Lua":                 NewLanguage("Lua", "--", "--[[", "]]"),
 		"LISP":                NewLanguage("LISP", ";;", "#|", "|#"),
 		"FORTRAN Legacy":      NewLanguage("FORTRAN Legacy", "c,C,!,*", "", ""),
 		"FORTRAN Modern":      NewLanguage("FORTRAN Modern", "!", "", ""),
+		"GLSL":                NewLanguage("GLSL", "//", "/*", "*/"),
 		"Go":                  NewLanguage("Go", "//", "/*", "*/"),
 		"Groovy":              NewLanguage("Groovy", "//", "/*", "*/"),
-		"C Header":            NewLanguage("C Header", "//", "/*", "*/"),
 		"Haskell":             NewLanguage("Haskell", "--", "", ""),
 		"Haxe":                NewLanguage("Haxe", "//", "/*", "*/"),
-		"C++ Header":          NewLanguage("C++ Header", "//", "/*", "*/"),
+		"HLSL":                NewLanguage("HLSL", "//", "/*", "*/"),
 		"HTML":                NewLanguage("HTML", "<!--", "<!--", "-->"),
 		"SKILL":               NewLanguage("SKILL", ";", "/*", "*/"),
 		"JAI":                 NewLanguage("JAI", "//", "/*", "*/"),
@@ -417,10 +437,12 @@ func GetDefinitionLanguages() map[string]*Language {
 		"Standard ML":         NewLanguage("Standard ML", "", "(*", "*)"),
 		"SQL":                 NewLanguage("SQL", "--", "/*", "*/"),
 		"Swift":               NewLanguage("Swift", "//", "/*", "*/"),
+		"Terra":               NewLanguage("Terra", "--", "--[[", "]]"),
 		"TeX":                 NewLanguage("TeX", "%", "", ""),
 		"Tcl/Tk":              NewLanguage("Tcl/Tk", "#", "", ""),
 		"TOML":                NewLanguage("TOML", "#", "", ""),
 		"TypeScript":          NewLanguage("TypeScript", "//", "/*", "*/"),
+		"Unity-Prefab":        NewLanguage("Unity-Prefab", "", "", ""),
 		"MSBuild script":      NewLanguage("MSBuild script", "<!--", "<!--", "-->"),
 		"Verilog":             NewLanguage("Verilog", "//", "/*", "*/"),
 		"VimL":                NewLanguage("VimL", "\"", "", ""),

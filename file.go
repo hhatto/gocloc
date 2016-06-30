@@ -107,6 +107,10 @@ func analyzeFile(filename string, language *Language) *ClocFile {
 		if language.lineComment != "" {
 			single_comments := strings.Split(language.lineComment, ",")
 			isSingleComment := false
+			if isFirstLine {
+				line = trimBOM(line)
+				isFirstLine = false
+			}
 			for _, single_comment := range single_comments {
 				if strings.HasPrefix(line, single_comment) {
 					clocFile.Comments++

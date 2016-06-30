@@ -12,6 +12,17 @@ import (
 
 var fileCache map[string]struct{}
 
+func trimBOM(line string) string {
+	l := len(line)
+	if l >= 3 {
+		if line[0] == 0xef && line[1] == 0xbb && line[2] == 0xbf {
+			trimLine := line[3:]
+			return trimLine
+		}
+	}
+	return line
+}
+
 func containComments(line, commentStart, commentEnd string) bool {
 	inComments := 0
 	for i := 0; i < len(line)/len(commentStart); i += len(commentStart) {
@@ -96,6 +107,12 @@ func getAllFiles(paths []string, languages map[string]*Language) (filenum, maxPa
 					// check exclude extension
 					if _, ok := ExcludeExts[targetExt]; ok {
 						return nil
+					}
+
+					if len(IncludeLangs) != 0 {
+						if _, ok = IncludeLangs[targetExt]; !ok {
+							return nil
+						}
 					}
 
 					ignore := checkMD5Sum(p)
