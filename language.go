@@ -126,7 +126,7 @@ var Exts map[string]string = map[string]string{
 	"lds":         "LD Script",
 	"less":        "LESS",
 	"Objective-C": "Objective-C", // deplicated Obj-C/Matlab
-	"MATLAB":      "MATLAB",      // both use ext '.m'
+	"Matlab":      "MATLAB",      // both use ext '.m'
 	"md":          "Markdown",
 	"markdown":    "Markdown",
 	"ML":          "OCaml",
