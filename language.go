@@ -84,6 +84,7 @@ var Exts map[string]string = map[string]string{
 	"exp":         "Expect",
 	"ex":          "Elixir",
 	"exs":         "Elixir",
+	"fr":          "Frege",
 	"F#":          "F#",   // deplicated F#/GLSL
 	"GLSL":        "GLSL", // both use ext '.fs'
 	"vs":          "GLSL",
@@ -386,6 +387,7 @@ func GetDefinitionLanguages() map[string]*Language {
 		"Elixir":              NewLanguage("Elixir", "#", "", ""),
 		"Erlang":              NewLanguage("Erlang", "%", "", ""),
 		"Expect":              NewLanguage("Expect", "#", "", ""),
+		"Frege":               NewLanguage("Frege", "--", "{-", "-}"),
 		"F#":                  NewLanguage("F#", "(*", "(*", "*)"),
 		"Lean":                NewLanguage("Lean", "--", "/-", "-/"),
 		"Lua":                 NewLanguage("Lua", "--", "--[[", "]]"),
