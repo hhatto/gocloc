@@ -397,7 +397,7 @@ func GetDefinitionLanguages() map[string]*Language {
 		"GLSL":                NewLanguage("GLSL", "//", "/*", "*/"),
 		"Go":                  NewLanguage("Go", "//", "/*", "*/"),
 		"Groovy":              NewLanguage("Groovy", "//", "/*", "*/"),
-		"Haskell":             NewLanguage("Haskell", "--", "", ""),
+		"Haskell":             NewLanguage("Haskell", "--", "{-", "-}"),
 		"Haxe":                NewLanguage("Haxe", "//", "/*", "*/"),
 		"HLSL":                NewLanguage("HLSL", "//", "/*", "*/"),
 		"HTML":                NewLanguage("HTML", "//,<!--", "<!--", "-->"),
