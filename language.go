@@ -134,6 +134,7 @@ var Exts map[string]string = map[string]string{
 	"markdown":    "Markdown",
 	"nsi":         "NSIS",
 	"nsh":         "NSIS",
+	"nu":          "Nu",
 	"ML":          "OCaml",
 	"ml":          "OCaml",
 	"mli":         "OCaml",
@@ -295,6 +296,8 @@ func getFileType(path string) (ext string, ok bool) {
 	switch strings.ToLower(base) {
 	case "makefile":
 		return "makefile", true
+	case "nukefile":
+		return "nu", true
 	case "rebar": // skip
 		return "", false
 	}
@@ -415,6 +418,7 @@ func GetDefinitionLanguages() map[string]*Language {
 		"Objective-C":         NewLanguage("Objective-C", "//", "/*", "*/"),
 		"Markdown":            NewLanguage("Markdown", "", "", ""),
 		"NSIS":                NewLanguage("NSIS", "#,;", "/*", "*/"),
+		"Nu":                  NewLanguage("Nu", ";,#", "", ""),
 		"OCaml":               NewLanguage("OCaml", "", "(*", "*)"),
 		"Objective-C++":       NewLanguage("Objective-C++", "//", "/*", "*/"),
 		"Makefile":            NewLanguage("Makefile", "#", "", ""),
