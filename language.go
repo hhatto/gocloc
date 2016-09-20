@@ -168,6 +168,7 @@ var Exts map[string]string = map[string]string{
 	"pyx":         "Cython",
 	"r":           "R",
 	"R":           "R",
+	"Rebol":       "Rebol",
 	"red":         "Red",
 	"Rmd":         "RMarkdown",
 	"rake":        "Ruby",
@@ -271,7 +272,7 @@ func getFileType(path string) (ext string, ok bool) {
 	base := filepath.Base(path)
 
 	switch ext {
-	case ".m", ".v", ".fs":
+	case ".m", ".v", ".fs", ".r":
 		// TODO: this is slow. parallelize...
 		hints := linguist.LanguageHints(path)
 		cont, err := getContents(path)
@@ -448,6 +449,7 @@ func GetDefinitionLanguages() map[string]*Language {
 		"Protocol Buffers":    NewLanguage("Protocol Buffers", "//", "", ""),
 		"Python":              NewLanguage("Python", "#", "\"\"\"", "\"\"\""),
 		"R":                   NewLanguage("R", "#", "", ""),
+		"Rebol":               NewLanguage("Rebol", ";", "", ""),
 		"Red":                 NewLanguage("Red", ";", "", ""),
 		"RMarkdown":           NewLanguage("RMarkdown", "", "", ""),
 		"Racket":              NewLanguage("Racket", ";", "#|", "|#"),
