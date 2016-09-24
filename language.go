@@ -137,6 +137,7 @@ var Exts map[string]string = map[string]string{
 	"Matlab":      "MATLAB",      // both use ext '.m'
 	"md":          "Markdown",
 	"markdown":    "Markdown",
+	"nix":         "Nix",
 	"nsi":         "NSIS",
 	"nsh":         "NSIS",
 	"nu":          "Nu",
@@ -429,6 +430,7 @@ func GetDefinitionLanguages() map[string]*Language {
 		"LESS":                NewLanguage("LESS", "//", "/*", "*/"),
 		"Objective-C":         NewLanguage("Objective-C", "//", "/*", "*/"),
 		"Markdown":            NewLanguage("Markdown", "", "", ""),
+		"Nix":                 NewLanguage("Nix", "#", "/*", "*/"),
 		"NSIS":                NewLanguage("NSIS", "#,;", "/*", "*/"),
 		"Nu":                  NewLanguage("Nu", ";,#", "", ""),
 		"OCaml":               NewLanguage("OCaml", "", "(*", "*)"),
