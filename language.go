@@ -209,6 +209,7 @@ var Exts map[string]string = map[string]string{
 	"yaml":        "YAML",
 	"yml":         "YAML",
 	"y":           "Yacc",
+	"zep":         "Zephir",
 	"zsh":         "Zsh",
 }
 
@@ -484,6 +485,7 @@ func GetDefinitionLanguages() map[string]*Language {
 		"XSD":                 NewLanguage("XSD", "<!--", "<!--", "-->"),
 		"YAML":                NewLanguage("YAML", "#", "", ""),
 		"Yacc":                NewLanguage("Yacc", "//", "/*", "*/"),
+		"Zephir":              NewLanguage("Zephir", "//", "/*", "*/"),
 		"Zsh":                 NewLanguage("Zsh", "#", "", ""),
 	}
 }
