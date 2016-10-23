@@ -4,6 +4,7 @@ go:
     - tip
 
 install:
+    - go get github.com/jteeuwen/go-bindata/go-bindata
     - go get -v
 
 script:
