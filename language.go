@@ -133,8 +133,9 @@ var Exts map[string]string = map[string]string{
 	"kt":          "Kotlin",
 	"lds":         "LD Script",
 	"less":        "LESS",
-	"Objective-C": "Objective-C", // deplicated Obj-C/Matlab
+	"Objective-C": "Objective-C", // deplicated Obj-C/Matlab/Mercury
 	"Matlab":      "MATLAB",      // both use ext '.m'
+	"Mercury":     "Mercury",     // use ext '.m'
 	"md":          "Markdown",
 	"markdown":    "Markdown",
 	"nsi":         "NSIS",
@@ -335,7 +336,7 @@ func lang2exts(lang string) (exts string) {
 	for ext, l := range Exts {
 		if lang == l {
 			switch lang {
-			case "Objective-C", "MATLAB":
+			case "Objective-C", "MATLAB", "Mercury":
 				ext = "m"
 			case "F#":
 				ext = "fs"
@@ -435,6 +436,7 @@ func GetDefinitionLanguages() map[string]*Language {
 		"Objective-C++":       NewLanguage("Objective-C++", "//", "/*", "*/"),
 		"Makefile":            NewLanguage("Makefile", "#", "", ""),
 		"MATLAB":              NewLanguage("MATLAB", "%", "%{", "}%"),
+		"Mercury":             NewLanguage("Mercury", "%", "/*", "*/"),
 		"Maven":               NewLanguage("Maven", "<!--", "<!--", "-->"),
 		"Mustache":            NewLanguage("Mustache", "", "{{!", "}}"),
 		"M4":                  NewLanguage("M4", "#", "", ""),
