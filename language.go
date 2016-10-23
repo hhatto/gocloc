@@ -138,6 +138,7 @@ var Exts map[string]string = map[string]string{
 	"Mercury":     "Mercury",     // use ext '.m'
 	"md":          "Markdown",
 	"markdown":    "Markdown",
+	"nix":         "Nix",
 	"nsi":         "NSIS",
 	"nsh":         "NSIS",
 	"nu":          "Nu",
@@ -209,6 +210,7 @@ var Exts map[string]string = map[string]string{
 	"yaml":        "YAML",
 	"yml":         "YAML",
 	"y":           "Yacc",
+	"zep":         "Zephir",
 	"zsh":         "Zsh",
 }
 
@@ -430,6 +432,7 @@ func GetDefinitionLanguages() map[string]*Language {
 		"LESS":                NewLanguage("LESS", "//", "/*", "*/"),
 		"Objective-C":         NewLanguage("Objective-C", "//", "/*", "*/"),
 		"Markdown":            NewLanguage("Markdown", "", "", ""),
+		"Nix":                 NewLanguage("Nix", "#", "/*", "*/"),
 		"NSIS":                NewLanguage("NSIS", "#,;", "/*", "*/"),
 		"Nu":                  NewLanguage("Nu", ";,#", "", ""),
 		"OCaml":               NewLanguage("OCaml", "", "(*", "*)"),
@@ -484,6 +487,7 @@ func GetDefinitionLanguages() map[string]*Language {
 		"XSD":                 NewLanguage("XSD", "<!--", "<!--", "-->"),
 		"YAML":                NewLanguage("YAML", "#", "", ""),
 		"Yacc":                NewLanguage("Yacc", "//", "/*", "*/"),
+		"Zephir":              NewLanguage("Zephir", "//", "/*", "*/"),
 		"Zsh":                 NewLanguage("Zsh", "#", "", ""),
 	}
 }
