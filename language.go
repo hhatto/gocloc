@@ -395,7 +395,7 @@ func GetDefinitionLanguages() map[string]*Language {
 		"CUDA":                NewLanguage("CUDA", "//", "/*", "*/"),
 		"D":                   NewLanguage("D", "//", "/*", "*/"),
 		"Dart":                NewLanguage("Dart", "//", "/*", "*/"),
-		"DTrace":              NewLanguage("DTrace", "#", "/*", "*/"),
+		"DTrace":              NewLanguage("DTrace", "", "/*", "*/"),
 		"Device Tree":         NewLanguage("Device Tree", "//", "/*", "*/"),
 		"Elm":                 NewLanguage("Elm", "--", "{-", "-}"),
 		"Elixir":              NewLanguage("Elixir", "#", "", ""),
