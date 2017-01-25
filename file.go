@@ -24,6 +24,9 @@ func (cf ClocFiles) Swap(i, j int) {
 	cf[i], cf[j] = cf[j], cf[i]
 }
 func (cf ClocFiles) Less(i, j int) bool {
+	if cf[i].Code == cf[j].Code {
+		return cf[i].Name < cf[j].Name
+	}
 	return cf[i].Code > cf[j].Code
 }
 

@@ -37,6 +37,9 @@ func (ls Languages) Swap(i, j int) {
 	ls[i], ls[j] = ls[j], ls[i]
 }
 func (ls Languages) Less(i, j int) bool {
+	if ls[i].code == ls[j].code {
+		return ls[i].name < ls[j].name
+	}
 	return ls[i].code > ls[j].code
 }
 
