@@ -45,6 +45,9 @@ func (ls Languages) Less(i, j int) bool {
 
 var Exts map[string]string = map[string]string{
 	"as":          "ActionScript",
+	"ada":         "Ada",
+	"adb":         "Ada",
+	"ads":         "Ada",
 	"Ant":         "Ant",
 	"asm":         "Assembly",
 	"S":           "Assembly",
@@ -373,6 +376,7 @@ func GetDefinitionLanguages() map[string]*Language {
 
 	return map[string]*Language{
 		"ActionScript":        NewLanguage("ActionScript", "//", "/*", "*/"),
+		"Ada":                 NewLanguage("Ada", "--", "", ""),
 		"Ant":                 NewLanguage("Ant", "<!--", "<!--", "-->"),
 		"Assembly":            NewLanguage("Assembly", "//,;,#,@,|,!", "/*", "*/"),
 		"Awk":                 NewLanguage("Awk", "#", "", ""),
