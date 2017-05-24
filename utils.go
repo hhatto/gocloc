@@ -6,11 +6,10 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
-	"regexp"
 	"strings"
 )
 
-var fileCache map[string]struct{}
+var fileCache = make(map[string]struct{})
 
 func trimBOM(line string) string {
 	l := len(line)
@@ -39,24 +38,14 @@ func containComments(line, commentStart, commentEnd string) bool {
 	return inComments != 0
 }
 
-func getContents(path string) ([]byte, error) {
-	fp, err := os.Open(path)
-	if err != nil {
-		return nil, err
-	}
-	defer fp.Close()
-
-	return ioutil.ReadAll(fp)
-}
-
-func checkMD5Sum(filename string) (ignore bool) {
-	d, err := getContents(filename)
+func checkMD5Sum(path string) (ignore bool) {
+	content, err := ioutil.ReadFile(path)
 	if err != nil {
 		return true
 	}
 
 	// calc md5sum
-	hash := md5.Sum(d)
+	hash := md5.Sum(content)
 	c := fmt.Sprintf("%x", hash)
 	if _, ok := fileCache[c]; ok {
 		return true
@@ -67,42 +56,31 @@ func checkMD5Sum(filename string) (ignore bool) {
 }
 
 func getAllFiles(paths []string, languages map[string]*Language) (filenum, maxPathLen int) {
-	reVCS := regexp.MustCompile("\\.(bzr|cvs|hg|git|svn)")
 	maxPathLen = 0
 	for _, root := range paths {
-		if _, err := os.Stat(root); err != nil {
-			continue
-		}
-		vcsInRoot := reVCS.MatchString(root)
-		walkCallback := func(path string, info os.FileInfo, err error) error {
-			if info.IsDir() {
-				return nil
-			}
-
-			rel, err := filepath.Rel(root, path)
+		vcsInRoot := isVCSDir(root)
+		err := filepath.Walk(root, func(path string, info os.FileInfo, err error) error {
 			if err != nil {
 				return nil
 			}
-
-			if !vcsInRoot && reVCS.MatchString(path) {
+			if info.IsDir() {
 				return nil
 			}
-
-			p := filepath.Join(root, rel)
+			if !vcsInRoot && isVCSDir(path) {
+				return nil
+			}
 
 			// check not-match directory
-			if reNotMatchDir != nil && reNotMatchDir.MatchString(p) {
+			dir := filepath.Dir(path)
+			if reNotMatchDir != nil && reNotMatchDir.MatchString(dir) {
 				return nil
 			}
 
-			if reMatchDir != nil && !reMatchDir.MatchString(filepath.Dir(p)) {
+			if reMatchDir != nil && !reMatchDir.MatchString(dir) {
 				return nil
 			}
 
-			if strings.HasPrefix(root, ".") || strings.HasPrefix(root, "./") {
-				p = "./" + p
-			}
-			if ext, ok := getFileType(p); ok {
+			if ext, ok := getFileType(path); ok {
 				if targetExt, ok := Exts[ext]; ok {
 					// check exclude extension
 					if _, ok := ExcludeExts[targetExt]; ok {
@@ -115,27 +93,43 @@ func getAllFiles(paths []string, languages map[string]*Language) (filenum, maxPa
 						}
 					}
 
-					ignore := checkMD5Sum(p)
-					if !opts.SkipUniqueness && ignore {
-						if opts.Debug {
-							fmt.Printf("[ignore=%v] find same md5\n", p)
+					if !opts.SkipDuplicated {
+						ignore := checkMD5Sum(path)
+						if ignore {
+							if opts.Debug {
+								fmt.Printf("[ignore=%v] find same md5\n", path)
+							}
+							return nil
 						}
-						return nil
 					}
 
-					languages[targetExt].files = append(languages[targetExt].files, p)
+					languages[targetExt].files = append(languages[targetExt].files, path)
 					filenum++
-					l := len(p)
+					l := len(path)
 					if maxPathLen < l {
 						maxPathLen = l
 					}
 				}
 			}
 			return nil
-		}
-		if err := filepath.Walk(root, walkCallback); err != nil {
+		})
+
+		if err != nil {
 			fmt.Println(err)
 		}
 	}
 	return
+}
+
+func isVCSDir(path string) bool {
+	if len(path) > 1 && path[0] == os.PathSeparator {
+		path = path[1:]
+	}
+	vcsDirs := []string{".bzr", ".cvs", ".hg", ".git", ".svn"}
+	for _, dir := range vcsDirs {
+		if strings.Contains(path, dir) {
+			return true
+		}
+	}
+	return false
 }

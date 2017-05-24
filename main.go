@@ -61,7 +61,6 @@ func main() {
 
 	// value for language result
 	languages := GetDefinitionLanguages()
-	fileCache = make(map[string]struct{})
 
 	// setup option for include languages
 	IncludeLangs = make(map[string]struct{})
