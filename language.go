@@ -2,12 +2,15 @@ package main
 
 import (
 	"bufio"
+	"bytes"
 	"fmt"
+	"io/ioutil"
 	"os"
 	"path/filepath"
 	"regexp"
 	"sort"
 	"strings"
+	"unicode"
 
 	"github.com/generaltso/linguist"
 )
@@ -21,14 +24,10 @@ type Language struct {
 	code         int32
 	comments     int32
 	blanks       int32
-	lines        int32
 	total        int32
 	printed      bool
 }
 type Languages []Language
-
-var reShebangEnv *regexp.Regexp = regexp.MustCompile("^#! *(\\S+/env) ([a-zA-Z]+)")
-var reShebangLang *regexp.Regexp = regexp.MustCompile("^#! *[.a-zA-Z/]+/([a-zA-Z]+)")
 
 func (ls Languages) Len() int {
 	return len(ls)
@@ -43,7 +42,10 @@ func (ls Languages) Less(i, j int) bool {
 	return ls[i].code > ls[j].code
 }
 
-var Exts map[string]string = map[string]string{
+var reShebangEnv = regexp.MustCompile("^#! *(\\S+/env) ([a-zA-Z]+)")
+var reShebangLang = regexp.MustCompile("^#! *[.a-zA-Z/]+/([a-zA-Z]+)")
+
+var Exts = map[string]string{
 	"as":          "ActionScript",
 	"ada":         "Ada",
 	"adb":         "Ada",
@@ -223,7 +225,7 @@ var Exts map[string]string = map[string]string{
 	"zsh":         "Zsh",
 }
 
-var shebang2ext map[string]string = map[string]string{
+var shebang2ext = map[string]string{
 	"gosh":    "scm",
 	"make":    "make",
 	"perl":    "pl",
@@ -234,50 +236,45 @@ var shebang2ext map[string]string = map[string]string{
 }
 
 func getShebang(line string) (shebangLang string, ok bool) {
-	if reShebangEnv.MatchString(line) {
-		ret := reShebangEnv.FindAllStringSubmatch(line, -1)
-		if len(ret[0]) == 3 {
-			shebangLang = ret[0][2]
-			if sl, ok := shebang2ext[shebangLang]; ok {
-				return sl, ok
-			}
-			return shebangLang, true
+	ret := reShebangEnv.FindAllStringSubmatch(line, -1)
+	if ret != nil && len(ret[0]) == 3 {
+		shebangLang = ret[0][2]
+		if sl, ok := shebang2ext[shebangLang]; ok {
+			return sl, ok
 		}
+		return shebangLang, true
 	}
 
-	if reShebangLang.MatchString(line) {
-		ret := reShebangLang.FindAllStringSubmatch(line, -1)
-		if len(ret[0]) >= 2 {
-			shebangLang = ret[0][1]
-			if sl, ok := shebang2ext[shebangLang]; ok {
-				return sl, ok
-			}
-			return shebangLang, true
+	ret = reShebangLang.FindAllStringSubmatch(line, -1)
+	if ret != nil && len(ret[0]) >= 2 {
+		shebangLang = ret[0][1]
+		if sl, ok := shebang2ext[shebangLang]; ok {
+			return sl, ok
 		}
+		return shebangLang, true
 	}
 
 	return "", false
 }
 
 func getFileTypeByShebang(path string) (shebangLang string, ok bool) {
-	line := ""
-	func() {
-		fp, err := os.Open(path)
-		if err != nil {
-			return // ignore error
-		}
-		defer fp.Close()
+	f, err := os.Open(path)
+	if err != nil {
+		return // ignore error
+	}
+	defer f.Close()
 
-		scanner := bufio.NewScanner(fp)
-		for scanner.Scan() {
-			l := scanner.Text()
-			line = strings.TrimSpace(l)
-			break
-		}
-	}()
+	reader := bufio.NewReader(f)
+	line, err := reader.ReadBytes('\n')
+	if err != nil {
+		return
+	}
+	line = bytes.TrimLeftFunc(line, unicode.IsSpace)
 
-	shebangLang, ok = getShebang(line)
-	return shebangLang, ok
+	if len(line) > 2 && line[0] == '#' && line[1] == '!' {
+		return getShebang(string(line))
+	}
+	return
 }
 
 func getFileType(path string) (ext string, ok bool) {
@@ -288,11 +285,11 @@ func getFileType(path string) (ext string, ok bool) {
 	case ".m", ".v", ".fs", ".r":
 		// TODO: this is slow. parallelize...
 		hints := linguist.LanguageHints(path)
-		cont, err := getContents(path)
+		content, err := ioutil.ReadFile(path)
 		if err != nil {
 			return "", false
 		}
-		lang := linguist.LanguageByContents(cont, hints)
+		lang := linguist.LanguageByContents(content, hints)
 		if opts.Debug {
 			fmt.Printf("path=%v, lang=%v\n", path, lang)
 		}
