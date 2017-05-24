@@ -48,7 +48,8 @@ func analyzeFile(filename string, language *Language) *ClocFile {
 	isFirstLine := true
 	isInComments := false
 	isInCommentsSame := false
-	buf := make([]byte, 0, 128*1024)
+	buf := getByteSlice()
+	defer putByteSlice(buf)
 	scanner := bufio.NewScanner(fp)
 	scanner.Buffer(buf, 1024*1024)
 	for scanner.Scan() {
