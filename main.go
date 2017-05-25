@@ -31,7 +31,7 @@ func main() {
 	}
 
 	if opts.ShowLang {
-		PrintDefinitionLanguages()
+		PrintDefinedLanguages()
 		return
 	}
 
@@ -60,7 +60,7 @@ func main() {
 	}
 
 	// value for language result
-	languages := GetDefinitionLanguages()
+	languages := GetDefinedLanguages()
 
 	// setup option for include languages
 	IncludeLangs = make(map[string]struct{})
@@ -70,7 +70,7 @@ func main() {
 		}
 	}
 
-	total := NewLanguage("TOTAL", "", "", "")
+	total := NewLanguage("TOTAL", []string{}, "", "")
 	num, maxPathLen := getAllFiles(paths, languages)
 	headerLen := 28
 	header := LANG_HEADER

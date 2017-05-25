@@ -24,7 +24,7 @@ class A:
 	pass
 `))
 
-	language := NewLanguage("Python", "#", "\"\"\"", "\"\"\"")
+	language := NewLanguage("Python", []string{"#"}, "\"\"\"", "\"\"\"")
 	clocFile := analyzeFile(tmpfile.Name(), language)
 	tmpfile.Close()
 
@@ -56,7 +56,7 @@ class A:
 	pass
 `))
 
-	language := NewLanguage("Python", "#", "\"\"\"", "\"\"\"")
+	language := NewLanguage("Python", []string{"#"}, "\"\"\"", "\"\"\"")
 	clocFile := analyzeFile(tmpfile.Name(), language)
 	tmpfile.Close()
 
