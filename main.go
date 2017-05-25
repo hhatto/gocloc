@@ -94,12 +94,13 @@ func main() {
 		}
 
 		for _, file := range language.files {
-			clocFiles[file] = analyzeFile(file, language)
+			cf := analyzeFile(file, language)
+			cf.Lang = language.name
 
-			language.code += clocFiles[file].Code
-			language.comments += clocFiles[file].Comments
-			language.blanks += clocFiles[file].Blanks
-			clocFiles[file].Lang = language.name
+			language.code += cf.Code
+			language.comments += cf.Comments
+			language.blanks += cf.Blanks
+			clocFiles[file] = cf
 		}
 
 		files := int32(len(language.files))
