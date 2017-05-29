@@ -31,7 +31,7 @@ func main() {
 	}
 
 	if opts.ShowLang {
-		PrintDefinitionLanguages()
+		PrintDefinedLanguages()
 		return
 	}
 
@@ -60,8 +60,7 @@ func main() {
 	}
 
 	// value for language result
-	languages := GetDefinitionLanguages()
-	fileCache = make(map[string]struct{})
+	languages := GetDefinedLanguages()
 
 	// setup option for include languages
 	IncludeLangs = make(map[string]struct{})
@@ -71,7 +70,7 @@ func main() {
 		}
 	}
 
-	total := NewLanguage("TOTAL", "", "", "")
+	total := NewLanguage("TOTAL", []string{}, "", "")
 	num, maxPathLen := getAllFiles(paths, languages)
 	headerLen := 28
 	header := LANG_HEADER
@@ -95,12 +94,13 @@ func main() {
 		}
 
 		for _, file := range language.files {
-			clocFiles[file] = analyzeFile(file, language)
+			cf := analyzeFile(file, language)
+			cf.Lang = language.name
 
-			language.code += clocFiles[file].Code
-			language.comments += clocFiles[file].Comments
-			language.blanks += clocFiles[file].Blanks
-			clocFiles[file].Lang = language.name
+			language.code += cf.Code
+			language.comments += cf.Comments
+			language.blanks += cf.Blanks
+			clocFiles[file] = cf
 		}
 
 		files := int32(len(language.files))

@@ -48,7 +48,8 @@ func analyzeFile(filename string, language *Language) *ClocFile {
 	isFirstLine := true
 	isInComments := false
 	isInCommentsSame := false
-	buf := make([]byte, 0, 128*1024)
+	buf := getByteSlice()
+	defer putByteSlice(buf)
 	scanner := bufio.NewScanner(fp)
 	scanner.Buffer(buf, 1024*1024)
 	for scanner.Scan() {
@@ -109,15 +110,13 @@ func analyzeFile(filename string, language *Language) *ClocFile {
 			continue
 		}
 
-		if language.lineComment != "" {
-			single_comments := strings.Split(language.lineComment, ",")
+		if len(language.lineComments) > 0 {
 			isSingleComment := false
 			if isFirstLine {
 				line = trimBOM(line)
-				isFirstLine = false
 			}
-			for _, single_comment := range single_comments {
-				if strings.HasPrefix(line, single_comment) {
+			for _, singleComment := range language.lineComments {
+				if strings.HasPrefix(line, singleComment) {
 					clocFile.Comments++
 					isSingleComment = true
 					break
