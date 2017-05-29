@@ -65,6 +65,38 @@ func analyzeFile(filename string, language *Language) *ClocFile {
 			continue
 		}
 
+		// shebang line is 'code'
+		if isFirstLine && strings.HasPrefix(line, "#!") {
+			clocFile.Code++
+			isFirstLine = false
+			if opts.Debug {
+				fmt.Printf("[CODE,cd:%d,cm:%d,bk:%d,iscm:%v] %s\n",
+					clocFile.Code, clocFile.Comments, clocFile.Blanks, isInComments, lineOrg)
+			}
+			continue
+		}
+
+		if len(language.lineComments) > 0 {
+			isSingleComment := false
+			if isFirstLine {
+				line = trimBOM(line)
+			}
+			for _, singleComment := range language.lineComments {
+				if strings.HasPrefix(line, singleComment) {
+					clocFile.Comments++
+					isSingleComment = true
+					break
+				}
+			}
+			if isSingleComment {
+				if opts.Debug {
+					fmt.Printf("[COMM,cd:%d,cm:%d,bk:%d,iscm:%v] %s\n",
+						clocFile.Code, clocFile.Comments, clocFile.Blanks, isInComments, lineOrg)
+				}
+				continue
+			}
+		}
+
 		if language.multiLine != "" {
 			if strings.HasPrefix(line, language.multiLine) {
 				isInComments = true
@@ -107,38 +139,6 @@ func analyzeFile(filename string, language *Language) *ClocFile {
 					clocFile.Code, clocFile.Comments, clocFile.Blanks, isInComments, isInCommentsSame, lineOrg)
 			}
 			continue
-		}
-
-		// shebang line is 'code'
-		if isFirstLine && strings.HasPrefix(line, "#!") {
-			clocFile.Code++
-			isFirstLine = false
-			if opts.Debug {
-				fmt.Printf("[CODE,cd:%d,cm:%d,bk:%d,iscm:%v] %s\n",
-					clocFile.Code, clocFile.Comments, clocFile.Blanks, isInComments, lineOrg)
-			}
-			continue
-		}
-
-		if len(language.lineComments) > 0 {
-			isSingleComment := false
-			if isFirstLine {
-				line = trimBOM(line)
-			}
-			for _, singleComment := range language.lineComments {
-				if strings.HasPrefix(line, singleComment) {
-					clocFile.Comments++
-					isSingleComment = true
-					break
-				}
-			}
-			if isSingleComment {
-				if opts.Debug {
-					fmt.Printf("[COMM,cd:%d,cm:%d,bk:%d,iscm:%v] %s\n",
-						clocFile.Code, clocFile.Comments, clocFile.Blanks, isInComments, lineOrg)
-				}
-				continue
-			}
 		}
 
 		clocFile.Code++
