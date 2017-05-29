@@ -68,9 +68,19 @@ func analyzeFile(filename string, language *Language) *ClocFile {
 		if language.multiLine != "" {
 			if strings.HasPrefix(line, language.multiLine) {
 				isInComments = true
+			} else if strings.HasSuffix(line, language.multiLineEnd) {
+				isInComments = true
 			} else if containComments(line, language.multiLine, language.multiLineEnd) {
 				isInComments = true
-				clocFile.Code++
+				if (language.multiLine != language.multiLineEnd) &&
+					(strings.HasSuffix(line, language.multiLine) || strings.HasPrefix(line, language.multiLineEnd)) {
+					clocFile.Code++
+					if opts.Debug {
+						fmt.Printf("[CODE,cd:%d,cm:%d,bk:%d,iscm:%v] %s\n",
+							clocFile.Code, clocFile.Comments, clocFile.Blanks, isInComments, lineOrg)
+					}
+					continue
+				}
 			}
 		}
 

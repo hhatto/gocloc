@@ -70,3 +70,69 @@ class A:
 		t.Errorf("invalid logic. code=%v", clocFile.Code)
 	}
 }
+
+func TestAnalayzeFile4Go(t *testing.T) {
+	tmpfile, err := ioutil.TempFile("", "tmp.go")
+	if err != nil {
+		t.Logf("ioutil.TempFile() error. err=[%v]", err)
+		return
+	}
+	defer os.Remove(tmpfile.Name())
+
+	tmpfile.Write([]byte(`package main
+
+func main() {
+	var n string /*
+		comment
+		comment
+	*/
+}
+`))
+
+	language := NewLanguage("Go", []string{"//"}, "/*", "*/")
+	clocFile := analyzeFile(tmpfile.Name(), language)
+	tmpfile.Close()
+
+	if clocFile.Blanks != 1 {
+		t.Errorf("invalid logic. blanks=%v", clocFile.Blanks)
+	}
+	if clocFile.Comments != 3 {
+		t.Errorf("invalid logic. comments=%v", clocFile.Comments)
+	}
+	if clocFile.Code != 4 {
+		t.Errorf("invalid logic. code=%v", clocFile.Code)
+	}
+}
+
+func TestAnalayzeFile4GoWithOnelineBlockComment(t *testing.T) {
+	tmpfile, err := ioutil.TempFile("", "tmp.go")
+	if err != nil {
+		t.Logf("ioutil.TempFile() error. err=[%v]", err)
+		return
+	}
+	defer os.Remove(tmpfile.Name())
+
+	tmpfile.Write([]byte(`package main
+
+func main() {
+	st := "/*"
+	a := 1
+	en := "*/"
+	/* comment */
+}
+`))
+
+	language := NewLanguage("Go", []string{"//"}, "/*", "*/")
+	clocFile := analyzeFile(tmpfile.Name(), language)
+	tmpfile.Close()
+
+	if clocFile.Blanks != 1 {
+		t.Errorf("invalid logic. blanks=%v", clocFile.Blanks)
+	}
+	if clocFile.Comments != 1 {
+		t.Errorf("invalid logic. comments=%v", clocFile.Comments)
+	}
+	if clocFile.Code != 6 {
+		t.Errorf("invalid logic. code=%v", clocFile.Code)
+	}
+}
