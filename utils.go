@@ -24,7 +24,7 @@ func trimBOM(line string) string {
 
 func containComments(line, commentStart, commentEnd string) bool {
 	inComments := 0
-	for i := 0; i < len(line)/len(commentStart); i += len(commentStart) {
+	for i := 0; i < len(line)-(len(commentStart)-1); i++ {
 		section := line[i : i+len(commentStart)]
 
 		if section == commentStart {
