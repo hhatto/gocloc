@@ -94,6 +94,7 @@ var Exts = map[string]string{
 	"exp":         "Expect",
 	"ex":          "Elixir",
 	"exs":         "Elixir",
+	"feature":     "Gherkin",
 	"fr":          "Frege",
 	"F#":          "F#",   // deplicated F#/GLSL
 	"GLSL":        "GLSL", // both use ext '.fs'
@@ -416,6 +417,7 @@ func GetDefinedLanguages() map[string]*Language {
 		"LiveScript":          NewLanguage("LiveScript", []string{"#"}, "/*", "*/"),
 		"FORTRAN Legacy":      NewLanguage("FORTRAN Legacy", []string{"c", "C", "!", "*"}, "", ""),
 		"FORTRAN Modern":      NewLanguage("FORTRAN Modern", []string{"!"}, "", ""),
+		"Gherkin":             NewLanguage("Gherkin", []string{"#"}, "", ""),
 		"GLSL":                NewLanguage("GLSL", []string{"//"}, "/*", "*/"),
 		"Go":                  NewLanguage("Go", []string{"//"}, "/*", "*/"),
 		"Groovy":              NewLanguage("Groovy", []string{"//"}, "/*", "*/"),
