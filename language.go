@@ -12,7 +12,7 @@ import (
 	"strings"
 	"unicode"
 
-	"github.com/generaltso/linguist"
+	enry "gopkg.in/src-d/enry.v1"
 )
 
 type Language struct {
@@ -283,13 +283,11 @@ func getFileType(path string) (ext string, ok bool) {
 
 	switch ext {
 	case ".m", ".v", ".fs", ".r":
-		// TODO: this is slow. parallelize...
-		hints := linguist.LanguageHints(path)
 		content, err := ioutil.ReadFile(path)
 		if err != nil {
 			return "", false
 		}
-		lang := linguist.LanguageByContents(content, hints)
+		lang := enry.GetLanguage(path, content)
 		if opts.Debug {
 			fmt.Printf("path=%v, lang=%v\n", path, lang)
 		}
