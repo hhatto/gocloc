@@ -5,8 +5,6 @@ Inspired by [tokei](https://github.com/Aaronepower/tokei).
 
 ## Installation
 
-Prerequisites - install http://github.com/generaltso/linguist as it is described in its README. Then:
-
 ```
 $ go get github.com/hhatto/gocloc
 ```
