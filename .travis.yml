@@ -5,11 +5,6 @@ go:
     - tip
 
 install:
-    - go get github.com/jteeuwen/go-bindata/go-bindata
-    - mkdir -p $GOPATH/src/github.com/generaltso
-    - git clone --depth=1 https://github.com/generaltso/linguist $GOPATH/src/github.com/generaltso/linguist
-    - go get -d github.com/generaltso/linguist
-    - cd $GOPATH/src/github.com/generaltso/linguist && make && cd -
     - go get -v
 
 script:
