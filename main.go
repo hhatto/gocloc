@@ -126,12 +126,12 @@ func main() {
 
 		switch opts.OutputType {
 		case OutputTypeClocXml:
-			t := XMLTotal{
+			t := XMLTotalFiles{
 				Code:    total.code,
 				Comment: total.comments,
 				Blank:   total.blanks,
 			}
-			f := XMLResultFiles{
+			f := &XMLResultFiles{
 				Files: sortedFiles,
 				Total: t,
 			}
@@ -167,9 +167,38 @@ func main() {
 		}
 		sort.Sort(sortedLanguages)
 
-		for _, language := range sortedLanguages {
-			fmt.Printf("%-27v %6v %14v %14v %14v\n",
-				language.name, len(language.files), language.blanks, language.comments, language.code)
+		switch opts.OutputType {
+		case OutputTypeClocXml:
+			var langs []ClocLanguage
+			for _, language := range sortedLanguages {
+				c := ClocLanguage{
+					Name:       language.name,
+					FilesCount: int32(len(language.files)),
+					Code:       language.code,
+					Comments:   language.comments,
+					Blanks:     language.blanks,
+				}
+				langs = append(langs, c)
+			}
+			t := XMLTotalLanguages{
+				Code:     total.code,
+				Comment:  total.comments,
+				Blank:    total.blanks,
+				SumFiles: total.total,
+			}
+			f := &XMLResultLanguages{
+				Languages: langs,
+				Total:     t,
+			}
+			xmlResult := XMLResult{
+				XMLLanguages: f,
+			}
+			xmlResult.Encode()
+		default:
+			for _, language := range sortedLanguages {
+				fmt.Printf("%-27v %6v %14v %14v %14v\n",
+					language.name, len(language.files), language.blanks, language.comments, language.code)
+			}
 		}
 	}
 
