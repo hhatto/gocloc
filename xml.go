@@ -6,9 +6,9 @@ import (
 )
 
 type XMLTotal struct {
-	Code    int32 `xml:"code"`
-	Comment int32 `xml:"comment"`
-	Blank   int32 `xml:"blank"`
+	Code    int32 `xml:"code,attr"`
+	Comment int32 `xml:"comment,attr"`
+	Blank   int32 `xml:"blank,attr"`
 }
 type XMLResultFiles struct {
 	Files []ClocFile `xml:"file"`
