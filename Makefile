@@ -1,6 +1,7 @@
 .PHONY: test build
 
 build:
+	go build
 	mkdir -p bin
 	go build -o ./bin/gocloc cmd/gocloc/main.go
 
