@@ -6,7 +6,7 @@ Inspired by [tokei](https://github.com/Aaronepower/tokei).
 ## Installation
 
 ```
-$ go get github.com/hhatto/gocloc
+$ go get -u github.com/hhatto/gocloc/cmd/gocloc
 ```
 
 ## Usage

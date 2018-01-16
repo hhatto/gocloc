@@ -1,4 +1,4 @@
-package main
+package gocloc
 
 import (
 	"crypto/md5"
@@ -55,7 +55,7 @@ func checkMD5Sum(path string) (ignore bool) {
 	return false
 }
 
-func getAllFiles(paths []string, languages map[string]*Language) (filenum, maxPathLen int) {
+func getAllFiles(paths []string, languages map[string]*Language, opts Options) (filenum, maxPathLen int) {
 	maxPathLen = 0
 	for _, root := range paths {
 		vcsInRoot := isVCSDir(root)
@@ -80,7 +80,7 @@ func getAllFiles(paths []string, languages map[string]*Language) (filenum, maxPa
 				return nil
 			}
 
-			if ext, ok := getFileType(path); ok {
+			if ext, ok := getFileType(path, opts); ok {
 				if targetExt, ok := Exts[ext]; ok {
 					// check exclude extension
 					if _, ok := ExcludeExts[targetExt]; ok {

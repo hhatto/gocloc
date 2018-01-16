@@ -1,4 +1,4 @@
-package main
+package gocloc
 
 import "regexp"
 
@@ -19,7 +19,6 @@ const OutputTypeDefault string = "default"
 const OutputTypeClocXml string = "cloc-xml"
 const OutputTypeSloccount string = "sloccount"
 
-var opts Options
 var ExcludeExts map[string]struct{}
 var IncludeLangs map[string]struct{}
 var reNotMatchDir *regexp.Regexp

@@ -1,4 +1,4 @@
-package main
+package gocloc
 
 import (
 	"bufio"
@@ -284,7 +284,7 @@ func getFileTypeByShebang(path string) (shebangLang string, ok bool) {
 	return
 }
 
-func getFileType(path string) (ext string, ok bool) {
+func getFileType(path string, opts Options) (ext string, ok bool) {
 	ext = filepath.Ext(path)
 	base := filepath.Base(path)
 

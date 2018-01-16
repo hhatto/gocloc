@@ -1,4 +1,4 @@
-package main
+package gocloc
 
 import (
 	"bufio"
@@ -30,7 +30,7 @@ func (cf ClocFiles) Less(i, j int) bool {
 	return cf[i].Code > cf[j].Code
 }
 
-func analyzeFile(filename string, language *Language) *ClocFile {
+func analyzeFile(filename string, language *Language, opts Options) *ClocFile {
 	if opts.Debug {
 		fmt.Printf("filename=%v\n", filename)
 	}
