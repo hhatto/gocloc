@@ -55,7 +55,7 @@ func checkMD5Sum(path string) (ignore bool) {
 	return false
 }
 
-func getAllFiles(paths []string, languages map[string]*Language, opts Options) (filenum, maxPathLen int) {
+func GetAllFiles(paths []string, languages map[string]*Language, opts ClocOptions) (filenum, maxPathLen int) {
 	maxPathLen = 0
 	for _, root := range paths {
 		vcsInRoot := isVCSDir(root)
@@ -72,23 +72,23 @@ func getAllFiles(paths []string, languages map[string]*Language, opts Options) (
 
 			// check not-match directory
 			dir := filepath.Dir(path)
-			if reNotMatchDir != nil && reNotMatchDir.MatchString(dir) {
+			if opts.ReNotMatchDir != nil && opts.ReNotMatchDir.MatchString(dir) {
 				return nil
 			}
 
-			if reMatchDir != nil && !reMatchDir.MatchString(dir) {
+			if opts.ReMatchDir != nil && !opts.ReMatchDir.MatchString(dir) {
 				return nil
 			}
 
 			if ext, ok := getFileType(path, opts); ok {
 				if targetExt, ok := Exts[ext]; ok {
 					// check exclude extension
-					if _, ok := ExcludeExts[targetExt]; ok {
+					if _, ok := opts.ExcludeExts[targetExt]; ok {
 						return nil
 					}
 
-					if len(IncludeLangs) != 0 {
-						if _, ok = IncludeLangs[targetExt]; !ok {
+					if len(opts.IncludeLangs) != 0 {
+						if _, ok = opts.IncludeLangs[targetExt]; !ok {
 							return nil
 						}
 					}
@@ -103,7 +103,7 @@ func getAllFiles(paths []string, languages map[string]*Language, opts Options) (
 						}
 					}
 
-					languages[targetExt].files = append(languages[targetExt].files, path)
+					languages[targetExt].Files = append(languages[targetExt].Files, path)
 					filenum++
 					l := len(path)
 					if maxPathLen < l {

@@ -25,16 +25,16 @@ type ClocLanguage struct {
 }
 
 type Language struct {
-	name         string
+	Name         string
 	lineComments []string
 	multiLine    string
 	multiLineEnd string
-	files        []string
-	code         int32
-	comments     int32
-	blanks       int32
-	total        int32
-	printed      bool
+	Files        []string
+	Code         int32
+	Comments     int32
+	Blanks       int32
+	Total        int32
+	Printed      bool
 }
 type Languages []Language
 
@@ -45,10 +45,10 @@ func (ls Languages) Swap(i, j int) {
 	ls[i], ls[j] = ls[j], ls[i]
 }
 func (ls Languages) Less(i, j int) bool {
-	if ls[i].code == ls[j].code {
-		return ls[i].name < ls[j].name
+	if ls[i].Code == ls[j].Code {
+		return ls[i].Name < ls[j].Name
 	}
-	return ls[i].code > ls[j].code
+	return ls[i].Code > ls[j].Code
 }
 
 var reShebangEnv = regexp.MustCompile("^#! *(\\S+/env) ([a-zA-Z]+)")
@@ -293,7 +293,7 @@ func getFileTypeByShebang(path string) (shebangLang string, ok bool) {
 	return
 }
 
-func getFileType(path string, opts Options) (ext string, ok bool) {
+func getFileType(path string, opts ClocOptions) (ext string, ok bool) {
 	ext = filepath.Ext(path)
 	base := filepath.Base(path)
 
@@ -345,11 +345,11 @@ func getFileType(path string, opts Options) (ext string, ok bool) {
 
 func NewLanguage(name string, lineComments []string, multiLine, multiLineEnd string) *Language {
 	return &Language{
-		name:         name,
+		Name:         name,
 		lineComments: lineComments,
 		multiLine:    multiLine,
 		multiLineEnd: multiLineEnd,
-		files:        []string{},
+		Files:        []string{},
 	}
 }
 
@@ -376,7 +376,7 @@ func lang2exts(lang string) (exts string) {
 func PrintDefinedLanguages() {
 	printLangs := []string{}
 	for _, lang := range GetDefinedLanguages() {
-		printLangs = append(printLangs, lang.name)
+		printLangs = append(printLangs, lang.Name)
 	}
 	sort.Strings(printLangs)
 	for _, lang := range printLangs {

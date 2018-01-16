@@ -11,6 +11,10 @@ import (
 	flags "github.com/jessevdk/go-flags"
 )
 
+const OutputTypeDefault string = "default"
+const OutputTypeClocXml string = "cloc-xml"
+const OutputTypeSloccount string = "sloccount"
+
 const FILE_HEADER string = "File"
 const LANG_HEADER string = "Language"
 const COMMON_HEADER string = "files          blank        comment           code"
@@ -22,6 +26,7 @@ var rowLen = 79
 
 func main() {
 	var opts gocloc.Options
+	clocOpts := gocloc.NewClocOptions()
 	// parse command line options
 	parser := flags.NewParser(&opts, flags.Default)
 	parser.Name = "gocloc"
@@ -33,7 +38,7 @@ func main() {
 	}
 
 	if opts.ShowLang {
-		PrintDefinedLanguages()
+		gocloc.PrintDefinedLanguages()
 		return
 	}
 
@@ -43,40 +48,41 @@ func main() {
 	}
 
 	// setup option for exclude extensions
-	ExcludeExts = make(map[string]struct{})
 	for _, ext := range strings.Split(opts.ExcludeExt, ",") {
-		e, ok := Exts[ext]
+		e, ok := gocloc.Exts[ext]
 		if ok {
-			ExcludeExts[e] = struct{}{}
+			clocOpts.ExcludeExts[e] = struct{}{}
 		} else {
-			ExcludeExts[ext] = struct{}{}
+			clocOpts.ExcludeExts[ext] = struct{}{}
 		}
 	}
 
 	// setup option for not match directory
 	if opts.NotMatchDir != "" {
-		reNotMatchDir = regexp.MustCompile(opts.NotMatchDir)
+		clocOpts.ReNotMatchDir = regexp.MustCompile(opts.NotMatchDir)
 	}
 	if opts.MatchDir != "" {
-		reMatchDir = regexp.MustCompile(opts.MatchDir)
+		clocOpts.ReMatchDir = regexp.MustCompile(opts.MatchDir)
 	}
 
 	// value for language result
-	languages := GetDefinedLanguages()
+	languages := gocloc.GetDefinedLanguages()
 
 	// setup option for include languages
-	IncludeLangs = make(map[string]struct{})
 	for _, lang := range strings.Split(opts.IncludeLang, ",") {
 		if _, ok := languages[lang]; ok {
-			IncludeLangs[lang] = struct{}{}
+			clocOpts.IncludeLangs[lang] = struct{}{}
 		}
 	}
 
-	total := NewLanguage("TOTAL", []string{}, "", "")
-	num, maxPathLen := getAllFiles(paths, languages)
+	clocOpts.Debug = opts.Debug
+	clocOpts.SkipDuplicated = opts.SkipDuplicated
+
+	total := gocloc.NewLanguage("TOTAL", []string{}, "", "")
+	num, maxPathLen := gocloc.GetAllFiles(paths, languages, clocOpts)
 	headerLen := 28
 	header := LANG_HEADER
-	clocFiles := make(map[string]*ClocFile, num)
+	clocFiles := make(map[string]*gocloc.ClocFile, num)
 
 	// write header
 	if opts.Byfile {
@@ -91,36 +97,36 @@ func main() {
 	}
 
 	for _, language := range languages {
-		if language.printed {
+		if language.Printed {
 			continue
 		}
 
-		for _, file := range language.files {
-			cf := analyzeFile(file, language)
-			cf.Lang = language.name
+		for _, file := range language.Files {
+			cf := gocloc.AnalyzeFile(file, language, &clocOpts)
+			cf.Lang = language.Name
 
-			language.code += cf.Code
-			language.comments += cf.Comments
-			language.blanks += cf.Blanks
+			language.Code += cf.Code
+			language.Comments += cf.Comments
+			language.Blanks += cf.Blanks
 			clocFiles[file] = cf
 		}
 
-		files := int32(len(language.files))
-		if len(language.files) <= 0 {
+		files := int32(len(language.Files))
+		if len(language.Files) <= 0 {
 			continue
 		}
 
-		language.printed = true
+		language.Printed = true
 
-		total.total += files
-		total.blanks += language.blanks
-		total.comments += language.comments
-		total.code += language.code
+		total.Total += files
+		total.Blanks += language.Blanks
+		total.Comments += language.Comments
+		total.Code += language.Code
 	}
 
 	// write result
 	if opts.Byfile {
-		var sortedFiles ClocFiles
+		var sortedFiles gocloc.ClocFiles
 		for _, file := range clocFiles {
 			sortedFiles = append(sortedFiles, *file)
 		}
@@ -128,16 +134,16 @@ func main() {
 
 		switch opts.OutputType {
 		case OutputTypeClocXml:
-			t := XMLTotal{
-				Code:    total.code,
-				Comment: total.comments,
-				Blank:   total.blanks,
+			t := gocloc.XMLTotalFiles{
+				Code:    total.Code,
+				Comment: total.Comments,
+				Blank:   total.Blanks,
 			}
-			f := XMLResultFiles{
+			f := &gocloc.XMLResultFiles{
 				Files: sortedFiles,
 				Total: t,
 			}
-			xmlResult := XMLResult{
+			xmlResult := gocloc.XMLResult{
 				XMLFiles: f,
 			}
 			xmlResult.Encode()
@@ -161,9 +167,9 @@ func main() {
 			}
 		}
 	} else {
-		var sortedLanguages Languages
+		var sortedLanguages gocloc.Languages
 		for _, language := range languages {
-			if len(language.files) != 0 && language.printed {
+			if len(language.Files) != 0 && language.Printed {
 				sortedLanguages = append(sortedLanguages, *language)
 			}
 		}
@@ -171,35 +177,35 @@ func main() {
 
 		switch opts.OutputType {
 		case OutputTypeClocXml:
-			var langs []ClocLanguage
+			var langs []gocloc.ClocLanguage
 			for _, language := range sortedLanguages {
-				c := ClocLanguage{
-					Name:       language.name,
-					FilesCount: int32(len(language.files)),
-					Code:       language.code,
-					Comments:   language.comments,
-					Blanks:     language.blanks,
+				c := gocloc.ClocLanguage{
+					Name:       language.Name,
+					FilesCount: int32(len(language.Files)),
+					Code:       language.Code,
+					Comments:   language.Comments,
+					Blanks:     language.Blanks,
 				}
 				langs = append(langs, c)
 			}
-			t := XMLTotalLanguages{
-				Code:     total.code,
-				Comment:  total.comments,
-				Blank:    total.blanks,
-				SumFiles: total.total,
+			t := gocloc.XMLTotalLanguages{
+				Code:     total.Code,
+				Comment:  total.Comments,
+				Blank:    total.Blanks,
+				SumFiles: total.Total,
 			}
-			f := &XMLResultLanguages{
+			f := &gocloc.XMLResultLanguages{
 				Languages: langs,
 				Total:     t,
 			}
-			xmlResult := XMLResult{
+			xmlResult := gocloc.XMLResult{
 				XMLLanguages: f,
 			}
 			xmlResult.Encode()
 		default:
 			for _, language := range sortedLanguages {
 				fmt.Printf("%-27v %6v %14v %14v %14v\n",
-					language.name, len(language.files), language.blanks, language.comments, language.code)
+					language.Name, len(language.Files), language.Blanks, language.Comments, language.Code)
 			}
 		}
 	}
@@ -209,10 +215,10 @@ func main() {
 		fmt.Printf("%.[2]*[1]s\n", ROW, rowLen)
 		if opts.Byfile {
 			fmt.Printf("%-[1]*[2]v %6[3]v %14[4]v %14[5]v %14[6]v\n",
-				maxPathLen, "TOTAL", total.total, total.blanks, total.comments, total.code)
+				maxPathLen, "TOTAL", total.Total, total.Blanks, total.Comments, total.Code)
 		} else {
 			fmt.Printf("%-27v %6v %14v %14v %14v\n",
-				"TOTAL", total.total, total.blanks, total.comments, total.code)
+				"TOTAL", total.Total, total.Blanks, total.Comments, total.Code)
 		}
 		fmt.Printf("%.[2]*[1]s\n", ROW, rowLen)
 	}

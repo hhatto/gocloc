@@ -15,11 +15,20 @@ type Options struct {
 	ShowLang       bool   `long:"show-lang" description:"print about all languages and extensions"`
 }
 
-const OutputTypeDefault string = "default"
-const OutputTypeClocXml string = "cloc-xml"
-const OutputTypeSloccount string = "sloccount"
+type ClocOptions struct {
+	Debug          bool
+	SkipDuplicated bool
+	ExcludeExts    map[string]struct{}
+	IncludeLangs   map[string]struct{}
+	ReNotMatchDir  *regexp.Regexp
+	ReMatchDir     *regexp.Regexp
+}
 
-var ExcludeExts map[string]struct{}
-var IncludeLangs map[string]struct{}
-var reNotMatchDir *regexp.Regexp
-var reMatchDir *regexp.Regexp
+func NewClocOptions() *ClocOptions {
+	return &ClocOptions{
+		Debug:          false,
+		SkipDuplicated: false,
+		ExcludeExts:    make(map[string]struct{}),
+		IncludeLangs:   make(map[string]struct{}),
+	}
+}

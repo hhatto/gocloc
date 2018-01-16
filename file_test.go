@@ -25,7 +25,8 @@ class A:
 `))
 
 	language := NewLanguage("Python", []string{"#"}, "\"\"\"", "\"\"\"")
-	clocFile := analyzeFile(tmpfile.Name(), language)
+	clocOpts := NewClocOptions()
+	clocFile := AnalyzeFile(tmpfile.Name(), language, clocOpts)
 	tmpfile.Close()
 
 	if clocFile.Blanks != 1 {
@@ -57,7 +58,8 @@ class A:
 `))
 
 	language := NewLanguage("Python", []string{"#"}, "\"\"\"", "\"\"\"")
-	clocFile := analyzeFile(tmpfile.Name(), language)
+	clocOpts := NewClocOptions()
+	clocFile := AnalyzeFile(tmpfile.Name(), language, clocOpts)
 	tmpfile.Close()
 
 	if clocFile.Blanks != 1 {
@@ -90,7 +92,8 @@ func main() {
 `))
 
 	language := NewLanguage("Go", []string{"//"}, "/*", "*/")
-	clocFile := analyzeFile(tmpfile.Name(), language)
+	clocOpts := NewClocOptions()
+	clocFile := AnalyzeFile(tmpfile.Name(), language, clocOpts)
 	tmpfile.Close()
 
 	if clocFile.Blanks != 1 {
@@ -124,7 +127,8 @@ func main() {
 `))
 
 	language := NewLanguage("Go", []string{"//"}, "/*", "*/")
-	clocFile := analyzeFile(tmpfile.Name(), language)
+	clocOpts := NewClocOptions()
+	clocFile := AnalyzeFile(tmpfile.Name(), language, clocOpts)
 	tmpfile.Close()
 
 	if clocFile.Blanks != 1 {
@@ -156,7 +160,8 @@ func main() {
 `))
 
 	language := NewLanguage("Go", []string{"//"}, "/*", "*/")
-	clocFile := analyzeFile(tmpfile.Name(), language)
+	clocOpts := NewClocOptions()
+	clocFile := AnalyzeFile(tmpfile.Name(), language, clocOpts)
 	tmpfile.Close()
 
 	if clocFile.Blanks != 1 {
