@@ -293,7 +293,7 @@ func getFileTypeByShebang(path string) (shebangLang string, ok bool) {
 	return
 }
 
-func getFileType(path string, opts ClocOptions) (ext string, ok bool) {
+func getFileType(path string, opts *ClocOptions) (ext string, ok bool) {
 	ext = filepath.Ext(path)
 	base := filepath.Base(path)
 

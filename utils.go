@@ -55,7 +55,7 @@ func checkMD5Sum(path string) (ignore bool) {
 	return false
 }
 
-func GetAllFiles(paths []string, languages map[string]*Language, opts ClocOptions) (filenum, maxPathLen int) {
+func GetAllFiles(paths []string, languages map[string]*Language, opts *ClocOptions) (filenum, maxPathLen int) {
 	maxPathLen = 0
 	for _, root := range paths {
 		vcsInRoot := isVCSDir(root)

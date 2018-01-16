@@ -102,7 +102,7 @@ func main() {
 		}
 
 		for _, file := range language.Files {
-			cf := gocloc.AnalyzeFile(file, language, &clocOpts)
+			cf := gocloc.AnalyzeFile(file, language, clocOpts)
 			cf.Lang = language.Name
 
 			language.Code += cf.Code
