@@ -1,4 +1,4 @@
-gocloc
+^gocloc$
 *.sw?
 GTAGS
 GPATH

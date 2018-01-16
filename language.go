@@ -15,6 +15,15 @@ import (
 	enry "gopkg.in/src-d/enry.v1"
 )
 
+// ClocLanguage is provide for xml-cloc format
+type ClocLanguage struct {
+	Name       string `xml:"name,attr"`
+	FilesCount int32  `xml:"files_count,attr"`
+	Code       int32  `xml:"code,attr"`
+	Comments   int32  `xml:"comment,attr"`
+	Blanks     int32  `xml:"blank,attr"`
+}
+
 type Language struct {
 	name         string
 	lineComments []string
