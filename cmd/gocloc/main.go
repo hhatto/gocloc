@@ -24,8 +24,21 @@ const ROW string = "------------------------------------------------------------
 
 var rowLen = 79
 
+type CmdOptions struct {
+	Byfile         bool   `long:"by-file" description:"report results for every encountered source file"`
+	SortTag        string `long:"sort" default:"code" description:"sort based on a certain column"`
+	OutputType     string `long:"output-type" default:"default" description:"output type [values: default,cloc-xml,sloccount]"`
+	ExcludeExt     string `long:"exclude-ext" description:"exclude file name extensions (separated commas)"`
+	IncludeLang    string `long:"include-lang" description:"include language name (separated commas)"`
+	MatchDir       string `long:"match-d" description:"include dir name (regex)"`
+	NotMatchDir    string `long:"not-match-d" description:"exclude dir name (regex)"`
+	Debug          bool   `long:"debug" description:"dump debug log for developer"`
+	SkipDuplicated bool   `long:"skip-duplicated" description:"skip duplicated files"`
+	ShowLang       bool   `long:"show-lang" description:"print about all languages and extensions"`
+}
+
 func main() {
-	var opts gocloc.Options
+	var opts CmdOptions
 	clocOpts := gocloc.NewClocOptions()
 	// parse command line options
 	parser := flags.NewParser(&opts, flags.Default)
@@ -37,8 +50,11 @@ func main() {
 		return
 	}
 
+	// value for language result
+	languages := gocloc.NewDefinedLanguages()
+
 	if opts.ShowLang {
-		gocloc.PrintDefinedLanguages()
+		fmt.Println(languages.GetFormattedString())
 		return
 	}
 
@@ -65,12 +81,9 @@ func main() {
 		clocOpts.ReMatchDir = regexp.MustCompile(opts.MatchDir)
 	}
 
-	// value for language result
-	languages := gocloc.GetDefinedLanguages()
-
 	// setup option for include languages
 	for _, lang := range strings.Split(opts.IncludeLang, ",") {
-		if _, ok := languages[lang]; ok {
+		if _, ok := languages.Langs[lang]; ok {
 			clocOpts.IncludeLangs[lang] = struct{}{}
 		}
 	}
@@ -78,11 +91,19 @@ func main() {
 	clocOpts.Debug = opts.Debug
 	clocOpts.SkipDuplicated = opts.SkipDuplicated
 
-	total := gocloc.NewLanguage("TOTAL", []string{}, "", "")
-	num, maxPathLen := gocloc.GetAllFiles(paths, languages, clocOpts)
+	processor := gocloc.NewProcessor(languages, clocOpts)
+	result, err := processor.Analyze(paths)
+	if err != nil {
+		fmt.Printf("fail gocloc analyze. error: %v\n", err)
+		return
+	}
+
+	total := result.Total
+	maxPathLen := result.MaxPathLength
+	clocFiles := result.Files
+	clocLangs := result.Languages
 	headerLen := 28
 	header := LANG_HEADER
-	clocFiles := make(map[string]*gocloc.ClocFile, num)
 
 	// write header
 	if opts.Byfile {
@@ -94,34 +115,6 @@ func main() {
 		fmt.Printf("%.[2]*[1]s\n", ROW, rowLen)
 		fmt.Printf("%-[2]*[1]s %[3]s\n", header, headerLen, COMMON_HEADER)
 		fmt.Printf("%.[2]*[1]s\n", ROW, rowLen)
-	}
-
-	for _, language := range languages {
-		if language.Printed {
-			continue
-		}
-
-		for _, file := range language.Files {
-			cf := gocloc.AnalyzeFile(file, language, clocOpts)
-			cf.Lang = language.Name
-
-			language.Code += cf.Code
-			language.Comments += cf.Comments
-			language.Blanks += cf.Blanks
-			clocFiles[file] = cf
-		}
-
-		files := int32(len(language.Files))
-		if len(language.Files) <= 0 {
-			continue
-		}
-
-		language.Printed = true
-
-		total.Total += files
-		total.Blanks += language.Blanks
-		total.Comments += language.Comments
-		total.Code += language.Code
 	}
 
 	// write result
@@ -168,8 +161,8 @@ func main() {
 		}
 	} else {
 		var sortedLanguages gocloc.Languages
-		for _, language := range languages {
-			if len(language.Files) != 0 && language.Printed {
+		for _, language := range clocLangs {
+			if len(language.Files) != 0 {
 				sortedLanguages = append(sortedLanguages, *language)
 			}
 		}

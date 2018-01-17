@@ -8,5 +8,9 @@ build:
 update-package:
 	go get -u github.com/hhatto/gocloc
 
+run-example:
+	go run examples/languages.go
+	go run examples/files.go
+
 test:
 	go test -v

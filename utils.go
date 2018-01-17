@@ -55,13 +55,28 @@ func checkMD5Sum(path string) (ignore bool) {
 	return false
 }
 
-func GetAllFiles(paths []string, languages map[string]*Language, opts *ClocOptions) (filenum, maxPathLen int) {
-	maxPathLen = 0
+func isVCSDir(path string) bool {
+	if len(path) > 1 && path[0] == os.PathSeparator {
+		path = path[1:]
+	}
+	vcsDirs := []string{".bzr", ".cvs", ".hg", ".git", ".svn"}
+	for _, dir := range vcsDirs {
+		if strings.Contains(path, dir) {
+			return true
+		}
+	}
+	return false
+}
+
+// getAllFiles return all of the files to be analyzed in paths.
+func getAllFiles(paths []string, languages *DefinedLanguages, opts *ClocOptions) (result map[string]*Language, err error) {
+	result = make(map[string]*Language, 0)
+
 	for _, root := range paths {
 		vcsInRoot := isVCSDir(root)
-		err := filepath.Walk(root, func(path string, info os.FileInfo, err error) error {
+		err = filepath.Walk(root, func(path string, info os.FileInfo, err error) error {
 			if err != nil {
-				return nil
+				return err
 			}
 			if info.IsDir() {
 				return nil
@@ -103,33 +118,18 @@ func GetAllFiles(paths []string, languages map[string]*Language, opts *ClocOptio
 						}
 					}
 
-					languages[targetExt].Files = append(languages[targetExt].Files, path)
-					filenum++
-					l := len(path)
-					if maxPathLen < l {
-						maxPathLen = l
+					if _, ok := result[targetExt]; !ok {
+						result[targetExt] = NewLanguage(
+							languages.Langs[targetExt].Name,
+							languages.Langs[targetExt].lineComments,
+							languages.Langs[targetExt].multiLine,
+							languages.Langs[targetExt].multiLineEnd)
 					}
+					result[targetExt].Files = append(result[targetExt].Files, path)
 				}
 			}
 			return nil
 		})
-
-		if err != nil {
-			fmt.Println(err)
-		}
 	}
 	return
-}
-
-func isVCSDir(path string) bool {
-	if len(path) > 1 && path[0] == os.PathSeparator {
-		path = path[1:]
-	}
-	vcsDirs := []string{".bzr", ".cvs", ".hg", ".git", ".svn"}
-	for _, dir := range vcsDirs {
-		if strings.Contains(path, dir) {
-			return true
-		}
-	}
-	return false
 }
