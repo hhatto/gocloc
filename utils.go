@@ -9,8 +9,6 @@ import (
 	"strings"
 )
 
-var fileCache = make(map[string]struct{})
-
 func trimBOM(line string) string {
 	l := len(line)
 	if l >= 3 {
@@ -38,7 +36,7 @@ func containComments(line, commentStart, commentEnd string) bool {
 	return inComments != 0
 }
 
-func checkMD5Sum(path string) (ignore bool) {
+func checkMD5Sum(path string, fileCache map[string]struct{}) (ignore bool) {
 	content, err := ioutil.ReadFile(path)
 	if err != nil {
 		return true
@@ -71,6 +69,7 @@ func isVCSDir(path string) bool {
 // getAllFiles return all of the files to be analyzed in paths.
 func getAllFiles(paths []string, languages *DefinedLanguages, opts *ClocOptions) (result map[string]*Language, err error) {
 	result = make(map[string]*Language, 0)
+	fileCache := make(map[string]struct{})
 
 	for _, root := range paths {
 		vcsInRoot := isVCSDir(root)
@@ -109,7 +108,7 @@ func getAllFiles(paths []string, languages *DefinedLanguages, opts *ClocOptions)
 					}
 
 					if !opts.SkipDuplicated {
-						ignore := checkMD5Sum(path)
+						ignore := checkMD5Sum(path, fileCache)
 						if ignore {
 							if opts.Debug {
 								fmt.Printf("[ignore=%v] find same md5\n", path)
