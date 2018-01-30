@@ -17,12 +17,12 @@ func TestContainComments(t *testing.T) {
 }
 
 func TestCheckMD5SumIgnore(t *testing.T) {
-	fileCache = make(map[string]struct{})
+	fileCache := make(map[string]struct{})
 
-	if checkMD5Sum("./utils_test.go") {
+	if checkMD5Sum("./utils_test.go", fileCache) {
 		t.Errorf("invalid sequence")
 	}
-	if !checkMD5Sum("./utils_test.go") {
+	if !checkMD5Sum("./utils_test.go", fileCache) {
 		t.Errorf("invalid sequence")
 	}
 }
