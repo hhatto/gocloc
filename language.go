@@ -107,6 +107,7 @@ var Exts = map[string]string{
 	"ex":          "Elixir",
 	"exs":         "Elixir",
 	"feature":     "Gherkin",
+	"fish":        "Fish",
 	"fr":          "Frege",
 	"fst":         "F*",
 	"F#":          "F#",   // deplicated F#/GLSL
@@ -433,6 +434,7 @@ func NewDefinedLanguages() *DefinedLanguages {
 			"Elixir":              NewLanguage("Elixir", []string{"#"}, "", ""),
 			"Erlang":              NewLanguage("Erlang", []string{"%"}, "", ""),
 			"Expect":              NewLanguage("Expect", []string{"#"}, "", ""),
+			"Fish":                NewLanguage("Fish", []string{"#"}, "", ""),
 			"Frege":               NewLanguage("Frege", []string{"--"}, "{-", "-}"),
 			"F*":                  NewLanguage("F*", []string{"(*", "//"}, "(*", "*)"),
 			"F#":                  NewLanguage("F#", []string{"(*"}, "(*", "*)"),
