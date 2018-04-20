@@ -3,3 +3,6 @@
 GTAGS
 GPATH
 GRTAGS
+
+Gopkg.lock
+vendor/
