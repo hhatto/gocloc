@@ -174,6 +174,7 @@ var Exts = map[string]string{
 	"mm":          "Objective-C++",
 	"maven":       "Maven",
 	"makefile":    "Makefile",
+	"meson":       "Meson",
 	"mustache":    "Mustache",
 	"m4":          "M4",
 	"l":           "lex",
@@ -315,6 +316,8 @@ func getFileType(path string, opts *ClocOptions) (ext string, ok bool) {
 	}
 
 	switch base {
+	case "meson.build", "meson_options.txt":
+		return "meson", true
 	case "CMakeLists.txt":
 		return "cmake", true
 	case "configure.ac":
@@ -478,6 +481,7 @@ func NewDefinedLanguages() *DefinedLanguages {
 			"MATLAB":              NewLanguage("MATLAB", []string{"%"}, "%{", "}%"),
 			"Mercury":             NewLanguage("Mercury", []string{"%"}, "/*", "*/"),
 			"Maven":               NewLanguage("Maven", []string{"<!--"}, "<!--", "-->"),
+			"Meson":               NewLanguage("Meson", []string{"#"}, "", ""),
 			"Mustache":            NewLanguage("Mustache", []string{}, "{{!", "}}"),
 			"M4":                  NewLanguage("M4", []string{"#"}, "", ""),
 			"Nim":                 NewLanguage("Nim", []string{"#"}, "#[", "]#"),
