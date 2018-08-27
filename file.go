@@ -97,39 +97,54 @@ func AnalyzeFile(filename string, language *Language, opts *ClocOptions) *ClocFi
 			}
 		}
 
-		if language.multiLine != "" {
-			if strings.HasPrefix(line, language.multiLine) {
-				isInComments = true
-			} else if strings.HasSuffix(line, language.multiLineEnd) {
-				isInComments = true
-			} else if containComments(line, language.multiLine, language.multiLineEnd) {
-				isInComments = true
-				if (language.multiLine != language.multiLineEnd) &&
-					(strings.HasSuffix(line, language.multiLine) || strings.HasPrefix(line, language.multiLineEnd)) {
-					clocFile.Code++
-					if opts.Debug {
-						fmt.Printf("[CODE,cd:%d,cm:%d,bk:%d,iscm:%v] %s\n",
-							clocFile.Code, clocFile.Comments, clocFile.Blanks, isInComments, lineOrg)
+		isCode := false
+		multiLine := ""
+		multiLineEnd := ""
+		for i := range language.multiLines {
+			multiLine = language.multiLines[i][0]
+			multiLineEnd = language.multiLines[i][1]
+			if multiLine != "" {
+				if strings.HasPrefix(line, multiLine) {
+					isInComments = true
+				} else if strings.HasSuffix(line, multiLineEnd) {
+					isInComments = true
+				} else if containComments(line, multiLine, multiLineEnd) {
+					isInComments = true
+					if (multiLine != multiLineEnd) &&
+						(strings.HasSuffix(line, multiLine) || strings.HasPrefix(line, multiLineEnd)) {
+						clocFile.Code++
+						isCode = true
+						if opts.Debug {
+							fmt.Printf("[CODE,cd:%d,cm:%d,bk:%d,iscm:%v] %s\n",
+								clocFile.Code, clocFile.Comments, clocFile.Blanks, isInComments, lineOrg)
+						}
+						continue
 					}
-					continue
+				}
+				if isInComments {
+					break
 				}
 			}
 		}
 
+		if isInComments && isCode {
+			continue
+		}
+
 		if isInComments {
-			if language.multiLine == language.multiLineEnd {
-				if strings.Count(line, language.multiLineEnd) == 2 {
+			if multiLine == multiLineEnd {
+				if strings.Count(line, multiLineEnd) == 2 {
 					isInComments = false
 					isInCommentsSame = false
-				} else if strings.HasPrefix(line, language.multiLineEnd) ||
-					strings.HasSuffix(line, language.multiLineEnd) {
+				} else if strings.HasPrefix(line, multiLineEnd) ||
+					strings.HasSuffix(line, multiLineEnd) {
 					if isInCommentsSame {
 						isInComments = false
 					}
 					isInCommentsSame = !isInCommentsSame
 				}
 			} else {
-				if strings.Contains(line, language.multiLineEnd) {
+				if strings.Contains(line, multiLineEnd) {
 					isInComments = false
 				}
 			}

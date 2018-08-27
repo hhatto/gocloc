@@ -20,7 +20,7 @@ func NewProcessor(langs *DefinedLanguages, options *ClocOptions) *Processor {
 }
 
 func (p *Processor) Analyze(paths []string) (*Result, error) {
-	total := NewLanguage("TOTAL", []string{}, "", "")
+	total := NewLanguage("TOTAL", []string{}, [][]string{{"", ""}})
 	languages, err := getAllFiles(paths, p.langs, p.opts)
 	if err != nil {
 		return nil, err
