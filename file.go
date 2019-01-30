@@ -3,6 +3,7 @@ package gocloc
 import (
 	"bufio"
 	"fmt"
+	"io"
 	"os"
 	"strings"
 )
@@ -31,6 +32,17 @@ func (cf ClocFiles) Less(i, j int) bool {
 }
 
 func AnalyzeFile(filename string, language *Language, opts *ClocOptions) *ClocFile {
+	fp, err := os.Open(filename)
+	if err != nil {
+		// ignore error
+		return &ClocFile{Name: filename}
+	}
+	defer fp.Close()
+
+	return AnalyzeReader(filename, language, fp, opts)
+}
+
+func AnalyzeReader(filename string, language *Language, file io.Reader, opts *ClocOptions) *ClocFile {
 	if opts.Debug {
 		fmt.Printf("filename=%v\n", filename)
 	}
@@ -39,18 +51,12 @@ func AnalyzeFile(filename string, language *Language, opts *ClocOptions) *ClocFi
 		Name: filename,
 	}
 
-	fp, err := os.Open(filename)
-	if err != nil {
-		return clocFile // ignore error
-	}
-	defer fp.Close()
-
 	isFirstLine := true
 	isInComments := false
 	isInCommentsSame := false
 	buf := getByteSlice()
 	defer putByteSlice(buf)
-	scanner := bufio.NewScanner(fp)
+	scanner := bufio.NewScanner(file)
 	scanner.Buffer(buf, 1024*1024)
 	for scanner.Scan() {
 		lineOrg := scanner.Text()

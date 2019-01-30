@@ -1,6 +1,7 @@
 package gocloc
 
 import (
+	"bytes"
 	"io/ioutil"
 	"os"
 	"testing"
@@ -171,6 +172,32 @@ func main() {
 		t.Errorf("invalid logic. comments=%v", clocFile.Comments)
 	}
 	if clocFile.Code != 5 {
+		t.Errorf("invalid logic. code=%v", clocFile.Code)
+	}
+}
+
+func TestAnalayzeReader(t *testing.T) {
+	buf := bytes.NewBuffer([]byte(`#!/bin/python
+
+class A:
+	"""comment1
+	comment2
+	comment3
+	"""
+	pass
+`))
+
+	language := NewLanguage("Python", []string{"#"}, [][]string{{"\"\"\"", "\"\"\""}})
+	clocOpts := NewClocOptions()
+	clocFile := AnalyzeReader("test.py", language, buf, clocOpts)
+
+	if clocFile.Blanks != 1 {
+		t.Errorf("invalid logic. blanks=%v", clocFile.Blanks)
+	}
+	if clocFile.Comments != 4 {
+		t.Errorf("invalid logic. comments=%v", clocFile.Comments)
+	}
+	if clocFile.Code != 3 {
 		t.Errorf("invalid logic. code=%v", clocFile.Code)
 	}
 }
