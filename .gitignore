@@ -6,3 +6,5 @@ GRTAGS
 
 Gopkg.lock
 vendor/
+gocloc
+dist/
