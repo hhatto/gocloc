@@ -11,7 +11,7 @@ install:
   - go get -v
 
 script:
-  - diff <(goimports -d .) <(printf "")
+  - diff <(goimports -d *.go cmd/gocloc/main.go examples/*) <(printf "")
   - go test -v ./
 
 deploy:
