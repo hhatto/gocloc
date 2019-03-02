@@ -36,7 +36,7 @@ var rowLen = 79
 type CmdOptions struct {
 	Byfile         bool   `long:"by-file" description:"report results for every encountered source file"`
 	SortTag        string `long:"sort" default:"code" description:"sort based on a certain column"`
-	OutputType     string `long:"output-type" default:"default" description:"output type [values: default,cloc-xml,sloccount]"`
+	OutputType     string `long:"output-type" default:"default" description:"output type [values: default,cloc-xml,sloccount,json]"`
 	ExcludeExt     string `long:"exclude-ext" description:"exclude file name extensions (separated commas)"`
 	IncludeLang    string `long:"include-lang" description:"include language name (separated commas)"`
 	MatchDir       string `long:"match-d" description:"include dir name (regex)"`
