@@ -9,11 +9,11 @@ import (
 )
 
 type ClocFile struct {
-	Code     int32  `xml:"code,attr"`
-	Comments int32  `xml:"comment,attr"`
-	Blanks   int32  `xml:"blank,attr"`
-	Name     string `xml:"name,attr"`
-	Lang     string `xml:"language,attr"`
+	Code     int32  `xml:"code,attr" json:"code"`
+	Comments int32  `xml:"comment,attr" json:"comment"`
+	Blanks   int32  `xml:"blank,attr" json:"blank"`
+	Name     string `xml:"name,attr" json:"name"`
+	Lang     string `xml:"language,attr" json"language"`
 }
 
 type ClocFiles []ClocFile

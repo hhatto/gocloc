@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"os"
 	"regexp"
@@ -160,6 +161,14 @@ func main() {
 				fmt.Printf("%v\t%v\t%v\t%v\n",
 					file.Code, file.Lang, p, file.Name)
 			}
+		case OutputTypeJSON:
+			jsonResult := gocloc.NewJSONFilesResultFromCloc(total, sortedFiles)
+			buf, err := json.Marshal(jsonResult)
+			if err != nil {
+				fmt.Println(err)
+				panic("json marshal error")
+			}
+			os.Stdout.Write(buf)
 		default:
 			for _, file := range sortedFiles {
 				clocFile := file
@@ -180,6 +189,14 @@ func main() {
 		case OutputTypeClocXML:
 			xmlResult := gocloc.NewXMLResultFromCloc(total, sortedLanguages, gocloc.XMLResultWithLangs)
 			xmlResult.Encode()
+		case OutputTypeJSON:
+			jsonResult := gocloc.NewJSONLanguagesResultFromCloc(total, sortedLanguages)
+			buf, err := json.Marshal(jsonResult)
+			if err != nil {
+				fmt.Println(err)
+				panic("json marshal error")
+			}
+			os.Stdout.Write(buf)
 		default:
 			for _, language := range sortedLanguages {
 				fmt.Printf("%-27v %6v %14v %14v %14v\n",

@@ -15,13 +15,13 @@ import (
 	enry "gopkg.in/src-d/enry.v1"
 )
 
-// ClocLanguage is provide for xml-cloc format
+// ClocLanguage is provide for xml-cloc and json format
 type ClocLanguage struct {
-	Name       string `xml:"name,attr"`
-	FilesCount int32  `xml:"files_count,attr"`
-	Code       int32  `xml:"code,attr"`
-	Comments   int32  `xml:"comment,attr"`
-	Blanks     int32  `xml:"blank,attr"`
+	Name       string `xml:"name,attr" json:"name,omitempty"`
+	FilesCount int32  `xml:"files_count,attr" json:"files"`
+	Code       int32  `xml:"code,attr" json:"code"`
+	Comments   int32  `xml:"comment,attr" json:"comment"`
+	Blanks     int32  `xml:"blank,attr" json:"blank"`
 }
 
 type Language struct {
