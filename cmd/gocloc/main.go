@@ -11,14 +11,19 @@ import (
 	flags "github.com/jessevdk/go-flags"
 )
 
+// OutputTypeDefault is cloc's text output format for --output-type option
 const OutputTypeDefault string = "default"
-const OutputTypeClocXml string = "cloc-xml"
+// OutputTypeClocXML is Cloc's XML output format for --output-type option
+const OutputTypeClocXML string = "cloc-xml"
+// OutputTypeSloccount is Sloccount output format for --output-type option
 const OutputTypeSloccount string = "sloccount"
+// OutputTypeJSON is JSON output format for --output-type option
+const OutputTypeJSON string = "json"
 
-const FILE_HEADER string = "File"
-const LANG_HEADER string = "Language"
-const COMMON_HEADER string = "files          blank        comment           code"
-const ROW string = "-------------------------------------------------------------------------" +
+const fileHeader string = "File"
+const languageHeader string = "Language"
+const commonHeader string = "files          blank        comment           code"
+const defaultOutputSeparator string = "-------------------------------------------------------------------------" +
 	"-------------------------------------------------------------------------" +
 	"-------------------------------------------------------------------------"
 
@@ -103,18 +108,18 @@ func main() {
 	clocFiles := result.Files
 	clocLangs := result.Languages
 	headerLen := 28
-	header := LANG_HEADER
+	header := languageHeader
 
 	// write header
 	if opts.Byfile {
 		headerLen = maxPathLen + 1
-		rowLen = maxPathLen + len(COMMON_HEADER) + 2
-		header = FILE_HEADER
+		rowLen = maxPathLen + len(commonHeader) + 2
+		header = fileHeader
 	}
 	if opts.OutputType == OutputTypeDefault {
-		fmt.Printf("%.[2]*[1]s\n", ROW, rowLen)
-		fmt.Printf("%-[2]*[1]s %[3]s\n", header, headerLen, COMMON_HEADER)
-		fmt.Printf("%.[2]*[1]s\n", ROW, rowLen)
+		fmt.Printf("%.[2]*[1]s\n", defaultOutputSeparator, rowLen)
+		fmt.Printf("%-[2]*[1]s %[3]s\n", header, headerLen, commonHeader)
+		fmt.Printf("%.[2]*[1]s\n", defaultOutputSeparator, rowLen)
 	}
 
 	// write result
@@ -126,7 +131,7 @@ func main() {
 		sort.Sort(sortedFiles)
 
 		switch opts.OutputType {
-		case OutputTypeClocXml:
+		case OutputTypeClocXML:
 			t := gocloc.XMLTotalFiles{
 				Code:    total.Code,
 				Comment: total.Comments,
@@ -169,7 +174,7 @@ func main() {
 		sort.Sort(sortedLanguages)
 
 		switch opts.OutputType {
-		case OutputTypeClocXml:
+		case OutputTypeClocXML:
 			var langs []gocloc.ClocLanguage
 			for _, language := range sortedLanguages {
 				c := gocloc.ClocLanguage{
@@ -205,7 +210,7 @@ func main() {
 
 	// write footer
 	if opts.OutputType == OutputTypeDefault {
-		fmt.Printf("%.[2]*[1]s\n", ROW, rowLen)
+		fmt.Printf("%.[2]*[1]s\n", defaultOutputSeparator, rowLen)
 		if opts.Byfile {
 			fmt.Printf("%-[1]*[2]v %6[3]v %14[4]v %14[5]v %14[6]v\n",
 				maxPathLen, "TOTAL", total.Total, total.Blanks, total.Comments, total.Code)
@@ -213,6 +218,6 @@ func main() {
 			fmt.Printf("%-27v %6v %14v %14v %14v\n",
 				"TOTAL", total.Total, total.Blanks, total.Comments, total.Code)
 		}
-		fmt.Printf("%.[2]*[1]s\n", ROW, rowLen)
+		fmt.Printf("%.[2]*[1]s\n", defaultOutputSeparator, rowLen)
 	}
 }
