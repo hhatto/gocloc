@@ -13,10 +13,13 @@ import (
 
 // OutputTypeDefault is cloc's text output format for --output-type option
 const OutputTypeDefault string = "default"
+
 // OutputTypeClocXML is Cloc's XML output format for --output-type option
 const OutputTypeClocXML string = "cloc-xml"
+
 // OutputTypeSloccount is Sloccount output format for --output-type option
 const OutputTypeSloccount string = "sloccount"
+
 // OutputTypeJSON is JSON output format for --output-type option
 const OutputTypeJSON string = "json"
 
@@ -175,30 +178,7 @@ func main() {
 
 		switch opts.OutputType {
 		case OutputTypeClocXML:
-			var langs []gocloc.ClocLanguage
-			for _, language := range sortedLanguages {
-				c := gocloc.ClocLanguage{
-					Name:       language.Name,
-					FilesCount: int32(len(language.Files)),
-					Code:       language.Code,
-					Comments:   language.Comments,
-					Blanks:     language.Blanks,
-				}
-				langs = append(langs, c)
-			}
-			t := gocloc.XMLTotalLanguages{
-				Code:     total.Code,
-				Comment:  total.Comments,
-				Blank:    total.Blanks,
-				SumFiles: total.Total,
-			}
-			f := &gocloc.XMLResultLanguages{
-				Languages: langs,
-				Total:     t,
-			}
-			xmlResult := gocloc.XMLResult{
-				XMLLanguages: f,
-			}
+			xmlResult := gocloc.NewXMLResultFromCloc(total, sortedLanguages, gocloc.XMLResultWithLangs)
 			xmlResult.Encode()
 		default:
 			for _, language := range sortedLanguages {
