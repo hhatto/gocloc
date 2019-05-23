@@ -64,6 +64,10 @@ func AnalyzeReader(filename string, language *Language, file io.Reader, opts *Cl
 
 		if len(strings.TrimSpace(line)) == 0 {
 			clocFile.Blanks++
+			if opts.OnBlank != nil {
+				opts.OnBlank(line)
+			}
+
 			if opts.Debug {
 				fmt.Printf("[BLNK,cd:%d,cm:%d,bk:%d,iscm:%v] %s\n",
 					clocFile.Code, clocFile.Comments, clocFile.Blanks, isInComments, lineOrg)
@@ -74,6 +78,10 @@ func AnalyzeReader(filename string, language *Language, file io.Reader, opts *Cl
 		// shebang line is 'code'
 		if isFirstLine && strings.HasPrefix(line, "#!") {
 			clocFile.Code++
+			if opts.OnCode != nil {
+				opts.OnCode(line)
+			}
+
 			isFirstLine = false
 			if opts.Debug {
 				fmt.Printf("[CODE,cd:%d,cm:%d,bk:%d,iscm:%v] %s\n",
@@ -90,6 +98,10 @@ func AnalyzeReader(filename string, language *Language, file io.Reader, opts *Cl
 			for _, singleComment := range language.lineComments {
 				if strings.HasPrefix(line, singleComment) {
 					clocFile.Comments++
+					if opts.OnComment != nil {
+						opts.OnComment(line)
+					}
+
 					isSingleComment = true
 					break
 				}
@@ -119,6 +131,10 @@ func AnalyzeReader(filename string, language *Language, file io.Reader, opts *Cl
 					if (multiLine != multiLineEnd) &&
 						(strings.HasSuffix(line, multiLine) || strings.HasPrefix(line, multiLineEnd)) {
 						clocFile.Code++
+						if opts.OnCode != nil {
+							opts.OnCode(line)
+						}
+
 						isCode = true
 						if opts.Debug {
 							fmt.Printf("[CODE,cd:%d,cm:%d,bk:%d,iscm:%v] %s\n",
@@ -155,6 +171,10 @@ func AnalyzeReader(filename string, language *Language, file io.Reader, opts *Cl
 				}
 			}
 			clocFile.Comments++
+			if opts.OnComment != nil {
+				opts.OnComment(line)
+			}
+
 			if opts.Debug {
 				fmt.Printf("[COMM,cd:%d,cm:%d,bk:%d,iscm:%v,iscms:%v] %s\n",
 					clocFile.Code, clocFile.Comments, clocFile.Blanks, isInComments, isInCommentsSame, lineOrg)
@@ -163,6 +183,10 @@ func AnalyzeReader(filename string, language *Language, file io.Reader, opts *Cl
 		}
 
 		clocFile.Code++
+		if opts.OnCode != nil {
+			opts.OnCode(line)
+		}
+
 		if opts.Debug {
 			fmt.Printf("[CODE,cd:%d,cm:%d,bk:%d,iscm:%v] %s\n",
 				clocFile.Code, clocFile.Comments, clocFile.Blanks, isInComments, lineOrg)
