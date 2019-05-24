@@ -229,6 +229,7 @@ var Exts = map[string]string{
 	"tcl":         "Tcl/Tk",
 	"toml":        "TOML",
 	"ts":          "TypeScript",
+	"tsx":         "TypeScript",
 	"mat":         "Unity-Prefab",
 	"prefab":      "Unity-Prefab",
 	"Coq":         "Coq",
