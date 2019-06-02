@@ -11,7 +11,7 @@ matrix:
 
 install:
   - go get -u golang.org/x/tools/cmd/goimports
-  - go get -v
+  - go mod download
 
 script:
   - diff <(goimports -d *.go cmd/gocloc/main.go examples/*) <(printf "")
