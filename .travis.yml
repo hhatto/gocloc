@@ -1,14 +1,15 @@
 language: go
+env:
+  global:
+    - GO111MODULE=on
 
 matrix:
   include:
-    - go: 1.x
+    - go: 1.11.x
       env: DEPLOY_BUILD=true
     - go: tip
 
 install:
-  - go get -u github.com/golang/dep/cmd/dep
-  - dep ensure
   - go get -u golang.org/x/tools/cmd/goimports
   - go get -v
 
