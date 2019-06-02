@@ -10,7 +10,7 @@ matrix:
     - go: tip
 
 install:
-  - go get -u golang.org/x/tools/cmd/goimports
+  - GO111MODULE=off go get -u golang.org/x/tools/cmd/goimports
   - go mod download
 
 script:
