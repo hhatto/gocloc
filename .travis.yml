@@ -9,8 +9,10 @@ matrix:
       env: DEPLOY_BUILD=true
     - go: tip
 
-install:
+before_install:
   - go get -u golang.org/x/tools/cmd/goimports
+
+install:
   - go mod download
 
 script:
