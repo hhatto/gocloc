@@ -250,6 +250,7 @@ var Exts = map[string]string{
 	"yml":         "YAML",
 	"y":           "Yacc",
 	"zep":         "Zephir",
+	"zig":         "Zig",
 	"zsh":         "Zsh",
 }
 
@@ -552,6 +553,7 @@ func NewDefinedLanguages() *DefinedLanguages {
 			"YAML":                NewLanguage("YAML", []string{"#"}, [][]string{{"", ""}}),
 			"Yacc":                NewLanguage("Yacc", []string{"//"}, [][]string{{"/*", "*/"}}),
 			"Zephir":              NewLanguage("Zephir", []string{"//"}, [][]string{{"/*", "*/"}}),
+			"Zig":                 NewLanguage("Zig", []string{"//", "///"}, [][]string{{"", ""}}),
 			"Zsh":                 NewLanguage("Zsh", []string{"#"}, [][]string{{"", ""}}),
 		},
 	}
