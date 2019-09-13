@@ -86,12 +86,17 @@ func getAllFiles(paths []string, languages *DefinedLanguages, opts *ClocOptions)
 				return nil
 			}
 
-			// check not-match directory
+			// check match directory & file options
+			if opts.ReNotMatch != nil && opts.ReNotMatch.MatchString(info.Name()) {
+				return nil
+			}
+			if opts.ReMatch != nil && !opts.ReMatch.MatchString(info.Name()) {
+				return nil
+			}
 			dir := filepath.Dir(path)
 			if opts.ReNotMatchDir != nil && opts.ReNotMatchDir.MatchString(dir) {
 				return nil
 			}
-
 			if opts.ReMatchDir != nil && !opts.ReMatchDir.MatchString(dir) {
 				return nil
 			}
