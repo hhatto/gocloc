@@ -47,6 +47,8 @@ type CmdOptions struct {
 	OutputType     string `long:"output-type" default:"default" description:"output type [values: default,cloc-xml,sloccount,json]"`
 	ExcludeExt     string `long:"exclude-ext" description:"exclude file name extensions (separated commas)"`
 	IncludeLang    string `long:"include-lang" description:"include language name (separated commas)"`
+	Match          string `long:"match" description:"include file name (regex)"`
+	NotMatch       string `long:"not-match" description:"exclude file name (regex)"`
 	MatchDir       string `long:"match-d" description:"include dir name (regex)"`
 	NotMatchDir    string `long:"not-match-d" description:"exclude dir name (regex)"`
 	Debug          bool   `long:"debug" description:"dump debug log for developer"`
@@ -239,12 +241,18 @@ func main() {
 		}
 	}
 
-	// setup option for not match directory
-	if opts.NotMatchDir != "" {
-		clocOpts.ReNotMatchDir = regexp.MustCompile(opts.NotMatchDir)
+	// directory and file matching options
+	if opts.Match != "" {
+		clocOpts.ReMatch = regexp.MustCompile(opts.Match)
+	}
+	if opts.NotMatch != "" {
+		clocOpts.ReNotMatch = regexp.MustCompile(opts.NotMatch)
 	}
 	if opts.MatchDir != "" {
 		clocOpts.ReMatchDir = regexp.MustCompile(opts.MatchDir)
+	}
+	if opts.NotMatchDir != "" {
+		clocOpts.ReNotMatchDir = regexp.MustCompile(opts.NotMatchDir)
 	}
 
 	// setup option for include languages

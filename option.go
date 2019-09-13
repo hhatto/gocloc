@@ -8,6 +8,8 @@ type ClocOptions struct {
 	SkipDuplicated bool
 	ExcludeExts    map[string]struct{}
 	IncludeLangs   map[string]struct{}
+	ReNotMatch     *regexp.Regexp
+	ReMatch        *regexp.Regexp
 	ReNotMatchDir  *regexp.Regexp
 	ReMatchDir     *regexp.Regexp
 
