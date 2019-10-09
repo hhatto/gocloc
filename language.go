@@ -230,7 +230,7 @@ var Exts = map[string]string{
 	"sty":         "TeX",
 	"tcl":         "Tcl/Tk",
 	"toml":        "TOML",
-	"ts":          "TypeScript",
+	"TypeScript":  "TypeScript",
 	"tsx":         "TypeScript",
 	"tf":          "HCL",
 	"mat":         "Unity-Prefab",
@@ -313,7 +313,7 @@ func getFileType(path string, opts *ClocOptions) (ext string, ok bool) {
 	base := filepath.Base(path)
 
 	switch ext {
-	case ".m", ".v", ".fs", ".r":
+	case ".m", ".v", ".fs", ".r", ".ts":
 		content, err := ioutil.ReadFile(path)
 		if err != nil {
 			return "", false
@@ -387,6 +387,8 @@ func lang2exts(lang string) (exts string) {
 				if ext == "GLSL" {
 					ext = "fs"
 				}
+			case "TypeScript":
+				ext = "ts"
 			}
 			es = append(es, ext)
 		}
