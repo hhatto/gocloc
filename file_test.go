@@ -309,6 +309,52 @@ func TestAnalyzeFile4JavaWithCommentInCodeLine(t *testing.T) {
 	}
 }
 
+func TestAnalyzeFile4Makefile(t *testing.T) {
+	tmpfile, err := ioutil.TempFile("", "Makefile.am")
+	if err != nil {
+		t.Logf("ioutil.TempFile() error. err=[%v]", err)
+		return
+	}
+	defer os.Remove(tmpfile.Name())
+
+	tmpfile.Write([]byte(`# This is a simple Makefile with comments
+	.PHONY: test build
+
+	build:
+		mkdir -p bin
+		GO111MODULE=on go build -o ./bin/gocloc cmd/gocloc/main.go
+
+	# Another comment
+	update-package:
+		GO111MODULE=on go get -u github.com/hhatto/gocloc
+
+	run-example:
+		GO111MODULE=on go run examples/languages.go
+		GO111MODULE=on go run examples/files.go
+
+	test:
+		GO111MODULE=on go test -v
+`))
+
+	language := NewLanguage("Makefile", []string{"#"}, [][]string{{"", ""}})
+	clocOpts := NewClocOptions()
+	clocFile := AnalyzeFile(tmpfile.Name(), language, clocOpts)
+	tmpfile.Close()
+
+	if clocFile.Blanks != 4 {
+		t.Errorf("invalid logic. blanks=%v", clocFile.Blanks)
+	}
+	if clocFile.Comments != 2 {
+		t.Errorf("invalid logic. comments=%v", clocFile.Comments)
+	}
+	if clocFile.Code != 11 {
+		t.Errorf("invalid logic. code=%v", clocFile.Code)
+	}
+	if clocFile.Lang != "Makefile" {
+		t.Errorf("invalid logic. lang=%v", clocFile.Lang)
+	}
+}
+
 func TestAnalayzeReader(t *testing.T) {
 	buf := bytes.NewBuffer([]byte(`#!/bin/python
 

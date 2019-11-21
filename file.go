@@ -87,7 +87,7 @@ scannerloop:
 				if strings.HasPrefix(line, singleComment) {
 					// check if single comment is a prefix of multi comment
 					for _, ml := range language.multiLines {
-						if strings.HasPrefix(line, ml[0]) {
+						if ml[0] != "" && strings.HasPrefix(line, ml[0]) {
 							break singleloop
 						}
 					}
@@ -109,6 +109,10 @@ scannerloop:
 
 		isCode := false
 		lenLine := len(line)
+		if len(language.multiLines) == 1 && len(language.multiLines[0]) == 2 && language.multiLines[0][0] == "" {
+			onCode(clocFile, opts, len(inComments) > 0, line, lineOrg)
+			continue
+		}
 		for pos := 0; pos < lenLine; {
 			for _, ml := range language.multiLines {
 				begin, end := ml[0], ml[1]
