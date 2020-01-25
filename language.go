@@ -448,7 +448,7 @@ func NewDefinedLanguages() *DefinedLanguages {
 			"Cython":              NewLanguage("Cython", []string{"#"}, [][]string{{"\"\"\"", "\"\"\""}}),
 			"CUDA":                NewLanguage("CUDA", []string{"//"}, [][]string{{"/*", "*/"}}),
 			"D":                   NewLanguage("D", []string{"//"}, [][]string{{"/*", "*/"}}),
-			"Dart":                NewLanguage("Dart", []string{"//"}, [][]string{{"/*", "*/"}}),
+			"Dart":                NewLanguage("Dart", []string{"//", "///"}, [][]string{{"/*", "*/"}}),
 			"Dhall":               NewLanguage("Dhall", []string{"--"}, [][]string{{"{-", "-}"}}),
 			"DTrace":              NewLanguage("DTrace", []string{}, [][]string{{"/*", "*/"}}),
 			"Device Tree":         NewLanguage("Device Tree", []string{"//"}, [][]string{{"/*", "*/"}}),
