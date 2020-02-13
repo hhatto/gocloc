@@ -68,6 +68,32 @@ func isVCSDir(path string) bool {
 	return false
 }
 
+func checkDefaultIgnore(path string, info os.FileInfo, isVCS bool) bool {
+	if info.IsDir() {
+		// directory is ignore
+		return true
+	}
+	if !isVCS && isVCSDir(path) {
+		// vcs file or directory is ignore
+		return true
+	}
+
+	return false
+}
+
+func checkOptionMatch(path string, opts *ClocOptions) bool {
+	dir := filepath.Dir(path)
+	if opts.ReNotMatchDir != nil && opts.ReNotMatchDir.MatchString(dir) {
+		return false
+	}
+
+	if opts.ReMatchDir != nil && !opts.ReMatchDir.MatchString(dir) {
+		return false
+	}
+
+	return true
+}
+
 // getAllFiles return all of the files to be analyzed in paths.
 func getAllFiles(paths []string, languages *DefinedLanguages, opts *ClocOptions) (result map[string]*Language, err error) {
 	result = make(map[string]*Language, 0)
@@ -79,20 +105,12 @@ func getAllFiles(paths []string, languages *DefinedLanguages, opts *ClocOptions)
 			if err != nil {
 				return err
 			}
-			if info.IsDir() {
-				return nil
-			}
-			if !vcsInRoot && isVCSDir(path) {
+			if ignore := checkDefaultIgnore(path, info, vcsInRoot); ignore {
 				return nil
 			}
 
 			// check not-match directory
-			dir := filepath.Dir(path)
-			if opts.ReNotMatchDir != nil && opts.ReNotMatchDir.MatchString(dir) {
-				return nil
-			}
-
-			if opts.ReMatchDir != nil && !opts.ReMatchDir.MatchString(dir) {
+			if match := checkOptionMatch(path, opts); !match {
 				return nil
 			}
 
