@@ -5,8 +5,7 @@ env:
 
 matrix:
   include:
-    - go: 1.11.x
-      env: DEPLOY_BUILD=true
+    - go: 1.13.x
     - go: tip
 
 install:
