@@ -9,8 +9,8 @@ import (
 func TestOutputJSON(t *testing.T) {
 	total := &Language{}
 	files := []ClocFile{
-		ClocFile{Name: "one.go", Lang: "Go"},
-		ClocFile{Name: "two.go", Lang: "Go"},
+		{Name: "one.go", Lang: "Go"},
+		{Name: "two.go", Lang: "Go"},
 	}
 	jsonResult := NewJSONFilesResultFromCloc(total, files)
 	if jsonResult.Files[0].Name != "one.go" {
