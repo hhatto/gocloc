@@ -1,36 +1,28 @@
-# This is an example goreleaser.yaml file with some sane defaults.
-# Make sure to check the documentation at http://goreleaser.com
+project_name: gocloc
+env:
+  - GO111MODULE=on
 before:
   hooks:
-    # you may remove this if you don't need go generate
-    - go generate ./...
-    - go mod download
-
+    - go mod tidy
 builds:
-- env:
-    - CGO_ENABLED=0
-  main: './cmd/gocloc/main.go'
-  binary: gocloc
-  goos:
-    - windows
-    - darwin
-    - linux
-  goarch:
-    - amd64
-archive:
-  replacements:
-    darwin: Darwin
-    linux: Linux
-    windows: Windows
-    386: i386
-    amd64: x86_64
-checksum:
-  name_template: 'checksums.txt'
-snapshot:
-  name_template: "{{ .Tag }}-next"
-changelog:
-  sort: asc
-  filters:
-    exclude:
-    - '^docs:'
-    - '^test:'
+  - main: 'cmd/gocloc/main.go'
+    binary: git-bump
+    ldflags:
+      - -s -w
+      - -X main.Version={{.Version}}
+      - -X main.GitCommit={{.ShortCommit}}
+    env:
+      - CGO_ENABLED=0
+archives:
+  - name_template: '{{ .ProjectName }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}'
+    replacements:
+      darwin: darwin
+      linux: linux
+      windows: windows
+      386: i386
+      amd64: x86_64
+    format_overrides:
+      - goos: windows
+        format: zip
+release:
+  prerelease: auto

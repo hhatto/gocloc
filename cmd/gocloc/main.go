@@ -12,6 +12,9 @@ import (
 	flags "github.com/jessevdk/go-flags"
 )
 
+var Version string
+var GitCommit string
+
 // OutputTypeDefault is cloc's text output format for --output-type option
 const OutputTypeDefault string = "default"
 
@@ -44,97 +47,72 @@ type CmdOptions struct {
 	Debug          bool   `long:"debug" description:"dump debug log for developer"`
 	SkipDuplicated bool   `long:"skip-duplicated" description:"skip duplicated files"`
 	ShowLang       bool   `long:"show-lang" description:"print about all languages and extensions"`
+	ShowVersion    bool   `long:"version" description:"print version info"`
 }
 
-func main() {
-	var opts CmdOptions
-	clocOpts := gocloc.NewClocOptions()
-	// parse command line options
-	parser := flags.NewParser(&opts, flags.Default)
-	parser.Name = "gocloc"
-	parser.Usage = "[OPTIONS] PATH[...]"
+type outputBuilder struct {
+	opts   *CmdOptions
+	result *gocloc.Result
+}
 
-	paths, err := flags.Parse(&opts)
-	if err != nil {
-		return
+func newOutputBuilder(result *gocloc.Result, opts *CmdOptions) *outputBuilder {
+	return &outputBuilder{
+		opts,
+		result,
 	}
+}
 
-	// value for language result
-	languages := gocloc.NewDefinedLanguages()
-
-	if opts.ShowLang {
-		fmt.Println(languages.GetFormattedString())
-		return
-	}
-
-	if len(paths) <= 0 {
-		parser.WriteHelp(os.Stdout)
-		return
-	}
-
-	// setup option for exclude extensions
-	for _, ext := range strings.Split(opts.ExcludeExt, ",") {
-		e, ok := gocloc.Exts[ext]
-		if ok {
-			clocOpts.ExcludeExts[e] = struct{}{}
-		} else {
-			clocOpts.ExcludeExts[ext] = struct{}{}
-		}
-	}
-
-	// setup option for not match directory
-	if opts.NotMatchDir != "" {
-		clocOpts.ReNotMatchDir = regexp.MustCompile(opts.NotMatchDir)
-	}
-	if opts.MatchDir != "" {
-		clocOpts.ReMatchDir = regexp.MustCompile(opts.MatchDir)
-	}
-
-	// setup option for include languages
-	for _, lang := range strings.Split(opts.IncludeLang, ",") {
-		if _, ok := languages.Langs[lang]; ok {
-			clocOpts.IncludeLangs[lang] = struct{}{}
-		}
-	}
-
-	clocOpts.Debug = opts.Debug
-	clocOpts.SkipDuplicated = opts.SkipDuplicated
-
-	processor := gocloc.NewProcessor(languages, clocOpts)
-	result, err := processor.Analyze(paths)
-	if err != nil {
-		fmt.Printf("fail gocloc analyze. error: %v\n", err)
-		return
-	}
-
-	total := result.Total
-	maxPathLen := result.MaxPathLength
-	clocFiles := result.Files
-	clocLangs := result.Languages
+func (o *outputBuilder) WriteHeader() {
+	maxPathLen := o.result.MaxPathLength
 	headerLen := 28
 	header := languageHeader
 
-	// write header
-	if opts.Byfile {
+	if o.opts.Byfile {
 		headerLen = maxPathLen + 1
 		rowLen = maxPathLen + len(commonHeader) + 2
 		header = fileHeader
 	}
-	if opts.OutputType == OutputTypeDefault {
+	if o.opts.OutputType == OutputTypeDefault {
 		fmt.Printf("%.[2]*[1]s\n", defaultOutputSeparator, rowLen)
 		fmt.Printf("%-[2]*[1]s %[3]s\n", header, headerLen, commonHeader)
 		fmt.Printf("%.[2]*[1]s\n", defaultOutputSeparator, rowLen)
 	}
+}
 
-	// write result
-	if opts.Byfile {
+func (o *outputBuilder) WriteFooter() {
+	total := o.result.Total
+	maxPathLen := o.result.MaxPathLength
+
+	if o.opts.OutputType == OutputTypeDefault {
+		fmt.Printf("%.[2]*[1]s\n", defaultOutputSeparator, rowLen)
+		if o.opts.Byfile {
+			fmt.Printf("%-[1]*[2]v %6[3]v %14[4]v %14[5]v %14[6]v\n",
+				maxPathLen, "TOTAL", total.Total, total.Blanks, total.Comments, total.Code)
+		} else {
+			fmt.Printf("%-27v %6v %14v %14v %14v\n",
+				"TOTAL", total.Total, total.Blanks, total.Comments, total.Code)
+		}
+		fmt.Printf("%.[2]*[1]s\n", defaultOutputSeparator, rowLen)
+	}
+}
+
+func (o *outputBuilder) WriteResult() {
+	// write header
+	o.WriteHeader()
+
+	clocFiles := o.result.Files
+	clocLangs := o.result.Languages
+	total := o.result.Total
+	maxPathLen := o.result.MaxPathLength
+
+	if o.opts.Byfile {
 		var sortedFiles gocloc.ClocFiles
 		for _, file := range clocFiles {
 			sortedFiles = append(sortedFiles, *file)
 		}
 		sort.Sort(sortedFiles)
 
-		switch opts.OutputType {
+		switch o.opts.OutputType {
 		case OutputTypeClocXML:
 			t := gocloc.XMLTotalFiles{
 				Code:    total.Code,
@@ -185,7 +163,7 @@ func main() {
 		}
 		sort.Sort(sortedLanguages)
 
-		switch opts.OutputType {
+		switch o.opts.OutputType {
 		case OutputTypeClocXML:
 			xmlResult := gocloc.NewXMLResultFromCloc(total, sortedLanguages, gocloc.XMLResultWithLangs)
 			xmlResult.Encode()
@@ -206,15 +184,75 @@ func main() {
 	}
 
 	// write footer
-	if opts.OutputType == OutputTypeDefault {
-		fmt.Printf("%.[2]*[1]s\n", defaultOutputSeparator, rowLen)
-		if opts.Byfile {
-			fmt.Printf("%-[1]*[2]v %6[3]v %14[4]v %14[5]v %14[6]v\n",
-				maxPathLen, "TOTAL", total.Total, total.Blanks, total.Comments, total.Code)
-		} else {
-			fmt.Printf("%-27v %6v %14v %14v %14v\n",
-				"TOTAL", total.Total, total.Blanks, total.Comments, total.Code)
-		}
-		fmt.Printf("%.[2]*[1]s\n", defaultOutputSeparator, rowLen)
+	o.WriteFooter()
+}
+
+func main() {
+	var opts CmdOptions
+	clocOpts := gocloc.NewClocOptions()
+	// parse command line options
+	parser := flags.NewParser(&opts, flags.Default)
+	parser.Name = "gocloc"
+	parser.Usage = "[OPTIONS] PATH[...]"
+
+	paths, err := flags.Parse(&opts)
+	if err != nil {
+		return
 	}
+
+	// value for language result
+	languages := gocloc.NewDefinedLanguages()
+
+	if opts.ShowVersion {
+		fmt.Printf("%s (%s)\n", Version, GitCommit)
+		return
+	}
+
+	if opts.ShowLang {
+		fmt.Println(languages.GetFormattedString())
+		return
+	}
+
+	if len(paths) <= 0 {
+		parser.WriteHelp(os.Stdout)
+		return
+	}
+
+	// setup option for exclude extensions
+	for _, ext := range strings.Split(opts.ExcludeExt, ",") {
+		e, ok := gocloc.Exts[ext]
+		if ok {
+			clocOpts.ExcludeExts[e] = struct{}{}
+		} else {
+			clocOpts.ExcludeExts[ext] = struct{}{}
+		}
+	}
+
+	// setup option for not match directory
+	if opts.NotMatchDir != "" {
+		clocOpts.ReNotMatchDir = regexp.MustCompile(opts.NotMatchDir)
+	}
+	if opts.MatchDir != "" {
+		clocOpts.ReMatchDir = regexp.MustCompile(opts.MatchDir)
+	}
+
+	// setup option for include languages
+	for _, lang := range strings.Split(opts.IncludeLang, ",") {
+		if _, ok := languages.Langs[lang]; ok {
+			clocOpts.IncludeLangs[lang] = struct{}{}
+		}
+	}
+
+	clocOpts.Debug = opts.Debug
+	clocOpts.SkipDuplicated = opts.SkipDuplicated
+
+	processor := gocloc.NewProcessor(languages, clocOpts)
+	result, err := processor.Analyze(paths)
+	if err != nil {
+		fmt.Printf("fail gocloc analyze. error: %v\n", err)
+		return
+	}
+
+	builder := newOutputBuilder(result, &opts)
+	builder.WriteResult()
 }
