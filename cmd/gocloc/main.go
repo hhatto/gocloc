@@ -12,7 +12,10 @@ import (
 	flags "github.com/jessevdk/go-flags"
 )
 
+// Version is version string for gocloc command
 var Version string
+
+// GitCommit is git commit hash string for gocloc command
 var GitCommit string
 
 // OutputTypeDefault is cloc's text output format for --output-type option
@@ -36,6 +39,8 @@ const defaultOutputSeparator string = "-----------------------------------------
 
 var rowLen = 79
 
+// CmdOptions is gocloc command options.
+// It is necessary to use notation that follows go-flags.
 type CmdOptions struct {
 	Byfile         bool   `long:"by-file" description:"report results for every encountered source file"`
 	SortTag        string `long:"sort" default:"code" description:"sort based on a certain column"`

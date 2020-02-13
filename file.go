@@ -9,6 +9,7 @@ import (
 	"unicode"
 )
 
+// ClocFile is collecting to line count result
 type ClocFile struct {
 	Code     int32  `xml:"code,attr" json:"code"`
 	Comments int32  `xml:"comment,attr" json:"comment"`
@@ -17,6 +18,7 @@ type ClocFile struct {
 	Lang     string `xml:"language,attr" json:"language"`
 }
 
+// ClocFiles is gocloc result set
 type ClocFiles []ClocFile
 
 func (cf ClocFiles) Len() int {
@@ -32,6 +34,7 @@ func (cf ClocFiles) Less(i, j int) bool {
 	return cf[i].Code > cf[j].Code
 }
 
+// AnalyzeFile is analyzing file, this function calls AnalyzeReader() inside.
 func AnalyzeFile(filename string, language *Language, opts *ClocOptions) *ClocFile {
 	fp, err := os.Open(filename)
 	if err != nil {
@@ -43,6 +46,7 @@ func AnalyzeFile(filename string, language *Language, opts *ClocOptions) *ClocFi
 	return AnalyzeReader(filename, language, fp, opts)
 }
 
+// AnalyzeReader is analyzing file for io.Reader.
 func AnalyzeReader(filename string, language *Language, file io.Reader, opts *ClocOptions) *ClocFile {
 	if opts.Debug {
 		fmt.Printf("filename=%v\n", filename)
