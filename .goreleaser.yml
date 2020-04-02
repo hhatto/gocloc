@@ -6,7 +6,7 @@ before:
     - go mod tidy
 builds:
   - main: 'cmd/gocloc/main.go'
-    binary: git-bump
+    binary: gocloc
     ldflags:
       - -s -w
       - -X main.Version={{.Version}}
