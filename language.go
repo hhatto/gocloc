@@ -12,7 +12,7 @@ import (
 	"strings"
 	"unicode"
 
-	enry "github.com/src-d/enry/v2"
+	enry "github.com/go-enry/go-enry/v2"
 )
 
 // ClocLanguage is provide for xml-cloc and json format
