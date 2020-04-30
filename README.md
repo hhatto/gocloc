@@ -13,18 +13,6 @@ Inspired by [tokei](https://github.com/Aaronepower/tokei).
 $ go get -u github.com/hhatto/gocloc/cmd/gocloc
 ```
 
-### installation problem
-```
-$ go get -u github.com/hhatto/gocloc/cmd/gocloc
-package github.com/src-d/enry: code in directory /PATH/TO/go/src/github.com/src-d/enry expects import "github.com/src-d/enry/v2"
-```
-
-with `GO111MODULE=on`
-```
-(posix shell)$ GO111MODULE=on go get -u github.com/hhatto/gocloc/cmd/gocloc
-(fish)       $ env GO111MODULE=on go get -u github.com/hhatto/gocloc/cmd/gocloc
-```
-
 ## Usage
 
 ### Basic Usage
