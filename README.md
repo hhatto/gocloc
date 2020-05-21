@@ -1,6 +1,6 @@
 # gocloc
 
-[![GoDoc](https://godoc.org/github.com/Shopify/sarama?status.svg)](https://godoc.org/github.com/Shopify/sarama)
+[![GoDoc](https://godoc.org/github.com/hhatto/gocloc?status.svg)](https://godoc.org/github.com/hhatto/gocloc)
 [![travis-ci](https://travis-ci.org/hhatto/gocloc.svg?branch=master)](https://travis-ci.org/hhatto/gocloc)
 [![Go Report Card](https://goreportcard.com/badge/github.com/hhatto/gocloc)](https://goreportcard.com/report/github.com/hhatto/gocloc)
 
