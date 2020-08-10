@@ -1,0 +1,62 @@
+name: Push Docker Image
+
+on:
+  push:
+    branches:
+      - master
+  release:
+    types: [published]
+  pull_request:
+    types: [opened, synchronize]
+
+env:
+  DOCKER_BASE_NAME: docker.pkg.github.com/${{ github.repository }}/gocloc
+  DOCKER_HUB_BASE_NAME: hhatto/gocloc
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Unshallow
+        run:  git fetch --prune --unshallow
+      - name: Lint Dockerfile
+        run:  docker run --rm -i hadolint/hadolint < Dockerfile
+  push:
+    runs-on: ubuntu-18.04
+    needs: lint
+    strategy:
+      matrix:
+        baseimage:
+          - "alpine:3.12"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Set env
+        run: |
+          if [ "${{ github.event_name }}" = 'release' ]; then
+            export TAG_NAME="${{ github.event.release.tag_name }}"
+          else
+            export TAG_NAME="latest"
+          fi
+          echo "::set-env name=PKG_TAG::${DOCKER_BASE_NAME}:${TAG_NAME}"
+          echo "::set-env name=HUB_TAG::${DOCKER_HUB_BASE_NAME}:${TAG_NAME}"
+      - name: Build ${{ matrix.baseimage }} base image
+        run: |
+          docker build . -t "${PKG_TAG}" --build-arg BASE_IMAGE="${{ matrix.baseimage }}"
+          docker tag "${PKG_TAG}" "${HUB_TAG}"
+      - name: Login to Registries
+        if: github.event_name != 'pull_request'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DOCKER_HUB_TOKEN: ${{ secrets.DOCKER_HUB_TOKEN }}
+        run: |
+          echo "${GITHUB_TOKEN}" | docker login docker.pkg.github.com -u hhatto --password-stdin
+          echo "${DOCKER_HUB_TOKEN}" | docker login -u hhatto --password-stdin
+      - name: Push to GitHub Packages
+        if: github.event_name != 'pull_request'
+        run: docker push "${PKG_TAG}"
+      - name: Push to Docker Hub
+        if: github.event_name != 'pull_request'
+        run: docker push "${HUB_TAG}"
