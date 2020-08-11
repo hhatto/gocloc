@@ -3,6 +3,8 @@
 [![GoDoc](https://godoc.org/github.com/hhatto/gocloc?status.svg)](https://godoc.org/github.com/hhatto/gocloc)
 [![travis-ci](https://travis-ci.org/hhatto/gocloc.svg?branch=master)](https://travis-ci.org/hhatto/gocloc)
 [![Go Report Card](https://goreportcard.com/badge/github.com/hhatto/gocloc)](https://goreportcard.com/report/github.com/hhatto/gocloc)
+[![Docker Pulls](https://img.shields.io/docker/pulls/hhatto/gocloc)](https://hub.docker.com/r/hhatto/gocloc)
+[![Docker Image Size](https://img.shields.io/docker/image-size/hhatto/gocloc)](https://hub.docker.com/r/hhatto/gocloc)
 
 A little fast [cloc(Count Lines Of Code)](https://github.com/AlDanial/cloc), written in Go.
 Inspired by [tokei](https://github.com/Aaronepower/tokei).
@@ -30,6 +32,11 @@ Go                               1             29              1            323
 -------------------------------------------------------------------------------
 TOTAL                            4             37              1            341
 -------------------------------------------------------------------------------
+```
+
+### Via Docker
+```
+$ docker run --rm -v "${PWD}":/workdir hhatto/gocloc .
 ```
 
 ### Integration Jenkins CI
