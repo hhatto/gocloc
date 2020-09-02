@@ -35,8 +35,25 @@ TOTAL                            4             37              1            341
 ```
 
 ### Via Docker
+with [dockerhub](https://hub.docker.com/repository/docker/hhatto/gocloc)
 ```
 $ docker run --rm -v "${PWD}":/workdir hhatto/gocloc .
+```
+
+with [GitHub Packages](https://github.com/hhatto/gocloc/packages/350535) on GitHub Actions
+```
+jobs:
+  build:
+    name: example of code measurement using gocloc
+    runs-on: ubuntu-18.04
+    steps:
+      - uses: actions/checkout@master
+
+      - name: Login GitHub Registry
+        run: docker login docker.pkg.github.com -u owner -p ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Run gocloc
+        run: docker run --rm -v "${PWD}":/workdir docker.pkg.github.com/hhatto/gocloc/gocloc:latest .
 ```
 
 ### Integration Jenkins CI
