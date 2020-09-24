@@ -265,6 +265,45 @@ func TestAnalyzeFile4GoWithNoComment(t *testing.T) {
 	}
 }
 
+func TestAnalyzeFile4ATSWithDoubleMultilineComments(t *testing.T) {
+	tmpfile, err := ioutil.TempFile("", "tmp.java")
+	if err != nil {
+		t.Logf("ioutil.TempFile() error. err=[%v]", err)
+		return
+	}
+	defer os.Remove(tmpfile.Name())
+
+	tmpfile.Write([]byte(`/* com */
+(* co *)
+
+vo (*
+com *)
+
+vo /*
+jife */
+
+vo /* ff */
+`))
+
+	language := NewLanguage("ATS", []string{"//"}, [][]string{{"(*", "*)"}, {"/*", "*/"}})
+	clocOpts := NewClocOptions()
+	clocFile := AnalyzeFile(tmpfile.Name(), language, clocOpts)
+	tmpfile.Close()
+
+	if clocFile.Blanks != 3 {
+		t.Errorf("invalid logic. blanks=%v", clocFile.Blanks)
+	}
+	if clocFile.Comments != 4 {
+		t.Errorf("invalid logic. comments=%v", clocFile.Comments)
+	}
+	if clocFile.Code != 3 {
+		t.Errorf("invalid logic. code=%v", clocFile.Code)
+	}
+	if clocFile.Lang != "ATS" {
+		t.Errorf("invalid logic. lang=%v", clocFile.Lang)
+	}
+}
+
 func TestAnalyzeFile4JavaWithCommentInCodeLine(t *testing.T) {
 	tmpfile, err := ioutil.TempFile("", "tmp.java")
 	if err != nil {

@@ -111,14 +111,14 @@ scannerloop:
 			continue scannerloop
 		}
 
-		isCode := false
 		lenLine := len(line)
 		if len(language.multiLines) == 1 && len(language.multiLines[0]) == 2 && language.multiLines[0][0] == "" {
 			onCode(clocFile, opts, len(inComments) > 0, line, lineOrg)
 			continue
 		}
+		codeFlags := make([]bool, len(language.multiLines))
 		for pos := 0; pos < lenLine; {
-			for _, ml := range language.multiLines {
+			for idx, ml := range language.multiLines {
 				begin, end := ml[0], ml[1]
 				lenBegin := len(begin)
 
@@ -135,10 +135,17 @@ scannerloop:
 						pos += len(last[1])
 					}
 				} else if pos < lenLine && !unicode.IsSpace(nextRune(line[pos:])) {
-					isCode = true
+					codeFlags[idx] = true
 				}
 			}
 			pos++
+		}
+
+		isCode := true
+		for _, b := range codeFlags {
+			if b == false {
+				isCode = false
+			}
 		}
 
 		if isCode {
