@@ -36,5 +36,12 @@ jobs:
     - name: Build
       run: go build -v ./...
 
+    - name: Check imports
+      shell: bash
+      run: |
+        export PATH=$(go env GOPATH)/bin:$PATH
+        go get golang.org/x/tools/cmd/goimports
+        diff -u <(echo -n) <(goimports -d .)
+
     - name: Test
       run: go test -v ./...
