@@ -7,6 +7,9 @@ build:
 update-package:
 	GO111MODULE=on go get -u github.com/hhatto/gocloc
 
+cleanup-package:
+	GO111MODULE=on go mod tidy
+
 run-example:
 	GO111MODULE=on go run examples/languages.go
 	GO111MODULE=on go run examples/files.go
