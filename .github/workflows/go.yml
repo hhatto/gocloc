@@ -44,4 +44,4 @@ jobs:
         diff -u <(echo -n) <(goimports -d .)
 
     - name: Test
-      run: go test -v ./...
+      run: go test -v
