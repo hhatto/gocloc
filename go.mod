@@ -4,7 +4,7 @@ go 1.12
 
 require (
 	github.com/davecgh/go-spew v1.1.1 // indirect
-	github.com/go-enry/go-enry/v2 v2.5.2
+	github.com/go-enry/go-enry/v2 v2.6.0
 	github.com/jessevdk/go-flags v1.4.0
 	github.com/kr/pretty v0.1.0 // indirect
 	github.com/spf13/afero v1.2.2
