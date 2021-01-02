@@ -139,6 +139,7 @@ var Exts = map[string]string{
 	"f03":         "FORTRAN Modern",
 	"f08":         "FORTRAN Modern",
 	"go":          "Go",
+	"go2":         "Go",
 	"groovy":      "Groovy",
 	"gradle":      "Groovy",
 	"h":           "C Header",
