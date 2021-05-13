@@ -215,6 +215,7 @@ var Exts = map[string]string{
 	"Rmd":         "RMarkdown",
 	"rake":        "Ruby",
 	"rb":          "Ruby",
+	"resx":        "XML resource", // ref: https://docs.microsoft.com/en-us/dotnet/framework/resources/creating-resource-files-for-desktop-apps#ResxFiles
 	"ring":        "Ring",
 	"rkt":         "Racket",
 	"rhtml":       "Ruby HTML",
@@ -571,6 +572,7 @@ func NewDefinedLanguages() *DefinedLanguages {
 			"Vyper":               NewLanguage("Vyper", []string{"#"}, [][]string{{"\"\"\"", "\"\"\""}}),
 			"WiX":                 NewLanguage("WiX", []string{"<!--"}, [][]string{{"<!--", "-->"}}),
 			"XML":                 NewLanguage("XML", []string{"<!--"}, [][]string{{"<!--", "-->"}}),
+			"XML resource":        NewLanguage("XML resource", []string{"<!--"}, [][]string{{"<!--", "-->"}}),
 			"XSLT":                NewLanguage("XSLT", []string{"<!--"}, [][]string{{"<!--", "-->"}}),
 			"XSD":                 NewLanguage("XSD", []string{"<!--"}, [][]string{{"<!--", "-->"}}),
 			"YAML":                NewLanguage("YAML", []string{"#"}, [][]string{{"", ""}}),
