@@ -248,6 +248,7 @@ var Exts = map[string]string{
 	"vala":        "Vala",
 	"Verilog":     "Verilog",
 	"csproj":      "MSBuild script",
+	"vbproj":      "MSBuild script",
 	"vcproj":      "MSBuild script",
 	"vim":         "VimL",
 	"vue":         "Vue",
