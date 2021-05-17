@@ -163,6 +163,7 @@ var Exts = map[string]string{
 	"json":        "JSON",
 	"jsx":         "JSX",
 	"kt":          "Kotlin",
+	"kts":         "Kotlin",
 	"lds":         "LD Script",
 	"less":        "LESS",
 	"Objective-C": "Objective-C", // deplicated Obj-C/Matlab/Mercury
