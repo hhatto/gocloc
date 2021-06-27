@@ -15,6 +15,8 @@ Inspired by [tokei](https://github.com/Aaronepower/tokei).
 $ go get -u github.com/hhatto/gocloc/cmd/gocloc
 ```
 
+Arch Linux user can also install from AUR: [gocloc-git](https://aur.archlinux.org/packages/gocloc-git/).
+
 ## Usage
 
 ### Basic Usage
