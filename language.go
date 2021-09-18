@@ -561,7 +561,7 @@ func NewDefinedLanguages() *DefinedLanguages {
 			"Terra":               NewLanguage("Terra", []string{"--"}, [][]string{{"--[[", "]]"}}),
 			"TeX":                 NewLanguage("TeX", []string{"%"}, [][]string{{"", ""}}),
 			"Isabelle":            NewLanguage("Isabelle", []string{}, [][]string{{"(*", "*)"}}),
-			"TLA":                 NewLanguage("TLA", []string{"/*"}, [][]string{{"(*", "*)"}}),
+			"TLA":                 NewLanguage("TLA", []string{"\\*"}, [][]string{{"(*", "*)"}}),
 			"Tcl/Tk":              NewLanguage("Tcl/Tk", []string{"#"}, [][]string{{"", ""}}),
 			"TOML":                NewLanguage("TOML", []string{"#"}, [][]string{{"", ""}}),
 			"TypeScript":          NewLanguage("TypeScript", []string{"//"}, [][]string{{"/*", "*/"}}),
