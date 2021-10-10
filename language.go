@@ -24,6 +24,7 @@ type ClocLanguage struct {
 	Blanks     int32  `xml:"blank,attr" json:"blank"`
 }
 
+// Language is a type used to definitions and store statistics for one programming language.
 type Language struct {
 	Name         string
 	lineComments []string
@@ -34,6 +35,8 @@ type Language struct {
 	Blanks       int32
 	Total        int32
 }
+
+// Languages is an array representation of Language.
 type Languages []Language
 
 func (ls Languages) Len() int {
@@ -52,6 +55,7 @@ func (ls Languages) Less(i, j int) bool {
 var reShebangEnv = regexp.MustCompile("^#! *(\\S+/env) ([a-zA-Z]+)")
 var reShebangLang = regexp.MustCompile("^#! *[.a-zA-Z/]+/([a-zA-Z]+)")
 
+// Exts is the definition of the language name, keyed by the extension for each language.
 var Exts = map[string]string{
 	"as":          "ActionScript",
 	"ada":         "Ada",
@@ -373,11 +377,7 @@ func getFileType(path string, opts *ClocOptions) (ext string, ok bool) {
 	return ext, ok
 }
 
-type MultiLine struct {
-	Start string
-	End   string
-}
-
+// NewLanguage create language data store
 func NewLanguage(name string, lineComments []string, multiLines [][]string) *Language {
 	return &Language{
 		Name:         name,
@@ -409,10 +409,12 @@ func lang2exts(lang string) (exts string) {
 	return strings.Join(es, ", ")
 }
 
+// DefinedLanguages is the type information for mapping language name(key) and NewLanguage.
 type DefinedLanguages struct {
 	Langs map[string]*Language
 }
 
+// GetFormattedString return DefinedLanguages as a human readable string.
 func (langs *DefinedLanguages) GetFormattedString() string {
 	var buf bytes.Buffer
 	printLangs := []string{}
@@ -426,6 +428,7 @@ func (langs *DefinedLanguages) GetFormattedString() string {
 	return buf.String()
 }
 
+// NewDefinedLanguages create DefinedLanguages
 func NewDefinedLanguages() *DefinedLanguages {
 	return &DefinedLanguages{
 		Langs: map[string]*Language{
