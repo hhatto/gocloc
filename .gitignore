@@ -6,5 +6,5 @@ GRTAGS
 
 Gopkg.lock
 vendor/
-gocloc
+bin/gocloc
 dist/
