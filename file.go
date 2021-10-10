@@ -9,7 +9,7 @@ import (
 	"unicode"
 )
 
-// ClocFile is collecting to line count result
+// ClocFile is collecting to line count result.
 type ClocFile struct {
 	Code     int32  `xml:"code,attr" json:"code"`
 	Comments int32  `xml:"comment,attr" json:"comment"`
@@ -18,7 +18,7 @@ type ClocFile struct {
 	Lang     string `xml:"language,attr" json:"language"`
 }
 
-// ClocFiles is gocloc result set
+// ClocFiles is gocloc result set.
 type ClocFiles []ClocFile
 
 func (cf ClocFiles) Len() int {

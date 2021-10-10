@@ -1,18 +1,18 @@
 package gocloc
 
-// JSONLanguagesResult defines the result of the analysis in JSON format
+// JSONLanguagesResult defines the result of the analysis in JSON format.
 type JSONLanguagesResult struct {
 	Languages []ClocLanguage `json:"languages"`
 	Total     ClocLanguage   `json:"total"`
 }
 
-// JSONFilesResult defines the result of the analysis(by files) in JSON format
+// JSONFilesResult defines the result of the analysis(by files) in JSON format.
 type JSONFilesResult struct {
 	Files []ClocFile   `json:"files"`
 	Total ClocLanguage `json:"total"`
 }
 
-// NewJSONLanguagesResultFromCloc returns JSONLanguagesResult with default data set
+// NewJSONLanguagesResultFromCloc returns JSONLanguagesResult with default data set.
 func NewJSONLanguagesResultFromCloc(total *Language, sortedLanguages Languages) JSONLanguagesResult {
 	var langs []ClocLanguage
 	for _, language := range sortedLanguages {
@@ -38,7 +38,7 @@ func NewJSONLanguagesResultFromCloc(total *Language, sortedLanguages Languages) 
 	}
 }
 
-// NewJSONFilesResultFromCloc returns JSONFilesResult with default data set
+// NewJSONFilesResultFromCloc returns JSONFilesResult with default data set.
 func NewJSONFilesResultFromCloc(total *Language, sortedFiles ClocFiles) JSONFilesResult {
 	t := ClocLanguage{
 		FilesCount: total.Total,

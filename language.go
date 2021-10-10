@@ -15,7 +15,7 @@ import (
 	enry "github.com/go-enry/go-enry/v2"
 )
 
-// ClocLanguage is provide for xml-cloc and json format
+// ClocLanguage is provide for xml-cloc and json format.
 type ClocLanguage struct {
 	Name       string `xml:"name,attr" json:"name,omitempty"`
 	FilesCount int32  `xml:"files_count,attr" json:"files"`
@@ -377,7 +377,7 @@ func getFileType(path string, opts *ClocOptions) (ext string, ok bool) {
 	return ext, ok
 }
 
-// NewLanguage create language data store
+// NewLanguage create language data store.
 func NewLanguage(name string, lineComments []string, multiLines [][]string) *Language {
 	return &Language{
 		Name:         name,
@@ -428,7 +428,7 @@ func (langs *DefinedLanguages) GetFormattedString() string {
 	return buf.String()
 }
 
-// NewDefinedLanguages create DefinedLanguages
+// NewDefinedLanguages create DefinedLanguages.
 func NewDefinedLanguages() *DefinedLanguages {
 	return &DefinedLanguages{
 		Langs: map[string]*Language{

@@ -2,7 +2,7 @@ package gocloc
 
 import "regexp"
 
-// ClocOptions is gocloc processor options
+// ClocOptions is gocloc processor options.
 type ClocOptions struct {
 	Debug          bool
 	SkipDuplicated bool
@@ -19,7 +19,7 @@ type ClocOptions struct {
 	OnComment func(line string)
 }
 
-// NewClocOptions create new ClocOptions with default values
+// NewClocOptions create new ClocOptions with default values.
 func NewClocOptions() *ClocOptions {
 	return &ClocOptions{
 		Debug:          false,
