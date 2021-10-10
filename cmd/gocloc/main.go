@@ -101,64 +101,70 @@ func (o *outputBuilder) WriteFooter() {
 	}
 }
 
+func writeResultWithByFile(outputType string, result *gocloc.Result) {
+	clocFiles := result.Files
+	total := result.Total
+	maxPathLen := result.MaxPathLength
+
+	var sortedFiles gocloc.ClocFiles
+	for _, file := range clocFiles {
+		sortedFiles = append(sortedFiles, *file)
+	}
+	sort.Sort(sortedFiles)
+
+	switch outputType {
+	case OutputTypeClocXML:
+		t := gocloc.XMLTotalFiles{
+			Code:    total.Code,
+			Comment: total.Comments,
+			Blank:   total.Blanks,
+		}
+		f := &gocloc.XMLResultFiles{
+			Files: sortedFiles,
+			Total: t,
+		}
+		xmlResult := gocloc.XMLResult{
+			XMLFiles: f,
+		}
+		xmlResult.Encode()
+	case OutputTypeSloccount:
+		for _, file := range sortedFiles {
+			p := ""
+			if strings.HasPrefix(file.Name, "./") || string(file.Name[0]) == "/" {
+				splitPaths := strings.Split(file.Name, string(os.PathSeparator))
+				if len(splitPaths) >= 3 {
+					p = splitPaths[1]
+				}
+			}
+			fmt.Printf("%v\t%v\t%v\t%v\n",
+				file.Code, file.Lang, p, file.Name)
+		}
+	case OutputTypeJSON:
+		jsonResult := gocloc.NewJSONFilesResultFromCloc(total, sortedFiles)
+		buf, err := json.Marshal(jsonResult)
+		if err != nil {
+			fmt.Println(err)
+			panic("json marshal error")
+		}
+		os.Stdout.Write(buf)
+	default:
+		for _, file := range sortedFiles {
+			clocFile := file
+			fmt.Printf("%-[1]*[2]s %21[3]v %14[4]v %14[5]v\n",
+				maxPathLen, file.Name, clocFile.Blanks, clocFile.Comments, clocFile.Code)
+		}
+	}
+}
+
 func (o *outputBuilder) WriteResult() {
 	// write header
 	o.WriteHeader()
 
-	clocFiles := o.result.Files
 	clocLangs := o.result.Languages
 	total := o.result.Total
-	maxPathLen := o.result.MaxPathLength
 
 	if o.opts.Byfile {
-		var sortedFiles gocloc.ClocFiles
-		for _, file := range clocFiles {
-			sortedFiles = append(sortedFiles, *file)
-		}
-		sort.Sort(sortedFiles)
-
-		switch o.opts.OutputType {
-		case OutputTypeClocXML:
-			t := gocloc.XMLTotalFiles{
-				Code:    total.Code,
-				Comment: total.Comments,
-				Blank:   total.Blanks,
-			}
-			f := &gocloc.XMLResultFiles{
-				Files: sortedFiles,
-				Total: t,
-			}
-			xmlResult := gocloc.XMLResult{
-				XMLFiles: f,
-			}
-			xmlResult.Encode()
-		case OutputTypeSloccount:
-			for _, file := range sortedFiles {
-				p := ""
-				if strings.HasPrefix(file.Name, "./") || string(file.Name[0]) == "/" {
-					splitPaths := strings.Split(file.Name, string(os.PathSeparator))
-					if len(splitPaths) >= 3 {
-						p = splitPaths[1]
-					}
-				}
-				fmt.Printf("%v\t%v\t%v\t%v\n",
-					file.Code, file.Lang, p, file.Name)
-			}
-		case OutputTypeJSON:
-			jsonResult := gocloc.NewJSONFilesResultFromCloc(total, sortedFiles)
-			buf, err := json.Marshal(jsonResult)
-			if err != nil {
-				fmt.Println(err)
-				panic("json marshal error")
-			}
-			os.Stdout.Write(buf)
-		default:
-			for _, file := range sortedFiles {
-				clocFile := file
-				fmt.Printf("%-[1]*[2]s %21[3]v %14[4]v %14[5]v\n",
-					maxPathLen, file.Name, clocFile.Blanks, clocFile.Comments, clocFile.Code)
-			}
-		}
+		writeResultWithByFile(o.opts.OutputType, o.result)
 	} else {
 		var sortedLanguages gocloc.Languages
 		for _, language := range clocLangs {
