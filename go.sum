@@ -1,8 +1,6 @@
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
-github.com/go-enry/go-enry/v2 v2.6.0 h1:nbGWQBpO+D+cJuRxNgSDFnFY9QWz3QM/CeZxU7VAH20=
-github.com/go-enry/go-enry/v2 v2.6.0/go.mod h1:GVzIiAytiS5uT/QiuakK7TF1u4xDab87Y8V5EJRpsIQ=
 github.com/go-enry/go-enry/v2 v2.7.0 h1:bcAZfvX0LmAEMl8OEd8MPsfJCN2Io4mNU1an1Hh48VA=
 github.com/go-enry/go-enry/v2 v2.7.0/go.mod h1:GVzIiAytiS5uT/QiuakK7TF1u4xDab87Y8V5EJRpsIQ=
 github.com/go-enry/go-oniguruma v1.2.1 h1:k8aAMuJfMrqm/56SG2lV9Cfti6tC4x8673aHCcBk+eo=
@@ -22,7 +20,6 @@ github.com/stretchr/objx v0.1.0/go.mod h1:HFkY916IF+rwdDfMAkV7OtwuqBVzrE8GR6GFx+
 github.com/stretchr/testify v1.3.0/go.mod h1:M5WIy9Dh21IEIfnGCwXGc5bZfKNJtfHm1UVUgZn+9EI=
 github.com/stretchr/testify v1.4.0 h1:2E4SXV/wtOkTonXsotYi4li6zVWxYlZuYNCXe9XRJyk=
 github.com/stretchr/testify v1.4.0/go.mod h1:j7eGeouHqKxXV5pUuKE4zz7dFj8WfuZ+81PSLYec5m4=
-golang.org/x/text v0.3.0 h1:g61tztE5qeGQ89tm6NTjjM9VPIm088od1l6aSorWRWg=
 golang.org/x/text v0.3.0/go.mod h1:NqM8EUOU14njkJ3fqMW+pc6Ldnwhi/IjpwHt7yyuwOQ=
 golang.org/x/text v0.3.5 h1:i6eZZ+zk0SOf0xgBpEpPD18qWcJda6q1sxt3S0kzyUQ=
 golang.org/x/text v0.3.5/go.mod h1:5Zoc/QRtKVWzQhOtBMvqHzDpF6irO9z98xDceosuGiQ=
