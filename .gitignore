@@ -8,3 +8,4 @@ Gopkg.lock
 vendor/
 bin/gocloc
 dist/
+coverage.out
