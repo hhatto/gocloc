@@ -12,6 +12,10 @@ Inspired by [tokei](https://github.com/Aaronepower/tokei).
 ## Installation
 
 ```
+# Go version >= 1.16
+$ go install github.com/hhatto/gocloc/cmd/gocloc
+
+# Go version < 1.16
 $ go get -u github.com/hhatto/gocloc/cmd/gocloc
 ```
 
