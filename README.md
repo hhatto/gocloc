@@ -13,7 +13,7 @@ Inspired by [tokei](https://github.com/Aaronepower/tokei).
 
 ```
 # Go version >= 1.16
-$ go install github.com/hhatto/gocloc/cmd/gocloc
+$ go install github.com/hhatto/gocloc/cmd/gocloc@latest
 
 # Go version < 1.16
 $ go get -u github.com/hhatto/gocloc/cmd/gocloc
