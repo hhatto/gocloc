@@ -175,6 +175,7 @@ var Exts = map[string]string{
 	"Mercury":     "Mercury",     // use ext '.m'
 	"md":          "Markdown",
 	"markdown":    "Markdown",
+	"mo":          "Motoko",
 	"nix":         "Nix",
 	"nsi":         "NSIS",
 	"nsh":         "NSIS",
@@ -510,6 +511,7 @@ func NewDefinedLanguages() *DefinedLanguages {
 			"LESS":                NewLanguage("LESS", []string{"//"}, [][]string{{"/*", "*/"}}),
 			"Objective-C":         NewLanguage("Objective-C", []string{"//"}, [][]string{{"/*", "*/"}}),
 			"Markdown":            NewLanguage("Markdown", []string{}, [][]string{{"", ""}}),
+			"Motoko":              NewLanguage("Motoko", []string{"//"}, [][]string{{"/*", "*/"}}),
 			"Nix":                 NewLanguage("Nix", []string{"#"}, [][]string{{"/*", "*/"}}),
 			"NSIS":                NewLanguage("NSIS", []string{"#", ";"}, [][]string{{"/*", "*/"}}),
 			"Nu":                  NewLanguage("Nu", []string{";", "#"}, [][]string{{"", ""}}),
