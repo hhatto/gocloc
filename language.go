@@ -175,6 +175,8 @@ var Exts = map[string]string{
 	"Mercury":     "Mercury",     // use ext '.m'
 	"md":          "Markdown",
 	"markdown":    "Markdown",
+	"mo":          "Motoko",
+	"Motoko":      "Motoko",
 	"nix":         "Nix",
 	"nsi":         "NSIS",
 	"nsh":         "NSIS",
@@ -340,6 +342,19 @@ func getFileType(path string, opts *ClocOptions) (ext string, ok bool) {
 			fmt.Printf("path=%v, lang=%v\n", path, lang)
 		}
 		return lang, true
+	case ".mo":
+		content, err := ioutil.ReadFile(path)
+		if err != nil {
+			return "", false
+		}
+		lang := enry.GetLanguage(path, content)
+		if opts.Debug {
+			fmt.Printf("path=%v, lang=%v\n", path, lang)
+		}
+		if lang != "" {
+			return "Motoko", true
+		}
+		return lang, true
 	}
 
 	switch base {
@@ -402,6 +417,8 @@ func lang2exts(lang string) (exts string) {
 				}
 			case "TypeScript":
 				ext = "ts"
+			case "Motoko":
+				ext = "mo"
 			}
 			es = append(es, ext)
 		}
@@ -510,6 +527,7 @@ func NewDefinedLanguages() *DefinedLanguages {
 			"LESS":                NewLanguage("LESS", []string{"//"}, [][]string{{"/*", "*/"}}),
 			"Objective-C":         NewLanguage("Objective-C", []string{"//"}, [][]string{{"/*", "*/"}}),
 			"Markdown":            NewLanguage("Markdown", []string{}, [][]string{{"", ""}}),
+			"Motoko":              NewLanguage("Motoko", []string{"//"}, [][]string{{"/*", "*/"}}),
 			"Nix":                 NewLanguage("Nix", []string{"#"}, [][]string{{"/*", "*/"}}),
 			"NSIS":                NewLanguage("NSIS", []string{"#", ";"}, [][]string{{"/*", "*/"}}),
 			"Nu":                  NewLanguage("Nu", []string{";", "#"}, [][]string{{"", ""}}),
