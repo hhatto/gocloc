@@ -172,6 +172,7 @@ var Exts = map[string]string{
 	"kts":         "Kotlin",
 	"lds":         "LD Script",
 	"less":        "LESS",
+	"ly":          "Lilypond",
 	"Objective-C": "Objective-C", // deplicated Obj-C/Matlab/Mercury
 	"Matlab":      "MATLAB",      // both use ext '.m'
 	"Mercury":     "Mercury",     // use ext '.m'
@@ -501,6 +502,7 @@ func NewDefinedLanguages() *DefinedLanguages {
 			"Lean":                NewLanguage("Lean", []string{"--"}, [][]string{{"/-", "-/"}}),
 			"Logtalk":             NewLanguage("Logtalk", []string{"%"}, [][]string{{"", ""}}),
 			"Lua":                 NewLanguage("Lua", []string{"--"}, [][]string{{"--[[", "]]"}}),
+			"Lilypond":            NewLanguage("Lilypond", []string{"%"}, [][]string{{"", ""}}),
 			"LISP":                NewLanguage("LISP", []string{";;"}, [][]string{{"#|", "|#"}}),
 			"LiveScript":          NewLanguage("LiveScript", []string{"#"}, [][]string{{"/*", "*/"}}),
 			"FORTRAN Legacy":      NewLanguage("FORTRAN Legacy", []string{"c", "C", "!", "*"}, [][]string{{"", ""}}),
