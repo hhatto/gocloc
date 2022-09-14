@@ -111,7 +111,8 @@ func getAllFiles(paths []string, languages *DefinedLanguages, opts *ClocOptions)
 		vcsInRoot := isVCSDir(root)
 		err = filepath.Walk(root, func(path string, info os.FileInfo, err error) error {
 			if err != nil {
-				return err
+				fmt.Printf("%s\n", err)
+				return nil
 			}
 			if ignore := checkDefaultIgnore(path, info, vcsInRoot); ignore {
 				return nil
