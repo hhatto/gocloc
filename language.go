@@ -539,7 +539,7 @@ func NewDefinedLanguages() *DefinedLanguages {
 			"LD Script":           NewLanguage("LD Script", []string{"//"}, [][]string{{"/*", "*/"}}),
 			"LESS":                NewLanguage("LESS", []string{"//"}, [][]string{{"/*", "*/"}}),
 			"Objective-C":         NewLanguage("Objective-C", []string{"//"}, [][]string{{"/*", "*/"}}),
-			"Markdown":            NewLanguage("Markdown", []string{}, [][]string{{"", ""}}),
+			"Markdown":            NewLanguage("Markdown", []string{"<!--"}, [][]string{{"<!--", "-->"}}),
 			"Motoko":              NewLanguage("Motoko", []string{"//"}, [][]string{{"/*", "*/"}}),
 			"Nix":                 NewLanguage("Nix", []string{"#"}, [][]string{{"/*", "*/"}}),
 			"NSIS":                NewLanguage("NSIS", []string{"#", ";"}, [][]string{{"/*", "*/"}}),
