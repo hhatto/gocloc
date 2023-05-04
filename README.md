@@ -85,11 +85,11 @@ $ gocloc --show-lang
 ```
 
 ## Performance
-* CPU 3.1GHz Intel Core i7 / 16GB 1600MHz DDR3 / MacOSX 10.11.3
+* CPU 3.8GHz 8core Intel Core i7 / 32GB 2667MHz DDR4 / MacOSX 13.3.1
 * cloc 1.96
 * tokei 12.1.2 compiled with serialization support: json
-* gocloc [6a9d4f5](https://github.com/hhatto/gocloc/commit/6a9d4f5b3d4e5df28fe78a04e8741595e22ada50)
-* target repository is [golang/go commit:633ab74](https://github.com/golang/go/tree/633ab7426a906b72dcf6f1d54e87f4ae926dc4e1)
+* gocloc [a88edc5](https://github.com/hhatto/gocloc/commit/a88edc52b3eea697687f9546f6ac74a03c91c5fb)
+* target repository is [golang/go commit:f742ddc](https://github.com/golang/go/tree/f742ddc349723667fc9af5d0f16233f7762aeaa0)
 
 ### cloc
 
