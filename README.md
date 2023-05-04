@@ -11,12 +11,11 @@ Inspired by [tokei](https://github.com/Aaronepower/tokei).
 
 ## Installation
 
+require Go 1.19+
+
 ```
 # Go version >= 1.16
 $ go install github.com/hhatto/gocloc/cmd/gocloc@latest
-
-# Go version < 1.16
-$ go get -u github.com/hhatto/gocloc/cmd/gocloc
 ```
 
 Arch Linux user can also install from AUR: [gocloc-git](https://aur.archlinux.org/packages/gocloc-git/).
