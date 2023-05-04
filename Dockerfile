@@ -1,4 +1,4 @@
-FROM golang:1.13-buster AS builder
+FROM golang:1.20-buster AS builder
 
 # hadolint ignore=DL3008
 RUN apt-get update \

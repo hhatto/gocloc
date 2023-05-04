@@ -1,13 +1,18 @@
 package gocloc
 
-import "sync"
+import (
+	"bytes"
+	"sync"
+)
 
-var bsPool = sync.Pool{New: func() interface{} { return make([]byte, 0, 128*1024) }}
+var bsPool = sync.Pool{New: func() any { return new(bytes.Buffer) }}
 
-func getByteSlice() []byte {
-	return bsPool.Get().([]byte)
+func getByteSlice() *bytes.Buffer {
+	v := bsPool.Get().(*bytes.Buffer)
+	v.Reset()
+	return v
 }
 
-func putByteSlice(bs []byte) {
+func putByteSlice(bs *bytes.Buffer) {
 	bsPool.Put(bs)
 }
