@@ -2,15 +2,14 @@ package gocloc
 
 import (
 	"bytes"
-	"io/ioutil"
 	"os"
 	"testing"
 )
 
 func TestAnalayzeFile4Python(t *testing.T) {
-	tmpfile, err := ioutil.TempFile("", "tmp.py")
+	tmpfile, err := os.CreateTemp("", "tmp.py")
 	if err != nil {
-		t.Logf("ioutil.TempFile() error. err=[%v]", err)
+		t.Logf("os.CreateTemp() error. err=[%v]", err)
 		return
 	}
 	defer os.Remove(tmpfile.Name())
@@ -48,9 +47,9 @@ class A:
 }
 
 func TestAnalayzeFile4PythonInvalid(t *testing.T) {
-	tmpfile, err := ioutil.TempFile("", "tmp.py")
+	tmpfile, err := os.CreateTemp("", "tmp.py")
 	if err != nil {
-		t.Logf("ioutil.TempFile() error. err=[%v]", err)
+		t.Logf("os.CreateTemp() error. err=[%v]", err)
 		return
 	}
 	defer os.Remove(tmpfile.Name())
@@ -87,9 +86,9 @@ class A:
 }
 
 func TestAnalayzeFile4PythonNoShebang(t *testing.T) {
-	tmpfile, err := ioutil.TempFile("", "tmp.py")
+	tmpfile, err := os.CreateTemp("", "tmp.py")
 	if err != nil {
-		t.Logf("ioutil.TempFile() error. err=[%v]", err)
+		t.Logf("os.CreateTemp() error. err=[%v]", err)
 		return
 	}
 	defer os.Remove(tmpfile.Name())
@@ -129,9 +128,9 @@ func TestAnalayzeFile4PythonNoShebang(t *testing.T) {
 }
 
 func TestAnalayzeFile4Go(t *testing.T) {
-	tmpfile, err := ioutil.TempFile("", "tmp.go")
+	tmpfile, err := os.CreateTemp("", "tmp.go")
 	if err != nil {
-		t.Logf("ioutil.TempFile() error. err=[%v]", err)
+		t.Logf("os.CreateTemp() error. err=[%v]", err)
 		return
 	}
 	defer os.Remove(tmpfile.Name())
@@ -170,9 +169,9 @@ func main() {
 
 func TestAnalayzeFile4GoWithOnelineBlockComment(t *testing.T) {
 	t.SkipNow()
-	tmpfile, err := ioutil.TempFile("", "tmp.go")
+	tmpfile, err := os.CreateTemp("", "tmp.go")
 	if err != nil {
-		t.Logf("ioutil.TempFile() error. err=[%v]", err)
+		t.Logf("os.CreateTemp() error. err=[%v]", err)
 		return
 	}
 	defer os.Remove(tmpfile.Name())
@@ -210,9 +209,9 @@ func main() {
 }
 
 func TestAnalayzeFile4GoWithCommentInnerBlockComment(t *testing.T) {
-	tmpfile, err := ioutil.TempFile("", "tmp.go")
+	tmpfile, err := os.CreateTemp("", "tmp.go")
 	if err != nil {
-		t.Logf("ioutil.TempFile() error. err=[%v]", err)
+		t.Logf("os.CreateTemp() error. err=[%v]", err)
 		return
 	}
 	defer os.Remove(tmpfile.Name())
@@ -249,9 +248,9 @@ func main() {
 }
 
 func TestAnalyzeFile4GoWithNoComment(t *testing.T) {
-	tmpfile, err := ioutil.TempFile("", "tmp.go")
+	tmpfile, err := os.CreateTemp("", "tmp.go")
 	if err != nil {
-		t.Logf("ioutil.TempFile() error. err=[%v]", err)
+		t.Logf("os.CreateTemp() error. err=[%v]", err)
 		return
 	}
 	defer os.Remove(tmpfile.Name())
@@ -287,9 +286,9 @@ func TestAnalyzeFile4GoWithNoComment(t *testing.T) {
 }
 
 func TestAnalyzeFile4ATSWithDoubleMultilineComments(t *testing.T) {
-	tmpfile, err := ioutil.TempFile("", "tmp.java")
+	tmpfile, err := os.CreateTemp("", "tmp.java")
 	if err != nil {
-		t.Logf("ioutil.TempFile() error. err=[%v]", err)
+		t.Logf("os.CreateTemp() error. err=[%v]", err)
 		return
 	}
 	defer os.Remove(tmpfile.Name())
@@ -329,9 +328,9 @@ vo /* ff */
 }
 
 func TestAnalyzeFile4JavaWithCommentInCodeLine(t *testing.T) {
-	tmpfile, err := ioutil.TempFile("", "tmp.java")
+	tmpfile, err := os.CreateTemp("", "tmp.java")
 	if err != nil {
-		t.Logf("ioutil.TempFile() error. err=[%v]", err)
+		t.Logf("os.CreateTemp() error. err=[%v]", err)
 		return
 	}
 	defer os.Remove(tmpfile.Name())
@@ -376,9 +375,9 @@ func TestAnalyzeFile4JavaWithCommentInCodeLine(t *testing.T) {
 }
 
 func TestAnalyzeFile4Makefile(t *testing.T) {
-	tmpfile, err := ioutil.TempFile("", "Makefile.am")
+	tmpfile, err := os.CreateTemp("", "Makefile.am")
 	if err != nil {
-		t.Logf("ioutil.TempFile() error. err=[%v]", err)
+		t.Logf("os.CreateTemp() error. err=[%v]", err)
 		return
 	}
 	defer os.Remove(tmpfile.Name())

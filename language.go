@@ -4,7 +4,6 @@ import (
 	"bufio"
 	"bytes"
 	"fmt"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"regexp"
@@ -342,7 +341,7 @@ func getFileType(path string, opts *ClocOptions) (ext string, ok bool) {
 
 	switch ext {
 	case ".m", ".v", ".fs", ".r", ".ts":
-		content, err := ioutil.ReadFile(path)
+		content, err := os.ReadFile(path)
 		if err != nil {
 			return "", false
 		}
@@ -352,7 +351,7 @@ func getFileType(path string, opts *ClocOptions) (ext string, ok bool) {
 		}
 		return lang, true
 	case ".mo":
-		content, err := ioutil.ReadFile(path)
+		content, err := os.ReadFile(path)
 		if err != nil {
 			return "", false
 		}
