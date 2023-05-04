@@ -143,7 +143,7 @@ scannerloop:
 
 		isCode := true
 		for _, b := range codeFlags {
-			if b == false {
+			if !b {
 				isCode = false
 			}
 		}
