@@ -4,7 +4,6 @@ import (
 	"bufio"
 	"bytes"
 	"fmt"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"regexp"
@@ -52,8 +51,8 @@ func (ls Languages) Less(i, j int) bool {
 	return ls[i].Code > ls[j].Code
 }
 
-var reShebangEnv = regexp.MustCompile("^#! *(\\S+/env) ([a-zA-Z]+)")
-var reShebangLang = regexp.MustCompile("^#! *[.a-zA-Z/]+/([a-zA-Z]+)")
+var reShebangEnv = regexp.MustCompile(`^#! *(\S+/env) ([a-zA-Z]+)`)
+var reShebangLang = regexp.MustCompile(`^#! *[.a-zA-Z/]+/([a-zA-Z]+)`)
 
 // Exts is the definition of the language name, keyed by the extension for each language.
 var Exts = map[string]string{
@@ -198,6 +197,8 @@ var Exts = map[string]string{
 	"meson":       "Meson",
 	"mustache":    "Mustache",
 	"m4":          "M4",
+	"mojo":        "Mojo",
+	"🔥":           "Mojo",
 	"l":           "lex",
 	"nim":         "Nim",
 	"njk":         "Nunjucks",
@@ -340,7 +341,7 @@ func getFileType(path string, opts *ClocOptions) (ext string, ok bool) {
 
 	switch ext {
 	case ".m", ".v", ".fs", ".r", ".ts":
-		content, err := ioutil.ReadFile(path)
+		content, err := os.ReadFile(path)
 		if err != nil {
 			return "", false
 		}
@@ -350,7 +351,7 @@ func getFileType(path string, opts *ClocOptions) (ext string, ok bool) {
 		}
 		return lang, true
 	case ".mo":
-		content, err := ioutil.ReadFile(path)
+		content, err := os.ReadFile(path)
 		if err != nil {
 			return "", false
 		}
@@ -551,6 +552,7 @@ func NewDefinedLanguages() *DefinedLanguages {
 			"Mercury":             NewLanguage("Mercury", []string{"%"}, [][]string{{"/*", "*/"}}),
 			"Maven":               NewLanguage("Maven", []string{"<!--"}, [][]string{{"<!--", "-->"}}),
 			"Meson":               NewLanguage("Meson", []string{"#"}, [][]string{{"", ""}}),
+			"Mojo":                NewLanguage("Mojo", []string{"#"}, [][]string{{"", ""}}),
 			"Mustache":            NewLanguage("Mustache", []string{}, [][]string{{"{{!", "}}"}}),
 			"M4":                  NewLanguage("M4", []string{"#"}, [][]string{{"", ""}}),
 			"Nim":                 NewLanguage("Nim", []string{"#"}, [][]string{{"#[", "]#"}}),

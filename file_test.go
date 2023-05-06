@@ -2,20 +2,19 @@ package gocloc
 
 import (
 	"bytes"
-	"io/ioutil"
 	"os"
 	"testing"
 )
 
 func TestAnalayzeFile4Python(t *testing.T) {
-	tmpfile, err := ioutil.TempFile("", "tmp.py")
+	tmpfile, err := os.CreateTemp("", "tmp.py")
 	if err != nil {
-		t.Logf("ioutil.TempFile() error. err=[%v]", err)
+		t.Logf("os.CreateTemp() error. err=[%v]", err)
 		return
 	}
 	defer os.Remove(tmpfile.Name())
 
-	tmpfile.Write([]byte(`#!/bin/python
+	if _, err := tmpfile.Write([]byte(`#!/bin/python
 
 class A:
 	"""comment1
@@ -23,7 +22,10 @@ class A:
 	comment3
 	"""
 	pass
-`))
+`),
+	); err != nil {
+		t.Fatalf("tmpfile.Write() error. err=[%v]", err)
+	}
 
 	language := NewLanguage("Python", []string{"#"}, [][]string{{"\"\"\"", "\"\"\""}})
 	clocOpts := NewClocOptions()
@@ -45,21 +47,24 @@ class A:
 }
 
 func TestAnalayzeFile4PythonInvalid(t *testing.T) {
-	tmpfile, err := ioutil.TempFile("", "tmp.py")
+	tmpfile, err := os.CreateTemp("", "tmp.py")
 	if err != nil {
-		t.Logf("ioutil.TempFile() error. err=[%v]", err)
+		t.Logf("os.CreateTemp() error. err=[%v]", err)
 		return
 	}
 	defer os.Remove(tmpfile.Name())
 
-	tmpfile.Write([]byte(`#!/bin/python
+	if _, err := tmpfile.Write([]byte(`#!/bin/python
 
 class A:
 	"""comment1
 	comment2
 	comment3"""
 	pass
-`))
+`),
+	); err != nil {
+		t.Fatalf("tmpfile.Write() error. err=[%v]", err)
+	}
 
 	language := NewLanguage("Python", []string{"#"}, [][]string{{"\"\"\"", "\"\"\""}})
 	clocOpts := NewClocOptions()
@@ -81,14 +86,14 @@ class A:
 }
 
 func TestAnalayzeFile4PythonNoShebang(t *testing.T) {
-	tmpfile, err := ioutil.TempFile("", "tmp.py")
+	tmpfile, err := os.CreateTemp("", "tmp.py")
 	if err != nil {
-		t.Logf("ioutil.TempFile() error. err=[%v]", err)
+		t.Logf("os.CreateTemp() error. err=[%v]", err)
 		return
 	}
 	defer os.Remove(tmpfile.Name())
 
-	tmpfile.Write([]byte(`a = '''hello
+	if _, err := tmpfile.Write([]byte(`a = '''hello
 	world
 	'''
 
@@ -98,7 +103,10 @@ func TestAnalayzeFile4PythonNoShebang(t *testing.T) {
 	"""
 
 	print a, b
-`))
+`),
+	); err != nil {
+		t.Fatalf("tmpfile.Write() error. err=[%v]", err)
+	}
 
 	language := NewLanguage("Python", []string{"#"}, [][]string{{"\"\"\"", "\"\"\""}})
 	clocOpts := NewClocOptions()
@@ -120,14 +128,14 @@ func TestAnalayzeFile4PythonNoShebang(t *testing.T) {
 }
 
 func TestAnalayzeFile4Go(t *testing.T) {
-	tmpfile, err := ioutil.TempFile("", "tmp.go")
+	tmpfile, err := os.CreateTemp("", "tmp.go")
 	if err != nil {
-		t.Logf("ioutil.TempFile() error. err=[%v]", err)
+		t.Logf("os.CreateTemp() error. err=[%v]", err)
 		return
 	}
 	defer os.Remove(tmpfile.Name())
 
-	tmpfile.Write([]byte(`package main
+	if _, err := tmpfile.Write([]byte(`package main
 
 func main() {
 	var n string /*
@@ -135,7 +143,10 @@ func main() {
 		comment
 	*/
 }
-`))
+`),
+	); err != nil {
+		t.Fatalf("tmpfile.Write() error. err=[%v]", err)
+	}
 
 	language := NewLanguage("Go", []string{"//"}, [][]string{{"/*", "*/"}})
 	clocOpts := NewClocOptions()
@@ -158,14 +169,14 @@ func main() {
 
 func TestAnalayzeFile4GoWithOnelineBlockComment(t *testing.T) {
 	t.SkipNow()
-	tmpfile, err := ioutil.TempFile("", "tmp.go")
+	tmpfile, err := os.CreateTemp("", "tmp.go")
 	if err != nil {
-		t.Logf("ioutil.TempFile() error. err=[%v]", err)
+		t.Logf("os.CreateTemp() error. err=[%v]", err)
 		return
 	}
 	defer os.Remove(tmpfile.Name())
 
-	tmpfile.Write([]byte(`package main
+	if _, err := tmpfile.Write([]byte(`package main
 
 func main() {
 	st := "/*"
@@ -173,7 +184,10 @@ func main() {
 	en := "*/"
 	/* comment */
 }
-`))
+`),
+	); err != nil {
+		t.Fatalf("tmpfile.Write() error. err=[%v]", err)
+	}
 
 	language := NewLanguage("Go", []string{"//"}, [][]string{{"/*", "*/"}})
 	clocOpts := NewClocOptions()
@@ -195,21 +209,24 @@ func main() {
 }
 
 func TestAnalayzeFile4GoWithCommentInnerBlockComment(t *testing.T) {
-	tmpfile, err := ioutil.TempFile("", "tmp.go")
+	tmpfile, err := os.CreateTemp("", "tmp.go")
 	if err != nil {
-		t.Logf("ioutil.TempFile() error. err=[%v]", err)
+		t.Logf("os.CreateTemp() error. err=[%v]", err)
 		return
 	}
 	defer os.Remove(tmpfile.Name())
 
-	tmpfile.Write([]byte(`package main
+	if _, err := tmpfile.Write([]byte(`package main
 
 func main() {
 	// comment /*
 	a := 1
 	b := 2
 }
-`))
+`),
+	); err != nil {
+		t.Fatalf("tmpfile.Write() error. err=[%v]", err)
+	}
 
 	language := NewLanguage("Go", []string{"//"}, [][]string{{"/*", "*/"}})
 	clocOpts := NewClocOptions()
@@ -231,20 +248,23 @@ func main() {
 }
 
 func TestAnalyzeFile4GoWithNoComment(t *testing.T) {
-	tmpfile, err := ioutil.TempFile("", "tmp.go")
+	tmpfile, err := os.CreateTemp("", "tmp.go")
 	if err != nil {
-		t.Logf("ioutil.TempFile() error. err=[%v]", err)
+		t.Logf("os.CreateTemp() error. err=[%v]", err)
 		return
 	}
 	defer os.Remove(tmpfile.Name())
 
-	tmpfile.Write([]byte(`package main
+	if _, err := tmpfile.Write([]byte(`package main
 
 	func main() {
 		a := "/*                */"
 		b := "//                  "
 	}
-`))
+`),
+	); err != nil {
+		t.Fatalf("tmpfile.Write() error. err=[%v]", err)
+	}
 
 	language := NewLanguage("Go", []string{"//"}, [][]string{{"/*", "*/"}})
 	clocOpts := NewClocOptions()
@@ -266,14 +286,14 @@ func TestAnalyzeFile4GoWithNoComment(t *testing.T) {
 }
 
 func TestAnalyzeFile4ATSWithDoubleMultilineComments(t *testing.T) {
-	tmpfile, err := ioutil.TempFile("", "tmp.java")
+	tmpfile, err := os.CreateTemp("", "tmp.java")
 	if err != nil {
-		t.Logf("ioutil.TempFile() error. err=[%v]", err)
+		t.Logf("os.CreateTemp() error. err=[%v]", err)
 		return
 	}
 	defer os.Remove(tmpfile.Name())
 
-	tmpfile.Write([]byte(`/* com */
+	if _, err := tmpfile.Write([]byte(`/* com */
 (* co *)
 
 vo (*
@@ -283,7 +303,10 @@ vo /*
 jife */
 
 vo /* ff */
-`))
+`),
+	); err != nil {
+		t.Fatalf("tmpfile.Write() error. err=[%v]", err)
+	}
 
 	language := NewLanguage("ATS", []string{"//"}, [][]string{{"(*", "*)"}, {"/*", "*/"}})
 	clocOpts := NewClocOptions()
@@ -305,14 +328,14 @@ vo /* ff */
 }
 
 func TestAnalyzeFile4JavaWithCommentInCodeLine(t *testing.T) {
-	tmpfile, err := ioutil.TempFile("", "tmp.java")
+	tmpfile, err := os.CreateTemp("", "tmp.java")
 	if err != nil {
-		t.Logf("ioutil.TempFile() error. err=[%v]", err)
+		t.Logf("os.CreateTemp() error. err=[%v]", err)
 		return
 	}
 	defer os.Remove(tmpfile.Name())
 
-	tmpfile.Write([]byte(`public class Sample {
+	if _, err := tmpfile.Write([]byte(`public class Sample {
 		public static void main(String args[]){
 		int a; /* A takes care of counts */
 		int b;
@@ -327,7 +350,10 @@ func TestAnalyzeFile4JavaWithCommentInCodeLine(t *testing.T) {
 		/*End of Main*/
 		}
 		}
-`))
+`),
+	); err != nil {
+		t.Fatalf("tmpfile.Write() error. err=[%v]", err)
+	}
 
 	language := NewLanguage("Java", []string{"//"}, [][]string{{"/*", "*/"}})
 	clocOpts := NewClocOptions()
@@ -349,14 +375,14 @@ func TestAnalyzeFile4JavaWithCommentInCodeLine(t *testing.T) {
 }
 
 func TestAnalyzeFile4Makefile(t *testing.T) {
-	tmpfile, err := ioutil.TempFile("", "Makefile.am")
+	tmpfile, err := os.CreateTemp("", "Makefile.am")
 	if err != nil {
-		t.Logf("ioutil.TempFile() error. err=[%v]", err)
+		t.Logf("os.CreateTemp() error. err=[%v]", err)
 		return
 	}
 	defer os.Remove(tmpfile.Name())
 
-	tmpfile.Write([]byte(`# This is a simple Makefile with comments
+	if _, err := tmpfile.Write([]byte(`# This is a simple Makefile with comments
 	.PHONY: test build
 
 	build:
@@ -373,7 +399,10 @@ func TestAnalyzeFile4Makefile(t *testing.T) {
 
 	test:
 		GO111MODULE=on go test -v
-`))
+`),
+	); err != nil {
+		t.Fatalf("tmpfile.Write() error. err=[%v]", err)
+	}
 
 	language := NewLanguage("Makefile", []string{"#"}, [][]string{{"", ""}})
 	clocOpts := NewClocOptions()

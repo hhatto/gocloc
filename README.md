@@ -11,12 +11,10 @@ Inspired by [tokei](https://github.com/Aaronepower/tokei).
 
 ## Installation
 
-```
-# Go version >= 1.16
-$ go install github.com/hhatto/gocloc/cmd/gocloc@latest
+require Go 1.19+
 
-# Go version < 1.16
-$ go get -u github.com/hhatto/gocloc/cmd/gocloc
+```
+$ go install github.com/hhatto/gocloc/cmd/gocloc@latest
 ```
 
 Arch Linux user can also install from AUR: [gocloc-git](https://aur.archlinux.org/packages/gocloc-git/).
@@ -87,81 +85,103 @@ $ gocloc --show-lang
 ```
 
 ## Performance
-* CPU 3.1GHz Intel Core i7 / 16GB 1600MHz DDR3 / MacOSX 10.11.3
-* cloc 1.66
-* tokei 1.5.1
-* gocloc [6a9d4f5](https://github.com/hhatto/gocloc/commit/6a9d4f5b3d4e5df28fe78a04e8741595e22ada50)
-* target repository is [golang/go commit:633ab74](https://github.com/golang/go/tree/633ab7426a906b72dcf6f1d54e87f4ae926dc4e1)
+* CPU 3.8GHz 8core Intel Core i7 / 32GB 2667MHz DDR4 / MacOSX 13.3.1
+* cloc 1.96
+* tokei 12.1.2 compiled with serialization support: json
+* gocloc [a88edc5](https://github.com/hhatto/gocloc/commit/a88edc52b3eea697687f9546f6ac74a03c91c5fb)
+* target repository is [golang/go commit:f742ddc](https://github.com/golang/go/tree/f742ddc349723667fc9af5d0f16233f7762aeaa0)
 
 ### cloc
 
 ```
 $ time cloc .
-    5171 text files.
-    5052 unique files.
-     420 files ignored.
+   12003 text files.
+   11150 unique files.
+    1192 files ignored.
 
-https://github.com/AlDanial/cloc v 1.66  T=23.31 s (204.0 files/s, 48203.3 lines/s)
+8 errors:
+Line count, exceeded timeout:  ./src/cmd/dist/build.go
+Line count, exceeded timeout:  ./src/cmd/trace/static/webcomponents.min.js
+Line count, exceeded timeout:  ./src/net/http/requestwrite_test.go
+Line count, exceeded timeout:  ./src/vendor/golang.org/x/net/idna/tables10.0.0.go
+Line count, exceeded timeout:  ./src/vendor/golang.org/x/net/idna/tables11.0.0.go
+Line count, exceeded timeout:  ./src/vendor/golang.org/x/net/idna/tables12.0.0.go
+Line count, exceeded timeout:  ./src/vendor/golang.org/x/net/idna/tables13.0.0.go
+Line count, exceeded timeout:  ./src/vendor/golang.org/x/net/idna/tables9.0.0.go
+
+github.com/AlDanial/cloc v 1.96  T=35.07 s (317.9 files/s, 78679.3 lines/s)
 -----------------------------------------------------------------------------------
 Language                         files          blank        comment           code
 -----------------------------------------------------------------------------------
-Go                                4197         101140         125939         780280
-Assembly                           331           6128          14654          40531
-HTML                                41           4927            198          33316
-C                                   90           1076            940           7390
-Perl                                12            185            177           1135
-Bourne Again Shell                  25            209            266            933
-XML                                  4             85              9            623
-Bourne Shell                         8             71            302            467
-Python                               1            121             88            295
-DOS Batch                            5             55              1            238
-JavaScript                           4             48            122            231
-C/C++ Header                        15             50            147            211
-CSS                                  3             51              9            176
-yacc                                 1             27             20            155
-Protocol Buffers                     1              1              0            144
-Windows Resource File                4             25              0            116
-JSON                                 2              0              0             36
-make                                 7             12             10             35
+Go                                9081         205135         337681        1779107
+Text                              1194          11530              0         210849
+Assembly                           563          15549          21625         122329
+HTML                                17           3197             78          24983
+C                                  139           1324            982           6895
+JSON                                20              0              0           3122
+CSV                                  1              0              0           2119
+Markdown                            27            674            106           1949
+Bourne Shell                        16            253            868           1664
+JavaScript                          10            234            221           1517
+Perl                                10            173            171           1111
+C/C++ Header                        26            145            346            724
+Bourne Again Shell                  16            120            263            535
+Python                               1            133            104            375
+CSS                                  3              4             13            337
+DOS Batch                            5             56             66            207
+Windows Resource File                4             23              0            146
+Logos                                2             16              0            101
+Dockerfile                           2             13             15             47
+C++                                  2             11             14             24
+make                                 5              9             10             21
+Objective-C                          1              2              3             11
 Fortran 90                           2              1              3              8
-C++                                  1              3              5              7
 awk                                  1              1              6              7
+YAML                                 1              0              0              5
+MATLAB                               1              1              0              4
 -----------------------------------------------------------------------------------
-SUM:                              4755         114216         142896         866334
+SUM:                             11150         238604         362575        2158197
 -----------------------------------------------------------------------------------
-cloc .  13.57s user 7.89s system 105% cpu 20.413 total
+cloc .  33.70s user 1.48s system 99% cpu 35.237 total
 ```
 
 ### tokei
 
 ```
-$ time tokei --sort code .
+$ time tokei --sort code  --exclude "**/*.txt" .
+===============================================================================
+ Language            Files        Lines         Code     Comments       Blanks
+===============================================================================
+ Go                   9242      2330107      1812147       318036       199924
+ GNU Style Assembly    565       159534       127093        16888        15553
+ C                     143         9272         6949         1000         1323
+ JSON                   21         3122         3122            0            0
+ Shell                  16         2785         2267          342          176
+ JavaScript             10         1972         1520          218          234
+ Perl                    9         1360         1032          170          158
+ C Header               27         1222          727          349          146
+ BASH                   16          918          521          279          118
+ Python                  1          612          421           70          121
+ CSS                     3          354          337           13            4
+ Autoconf                9          283          274            0            9
+ Batch                   5          329          207           66           56
+ Alex                    2          117          101            0           16
+ Dockerfile              2           75           47           15           13
+ C++                     2           49           24           14           11
+ Makefile                5           40           20           10           10
+ Objective-C             2           21           15            3            3
+ FORTRAN Modern          2           12            8            3            1
+ Markdown               18         2402            0         1853          549
 -------------------------------------------------------------------------------
- Language            Files        Total       Blanks     Comments         Code
--------------------------------------------------------------------------------
- Go                   4272      1027537       103241       150411       773970
- Plain Text             28            0            0            0       137715
- Assembly              334        61318         6130            0        55188
- HTML                   41        38441         4927          204        33316
- C                      92         9436         1081          946         7409
- BASH                   27         2134          260          570         1304
- XML                     4          717           85            9          623
- Perl                   10         1255          151         1096          343
- Python                  1          504          121           56          327
- Batch                   5          294           55            0          239
- JavaScript              4          401           48          122          231
- C Header               15          408           50          147          211
- CSS                     3          236           51            9          176
- Protocol Buffers        1          145            1            0          144
- Markdown                3            0            0            0          115
- JSON                    2            0            0            0           36
- Makefile                7           57           13           10           34
- FORTRAN Modern          2           12            1            3            8
- C++                     1           15            3            5            7
--------------------------------------------------------------------------------
- Total                4852      1142910       116218       153588      1011396
--------------------------------------------------------------------------------
-tokei --sort code .  1.27s user 0.06s system 99% cpu 1.328 total
+ HTML                   17        19060        18584           49          427
+ |- CSS                  4         2071         1852           10          209
+ |- HTML                 1          219          212            0            7
+ |- JavaScript           8         6920         6876           16           28
+ (Total)                          28270        27524           75          671
+===============================================================================
+ Total               10117      2533646      1975416       339378       218852
+===============================================================================
+tokei --sort code --exclude "**/*.txt" .  0.76s user 0.50s system 562% cpu 0.224 total
 ```
 
 ### gocloc
@@ -171,32 +191,30 @@ $ time gocloc --exclude-ext=txt .
 -------------------------------------------------------------------------------
 Language                     files          blank        comment           code
 -------------------------------------------------------------------------------
-Go                            4197         101140         133703         773058
-Assembly                       331           6128          14694          40510
-HTML                            41           4927            198          33316
-C                               90           1076            991           7389
-BASH                            28            257            539           1330
-Perl                            12            185            177           1135
-XML                              4             85              9            623
-Python                           1            121             88            295
-Batch                            5             55              1            238
-JavaScript                       4             48            122            231
-C Header                        15             50            147            211
-CSS                              3             51              9            176
-Yacc                             1             27             20            155
-Protocol Buffers                 1              1              0            144
-Markdown                         3             29              0             86
-Plan9 Shell                      4             25             42             74
-Bourne Shell                     5             23             29             70
-JSON                             2              0              0             36
-make                             7             13             10             34
+Go                            9096         205242         352844        1764503
+Assembly                       563          15555          21624         122324
+HTML                            17           3197            212          24849
+C                              139           1324            983           6894
+JSON                            20              0              0           3122
+BASH                            27            345           1106           2122
+Markdown                        18            549             28           1825
+JavaScript                      10            234            218           1520
+C Header                        26            145            346            724
+Perl                            10            173            584            698
+Python                           1            133            104            375
+CSS                              3              4             13            337
+Batch                            5             56              0            273
+Plan9 Shell                      4             23             50             96
+Bourne Shell                     5             28             24             78
+C++                              2             11             14             24
+Makefile                         5             10             10             20
+Objective-C                      2              3              3             15
 FORTRAN Modern                   2              1              3              8
 Awk                              1              1              6              7
-C++                              1              3              5              7
 -------------------------------------------------------------------------------
-TOTAL                         4758         114246         150793         859133
+TOTAL                         9956         227034         378172        1929814
 -------------------------------------------------------------------------------
-gocloc --exclude-ext=txt .  0.76s user 0.15s system 116% cpu 0.775 total
+gocloc --exclude-ext=txt .  0.65s user 0.51s system 119% cpu 0.970 total
 ```
 
 ## License

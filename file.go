@@ -62,7 +62,7 @@ func AnalyzeReader(filename string, language *Language, file io.Reader, opts *Cl
 	buf := getByteSlice()
 	defer putByteSlice(buf)
 	scanner := bufio.NewScanner(file)
-	scanner.Buffer(buf, 1024*1024)
+	scanner.Buffer(buf.Bytes(), 1024*1024)
 
 scannerloop:
 	for scanner.Scan() {
@@ -143,7 +143,7 @@ scannerloop:
 
 		isCode := true
 		for _, b := range codeFlags {
-			if b == false {
+			if !b {
 				isCode = false
 			}
 		}

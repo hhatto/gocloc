@@ -34,7 +34,9 @@ func TestCheckMD5SumIgnore(t *testing.T) {
 
 func TestCheckDefaultIgnore(t *testing.T) {
 	appFS := afero.NewMemMapFs()
-	appFS.Mkdir("/test", os.ModeDir)
+	if err := appFS.Mkdir("/test", os.ModeDir); err != nil {
+		t.Fatal(err)
+	}
 	_, _ = appFS.Create("/test/one.go")
 
 	fileInfo, _ := appFS.Stat("/")
