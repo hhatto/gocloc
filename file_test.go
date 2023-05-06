@@ -488,3 +488,43 @@ func TestAnalayzeReader_OnCallbacks(t *testing.T) {
 		t.Errorf("invalid logic. lines=%v", lines)
 	}
 }
+
+func TestAnalyzeFile4Imba(t *testing.T) {
+	tmpfile, err := os.CreateTemp("", "test.imba")
+	if err != nil {
+		t.Logf("os.CreateTemp() error. err=[%v]", err)
+		return
+	}
+	defer os.Remove(tmpfile.Name())
+
+	if _, err := tmpfile.Write([]byte(`###
+This color is my favorite
+I need several lines to really
+emphasize this fact.
+###
+const color = "blue"
+
+# this is line comment
+`),
+	); err != nil {
+		t.Fatalf("tmpfile.Write() error. err=[%v]", err)
+	}
+
+	language := NewLanguage("Imba", []string{"#"}, [][]string{{"###", "###"}})
+	clocOpts := NewClocOptions()
+	clocFile := AnalyzeFile(tmpfile.Name(), language, clocOpts)
+	tmpfile.Close()
+
+	if clocFile.Blanks != 1 {
+		t.Errorf("invalid logic. blanks=%v", clocFile.Blanks)
+	}
+	if clocFile.Comments != 6 {
+		t.Errorf("invalid logic. comments=%v", clocFile.Comments)
+	}
+	if clocFile.Code != 1 {
+		t.Errorf("invalid logic. code=%v", clocFile.Code)
+	}
+	if clocFile.Lang != "Imba" {
+		t.Errorf("invalid logic. lang=%v", clocFile.Lang)
+	}
+}
