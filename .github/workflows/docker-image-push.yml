@@ -24,7 +24,7 @@ jobs:
       - name: Lint Dockerfile
         run:  docker run --rm -i hadolint/hadolint < Dockerfile
   push:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-22.04
     needs: lint
     strategy:
       matrix:
