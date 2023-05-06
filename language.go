@@ -473,7 +473,7 @@ func NewDefinedLanguages() *DefinedLanguages {
 			"C":                   NewLanguage("C", []string{"//"}, [][]string{{"/*", "*/"}}),
 			"C Header":            NewLanguage("C Header", []string{"//"}, [][]string{{"/*", "*/"}}),
 			"C Shell":             NewLanguage("C Shell", []string{"#"}, [][]string{{"", ""}}),
-			"Cairo":               NewLanguage("Cairo", []string{"#"}, [][]string{{"", ""}}),
+			"Cairo":               NewLanguage("Cairo", []string{"//"}, [][]string{{"", ""}}),
 			"Cap'n Proto":         NewLanguage("Cap'n Proto", []string{"#"}, [][]string{{"", ""}}),
 			"Carp":                NewLanguage("Carp", []string{";"}, [][]string{{"", ""}}),
 			"C#":                  NewLanguage("C#", []string{"//"}, [][]string{{"/*", "*/"}}),
