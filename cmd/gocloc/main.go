@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"os"
 	"regexp"
-	"sort"
 	"strings"
 
 	"github.com/hhatto/gocloc"
@@ -43,7 +42,7 @@ var rowLen = 79
 // It is necessary to use notation that follows go-flags.
 type CmdOptions struct {
 	Byfile         bool   `long:"by-file" description:"report results for every encountered source file"`
-	SortTag        string `long:"sort" default:"code" description:"sort based on a certain column"`
+	SortTag        string `long:"sort" default:"code" description:"sort based on a certain column" choice:"name" choice:"files" choice:"blank" choice:"comment" choice:"code"`
 	OutputType     string `long:"output-type" default:"default" description:"output type [values: default,cloc-xml,sloccount,json]"`
 	ExcludeExt     string `long:"exclude-ext" description:"exclude file name extensions (separated commas)"`
 	IncludeLang    string `long:"include-lang" description:"include language name (separated commas)"`
@@ -103,7 +102,7 @@ func (o *outputBuilder) WriteFooter() {
 	}
 }
 
-func writeResultWithByFile(outputType string, result *gocloc.Result) {
+func writeResultWithByFile(opts *CmdOptions, result *gocloc.Result) {
 	clocFiles := result.Files
 	total := result.Total
 	maxPathLen := result.MaxPathLength
@@ -112,9 +111,18 @@ func writeResultWithByFile(outputType string, result *gocloc.Result) {
 	for _, file := range clocFiles {
 		sortedFiles = append(sortedFiles, *file)
 	}
-	sort.Sort(sortedFiles)
+	switch opts.SortTag {
+	case "name":
+		sortedFiles.SortByName()
+	case "comment":
+		sortedFiles.SortByComments()
+	case "blank":
+		sortedFiles.SortByBlanks()
+	default:
+		sortedFiles.SortByCode()
+	}
 
-	switch outputType {
+	switch opts.OutputType {
 	case OutputTypeClocXML:
 		t := gocloc.XMLTotalFiles{
 			Code:    total.Code,
@@ -166,7 +174,7 @@ func (o *outputBuilder) WriteResult() {
 	total := o.result.Total
 
 	if o.opts.Byfile {
-		writeResultWithByFile(o.opts.OutputType, o.result)
+		writeResultWithByFile(o.opts, o.result)
 	} else {
 		var sortedLanguages gocloc.Languages
 		for _, language := range clocLangs {
@@ -174,7 +182,18 @@ func (o *outputBuilder) WriteResult() {
 				sortedLanguages = append(sortedLanguages, *language)
 			}
 		}
-		sort.Sort(sortedLanguages)
+		switch o.opts.SortTag {
+		case "name":
+			sortedLanguages.SortByName()
+		case "files":
+			sortedLanguages.SortByFiles()
+		case "comment":
+			sortedLanguages.SortByComments()
+		case "blank":
+			sortedLanguages.SortByBlanks()
+		default:
+			sortedLanguages.SortByCode()
+		}
 
 		switch o.opts.OutputType {
 		case OutputTypeClocXML:
@@ -229,6 +248,12 @@ func main() {
 	if len(paths) <= 0 {
 		parser.WriteHelp(os.Stdout)
 		return
+	}
+
+	// check sort tag option with other options
+	if opts.Byfile && opts.SortTag == "files" {
+		fmt.Println("`--sort files` option cannot be used in conjunction with the `--by-file` option")
+		os.Exit(1)
 	}
 
 	// setup option for exclude extensions

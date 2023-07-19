@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"sort"
 	"strings"
 	"unicode"
 )
@@ -21,17 +22,38 @@ type ClocFile struct {
 // ClocFiles is gocloc result set.
 type ClocFiles []ClocFile
 
-func (cf ClocFiles) Len() int {
-	return len(cf)
-}
-func (cf ClocFiles) Swap(i, j int) {
-	cf[i], cf[j] = cf[j], cf[i]
-}
-func (cf ClocFiles) Less(i, j int) bool {
-	if cf[i].Code == cf[j].Code {
+func (cf ClocFiles) SortByName() {
+	sortFunc := func(i, j int) bool {
 		return cf[i].Name < cf[j].Name
 	}
-	return cf[i].Code > cf[j].Code
+	sort.Slice(cf, sortFunc)
+}
+
+func (cf ClocFiles) SortByComments() {
+	sortFunc := func(i, j int) bool {
+		if cf[i].Comments == cf[j].Comments {
+			return cf[i].Code > cf[j].Code
+		}
+		return cf[i].Comments > cf[j].Comments
+	}
+	sort.Slice(cf, sortFunc)
+}
+
+func (cf ClocFiles) SortByBlanks() {
+	sortFunc := func(i, j int) bool {
+		if cf[i].Blanks == cf[j].Blanks {
+			return cf[i].Code > cf[j].Code
+		}
+		return cf[i].Blanks > cf[j].Blanks
+	}
+	sort.Slice(cf, sortFunc)
+}
+
+func (cf ClocFiles) SortByCode() {
+	sortFunc := func(i, j int) bool {
+		return cf[i].Code > cf[j].Code
+	}
+	sort.Slice(cf, sortFunc)
 }
 
 // AnalyzeFile is analyzing file, this function calls AnalyzeReader() inside.
