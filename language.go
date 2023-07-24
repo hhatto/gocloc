@@ -38,17 +38,48 @@ type Language struct {
 // Languages is an array representation of Language.
 type Languages []Language
 
-func (ls Languages) Len() int {
-	return len(ls)
-}
-func (ls Languages) Swap(i, j int) {
-	ls[i], ls[j] = ls[j], ls[i]
-}
-func (ls Languages) Less(i, j int) bool {
-	if ls[i].Code == ls[j].Code {
+func (ls Languages) SortByName() {
+	sortFunc := func(i, j int) bool {
 		return ls[i].Name < ls[j].Name
 	}
-	return ls[i].Code > ls[j].Code
+	sort.Slice(ls, sortFunc)
+}
+
+func (ls Languages) SortByFiles() {
+	sortFunc := func(i, j int) bool {
+		if len(ls[i].Files) == len(ls[j].Files) {
+			return ls[i].Code > ls[j].Code
+		}
+		return len(ls[i].Files) > len(ls[j].Files)
+	}
+	sort.Slice(ls, sortFunc)
+}
+
+func (ls Languages) SortByComments() {
+	sortFunc := func(i, j int) bool {
+		if ls[i].Comments == ls[j].Comments {
+			return ls[i].Code > ls[j].Code
+		}
+		return ls[i].Comments > ls[j].Comments
+	}
+	sort.Slice(ls, sortFunc)
+}
+
+func (ls Languages) SortByBlanks() {
+	sortFunc := func(i, j int) bool {
+		if ls[i].Blanks == ls[j].Blanks {
+			return ls[i].Code > ls[j].Code
+		}
+		return ls[i].Blanks > ls[j].Blanks
+	}
+	sort.Slice(ls, sortFunc)
+}
+
+func (ls Languages) SortByCode() {
+	sortFunc := func(i, j int) bool {
+		return ls[i].Code > ls[j].Code
+	}
+	sort.Slice(ls, sortFunc)
 }
 
 var reShebangEnv = regexp.MustCompile(`^#! *(\S+/env) ([a-zA-Z]+)`)
