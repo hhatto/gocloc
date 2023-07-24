@@ -11,10 +11,10 @@ import (
 	"strings"
 	"unicode"
 
-	enry "github.com/go-enry/go-enry/v2"
+	"github.com/go-enry/go-enry/v2"
 )
 
-// ClocLanguage is provide for xml-cloc and json format.
+// ClocLanguage is provided for xml-cloc and json format.
 type ClocLanguage struct {
 	Name       string `xml:"name,attr" json:"name,omitempty"`
 	FilesCount int32  `xml:"files_count,attr" json:"files"`
@@ -449,7 +449,7 @@ func NewLanguage(name string, lineComments []string, multiLines [][]string) *Lan
 }
 
 func lang2exts(lang string) (exts string) {
-	es := []string{}
+	var es []string
 	for ext, l := range Exts {
 		if lang == l {
 			switch lang {
@@ -477,10 +477,10 @@ type DefinedLanguages struct {
 	Langs map[string]*Language
 }
 
-// GetFormattedString return DefinedLanguages as a human readable string.
+// GetFormattedString return DefinedLanguages as a human-readable string.
 func (langs *DefinedLanguages) GetFormattedString() string {
 	var buf bytes.Buffer
-	printLangs := []string{}
+	var printLangs []string
 	for _, lang := range langs.Langs {
 		printLangs = append(printLangs, lang.Name)
 	}

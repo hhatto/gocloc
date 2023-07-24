@@ -20,8 +20,8 @@ func trimBOM(line string) string {
 }
 
 func containsComment(line string, multiLines [][]string) bool {
-	for _, mlcomm := range multiLines {
-		for _, comm := range mlcomm {
+	for _, comments := range multiLines {
+		for _, comm := range comments {
 			if strings.Contains(line, comm) {
 				return true
 			}
@@ -69,11 +69,11 @@ func isVCSDir(path string) bool {
 
 func checkDefaultIgnore(path string, info os.FileInfo, isVCS bool) bool {
 	if info.IsDir() {
-		// directory is ignore
+		// directory is ignored
 		return true
 	}
 	if !isVCS && isVCSDir(path) {
-		// vcs file or directory is ignore
+		// vcs file or directory is ignored
 		return true
 	}
 
@@ -101,7 +101,7 @@ func checkOptionMatch(path string, info os.FileInfo, opts *ClocOptions) bool {
 	return true
 }
 
-// getAllFiles return all of the files to be analyzed in paths.
+// getAllFiles return all the files to be analyzed in paths.
 func getAllFiles(paths []string, languages *DefinedLanguages, opts *ClocOptions) (result map[string]*Language, err error) {
 	result = make(map[string]*Language, 0)
 	fileCache := make(map[string]struct{})

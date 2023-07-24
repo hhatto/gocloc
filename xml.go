@@ -58,7 +58,7 @@ func (x *XMLResult) Encode() {
 }
 
 // NewXMLResultFromCloc returns XMLResult with default data set.
-func NewXMLResultFromCloc(total *Language, sortedLanguages Languages, option XMLResultType) *XMLResult {
+func NewXMLResultFromCloc(total *Language, sortedLanguages Languages, _ XMLResultType) *XMLResult {
 	var langs []ClocLanguage
 	for _, language := range sortedLanguages {
 		c := ClocLanguage{

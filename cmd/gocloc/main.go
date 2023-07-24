@@ -8,7 +8,7 @@ import (
 	"strings"
 
 	"github.com/hhatto/gocloc"
-	flags "github.com/jessevdk/go-flags"
+	"github.com/jessevdk/go-flags"
 )
 
 // Version is version string for gocloc command
@@ -41,7 +41,7 @@ var rowLen = 79
 // CmdOptions is gocloc command options.
 // It is necessary to use notation that follows go-flags.
 type CmdOptions struct {
-	Byfile         bool   `long:"by-file" description:"report results for every encountered source file"`
+	ByFile         bool   `long:"by-file" description:"report results for every encountered source file"`
 	SortTag        string `long:"sort" default:"code" description:"sort based on a certain column" choice:"name" choice:"files" choice:"blank" choice:"comment" choice:"code"`
 	OutputType     string `long:"output-type" default:"default" description:"output type [values: default,cloc-xml,sloccount,json]"`
 	ExcludeExt     string `long:"exclude-ext" description:"exclude file name extensions (separated commas)"`
@@ -73,7 +73,7 @@ func (o *outputBuilder) WriteHeader() {
 	headerLen := 28
 	header := languageHeader
 
-	if o.opts.Byfile {
+	if o.opts.ByFile {
 		headerLen = maxPathLen + 1
 		rowLen = maxPathLen + len(commonHeader) + 2
 		header = fileHeader
@@ -91,7 +91,7 @@ func (o *outputBuilder) WriteFooter() {
 
 	if o.opts.OutputType == OutputTypeDefault {
 		fmt.Printf("%.[2]*[1]s\n", defaultOutputSeparator, rowLen)
-		if o.opts.Byfile {
+		if o.opts.ByFile {
 			fmt.Printf("%-[1]*[2]v %6[3]v %14[4]v %14[5]v %14[6]v\n",
 				maxPathLen, "TOTAL", total.Total, total.Blanks, total.Comments, total.Code)
 		} else {
@@ -173,7 +173,7 @@ func (o *outputBuilder) WriteResult() {
 	clocLangs := o.result.Languages
 	total := o.result.Total
 
-	if o.opts.Byfile {
+	if o.opts.ByFile {
 		writeResultWithByFile(o.opts, o.result)
 	} else {
 		var sortedLanguages gocloc.Languages
@@ -251,7 +251,7 @@ func main() {
 	}
 
 	// check sort tag option with other options
-	if opts.Byfile && opts.SortTag == "files" {
+	if opts.ByFile && opts.SortTag == "files" {
 		fmt.Println("`--sort files` option cannot be used in conjunction with the `--by-file` option")
 		os.Exit(1)
 	}
