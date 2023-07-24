@@ -80,7 +80,7 @@ func AnalyzeReader(filename string, language *Language, file io.Reader, opts *Cl
 	}
 
 	isFirstLine := true
-	inComments := [][2]string{}
+	var inComments [][2]string
 	buf := getByteSlice()
 	defer putByteSlice(buf)
 	scanner := bufio.NewScanner(file)
