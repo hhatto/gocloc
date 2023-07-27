@@ -91,6 +91,7 @@ var Exts = map[string]string{
 	"ada":         "Ada",
 	"adb":         "Ada",
 	"ads":         "Ada",
+	"alda":        "Alda",
 	"Ant":         "Ant",
 	"adoc":        "AsciiDoc",
 	"asciidoc":    "AsciiDoc",
@@ -498,6 +499,7 @@ func NewDefinedLanguages() *DefinedLanguages {
 		Langs: map[string]*Language{
 			"ActionScript":        NewLanguage("ActionScript", []string{"//"}, [][]string{{"/*", "*/"}}),
 			"Ada":                 NewLanguage("Ada", []string{"--"}, [][]string{{"", ""}}),
+			"Alda":                NewLanguage("Alda", []string{"#"}, [][]string{{"", ""}}),
 			"Ant":                 NewLanguage("Ant", []string{"<!--"}, [][]string{{"<!--", "-->"}}),
 			"AsciiDoc":            NewLanguage("AsciiDoc", []string{}, [][]string{{"", ""}}),
 			"Assembly":            NewLanguage("Assembly", []string{"//", ";", "#", "@", "|", "!"}, [][]string{{"/*", "*/"}}),
