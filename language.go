@@ -619,7 +619,7 @@ func NewDefinedLanguages() *DefinedLanguages {
 			"PowerShell":          NewLanguage("PowerShell", []string{"#"}, [][]string{{"<#", "#>"}}),
 			"Polly":               NewLanguage("Polly", []string{"<!--"}, [][]string{{"<!--", "-->"}}),
 			"Protocol Buffers":    NewLanguage("Protocol Buffers", []string{"//"}, [][]string{{"", ""}}),
-			"PRQL":                NewLanguage("PRQL", []string{"#"}, [][]string{{"\"\"\"", "\"\"\""}}),
+			"PRQL":                NewLanguage("PRQL", []string{"#"}, [][]string{{"", ""}}),
 			"Python":              NewLanguage("Python", []string{"#"}, [][]string{{"\"\"\"", "\"\"\""}}),
 			"Q":                   NewLanguage("Q", []string{"/ "}, [][]string{{"\\", "/"}, {"/", "\\"}}),
 			"QML":                 NewLanguage("QML", []string{"//"}, [][]string{{"/*", "*/"}}),
