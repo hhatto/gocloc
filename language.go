@@ -181,6 +181,7 @@ var Exts = map[string]string{
 	"f03":         "FORTRAN Modern",
 	"f08":         "FORTRAN Modern",
 	"gleam":       "Gleam",
+	"g4":          "ANTLR v4 Grammar",
 	"go":          "Go",
 	"go2":         "Go",
 	"groovy":      "Groovy",
