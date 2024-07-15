@@ -212,6 +212,7 @@ var Exts = map[string]string{
 	"janet":       "Janet",
 	"json":        "JSON",
 	"jsx":         "JSX",
+	"just":        "Just",
 	"kak":         "KakouneScript",
 	"kk":          "Koka",
 	"kt":          "Kotlin",
@@ -431,6 +432,8 @@ func getFileType(path string, opts *ClocOptions) (ext string, ok bool) {
 	}
 
 	switch strings.ToLower(base) {
+	case "justfile":
+		return "just", true
 	case "makefile":
 		return "makefile", true
 	case "nukefile":
@@ -600,6 +603,7 @@ func NewDefinedLanguages() *DefinedLanguages {
 			"JavaScript":          NewLanguage("JavaScript", []string{"//"}, [][]string{{"/*", "*/"}}),
 			"Julia":               NewLanguage("Julia", []string{"#"}, [][]string{{"#:=", ":=#"}}),
 			"Jupyter Notebook":    NewLanguage("Jupyter Notebook", []string{"#"}, [][]string{{"", ""}}),
+			"Just":                NewLanguage("Just", []string{"#"}, [][]string{{"", ""}}).WithRegexLineComments([]string{`^#[^!].*`}),
 			"JSON":                NewLanguage("JSON", []string{}, [][]string{{"", ""}}),
 			"JSX":                 NewLanguage("JSX", []string{"//"}, [][]string{{"/*", "*/"}}),
 			"KakouneScript":       NewLanguage("KakouneScript", []string{"#"}, [][]string{{"", ""}}),

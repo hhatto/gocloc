@@ -108,17 +108,33 @@ scannerloop:
 				line = trimBOM(line)
 			}
 
-		singleloop:
-			for _, singleComment := range language.lineComments {
-				if strings.HasPrefix(line, singleComment) {
-					// check if single comment is a prefix of multi comment
-					for _, ml := range language.multiLines {
-						if ml[0] != "" && strings.HasPrefix(line, ml[0]) {
-							break singleloop
+			if len(language.regexLineComments) > 0 {
+			singleloopRegex:
+				for _, singleCommentRegex := range language.regexLineComments {
+					if singleCommentRegex.MatchString(line) {
+						// check if single comment is a prefix of multi comment
+						for _, ml := range language.multiLines {
+							if ml[0] != "" && strings.HasPrefix(line, ml[0]) {
+								break singleloopRegex
+							}
 						}
+						onComment(clocFile, opts, len(inComments) > 0, line, lineOrg)
+						continue scannerloop
 					}
-					onComment(clocFile, opts, len(inComments) > 0, line, lineOrg)
-					continue scannerloop
+				}
+			} else {
+			singleloop:
+				for _, singleComment := range language.lineComments {
+					if strings.HasPrefix(line, singleComment) {
+						// check if single comment is a prefix of multi comment
+						for _, ml := range language.multiLines {
+							if ml[0] != "" && strings.HasPrefix(line, ml[0]) {
+								break singleloop
+							}
+						}
+						onComment(clocFile, opts, len(inComments) > 0, line, lineOrg)
+						continue scannerloop
+					}
 				}
 			}
 
