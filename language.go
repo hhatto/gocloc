@@ -25,14 +25,15 @@ type ClocLanguage struct {
 
 // Language is a type used to definitions and store statistics for one programming language.
 type Language struct {
-	Name         string
-	lineComments []string
-	multiLines   [][]string
-	Files        []string
-	Code         int32
-	Comments     int32
-	Blanks       int32
-	Total        int32
+	Name              string
+	lineComments      []string
+	regexLineComments []*regexp.Regexp
+	multiLines        [][]string
+	Files             []string
+	Code              int32
+	Comments          int32
+	Blanks            int32
+	Total             int32
 }
 
 // Languages is an array representation of Language.
@@ -211,6 +212,7 @@ var Exts = map[string]string{
 	"janet":       "Janet",
 	"json":        "JSON",
 	"jsx":         "JSX",
+	"just":        "Just",
 	"kak":         "KakouneScript",
 	"kk":          "Koka",
 	"kt":          "Kotlin",
@@ -430,6 +432,8 @@ func getFileType(path string, opts *ClocOptions) (ext string, ok bool) {
 	}
 
 	switch strings.ToLower(base) {
+	case "justfile":
+		return "just", true
 	case "makefile":
 		return "makefile", true
 	case "nukefile":
@@ -457,6 +461,15 @@ func NewLanguage(name string, lineComments []string, multiLines [][]string) *Lan
 		multiLines:   multiLines,
 		Files:        []string{},
 	}
+}
+
+func (l *Language) WithRegexLineComments(regexLineComments []string) *Language {
+	var regexLineCommentsCompiled []*regexp.Regexp
+	for _, r := range regexLineComments {
+		regexLineCommentsCompiled = append(regexLineCommentsCompiled, regexp.MustCompile(r))
+	}
+	l.regexLineComments = regexLineCommentsCompiled
+	return l
 }
 
 func lang2exts(lang string) (exts string) {
@@ -590,6 +603,7 @@ func NewDefinedLanguages() *DefinedLanguages {
 			"JavaScript":          NewLanguage("JavaScript", []string{"//"}, [][]string{{"/*", "*/"}}),
 			"Julia":               NewLanguage("Julia", []string{"#"}, [][]string{{"#:=", ":=#"}}),
 			"Jupyter Notebook":    NewLanguage("Jupyter Notebook", []string{"#"}, [][]string{{"", ""}}),
+			"Just":                NewLanguage("Just", []string{"#"}, [][]string{{"", ""}}).WithRegexLineComments([]string{`^#[^!].*`}),
 			"JSON":                NewLanguage("JSON", []string{}, [][]string{{"", ""}}),
 			"JSX":                 NewLanguage("JSX", []string{"//"}, [][]string{{"/*", "*/"}}),
 			"KakouneScript":       NewLanguage("KakouneScript", []string{"#"}, [][]string{{"", ""}}),

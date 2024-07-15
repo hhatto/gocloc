@@ -146,10 +146,15 @@ func getAllFiles(paths []string, languages *DefinedLanguages, opts *ClocOptions)
 					}
 
 					if _, ok := result[targetExt]; !ok {
-						result[targetExt] = NewLanguage(
+						definedLang := NewLanguage(
 							languages.Langs[targetExt].Name,
 							languages.Langs[targetExt].lineComments,
-							languages.Langs[targetExt].multiLines)
+							languages.Langs[targetExt].multiLines,
+						)
+						if len(languages.Langs[targetExt].regexLineComments) > 0 {
+							definedLang.regexLineComments = languages.Langs[targetExt].regexLineComments
+						}
+						result[targetExt] = definedLang
 					}
 					result[targetExt].Files = append(result[targetExt].Files, path)
 				}

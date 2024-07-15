@@ -528,3 +528,47 @@ const color = "blue"
 		t.Errorf("invalid logic. lang=%v", clocFile.Lang)
 	}
 }
+
+func TestAnalayzeFile4Just(t *testing.T) {
+	tmpfile, err := os.CreateTemp("", "tmp.go")
+	if err != nil {
+		t.Logf("os.CreateTemp() error. err=[%v]", err)
+		return
+	}
+	defer os.Remove(tmpfile.Name())
+
+	if _, err := tmpfile.Write([]byte(`polyglot: python js perl sh ruby nu
+
+python:
+  #!/usr/bin/env python3
+  print('Hello from python!')
+
+js:
+  #!/usr/bin/env node
+  console.log('Greetings from JavaScript!')  # with comment
+
+# this is comment
+`),
+	); err != nil {
+		t.Fatalf("tmpfile.Write() error. err=[%v]", err)
+	}
+
+	language := NewLanguage("Just", []string{"#"}, [][]string{{"", ""}}).
+		WithRegexLineComments([]string{`^#[^!].*`})
+	clocOpts := NewClocOptions()
+	clocFile := AnalyzeFile(tmpfile.Name(), language, clocOpts)
+	tmpfile.Close()
+
+	if clocFile.Blanks != 3 {
+		t.Errorf("invalid logic. blanks=%v", clocFile.Blanks)
+	}
+	if clocFile.Comments != 1 {
+		t.Errorf("invalid logic. comments=%v", clocFile.Comments)
+	}
+	if clocFile.Code != 7 {
+		t.Errorf("invalid logic. code=%v", clocFile.Code)
+	}
+	if clocFile.Lang != "Just" {
+		t.Errorf("invalid logic. lang=%v", clocFile.Lang)
+	}
+}
