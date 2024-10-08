@@ -135,7 +135,7 @@ func getAllFiles(paths []string, languages *DefinedLanguages, opts *ClocOptions)
 						}
 					}
 
-					if !opts.SkipDuplicated {
+					if opts.SkipDuplicated {
 						ignore := checkMD5Sum(path, fileCache)
 						if ignore {
 							if opts.Debug {
