@@ -3,18 +3,14 @@ package gocloc
 import (
 	"bytes"
 	"os"
+	"path/filepath"
 	"testing"
 )
 
 func TestAnalyzeFile4Python(t *testing.T) {
-	tmpfile, err := os.CreateTemp("", "tmp.py")
-	if err != nil {
-		t.Logf("os.CreateTemp() error. err=[%v]", err)
-		return
-	}
-	defer os.Remove(tmpfile.Name())
+	tmpfile := filepath.Join(t.TempDir(), "tmp.py")
 
-	if _, err := tmpfile.Write([]byte(`#!/bin/python
+	if err := os.WriteFile(tmpfile, []byte(`#!/bin/python
 
 class A:
 	"""comment1
@@ -23,14 +19,13 @@ class A:
 	"""
 	pass
 `),
-	); err != nil {
-		t.Fatalf("tmpfile.Write() error. err=[%v]", err)
+		0o600); err != nil {
+		t.Fatalf("os.WriteFile() error. err=[%v]", err)
 	}
 
 	language := NewLanguage("Python", []string{"#"}, [][]string{{"\"\"\"", "\"\"\""}})
 	clocOpts := NewClocOptions()
-	clocFile := AnalyzeFile(tmpfile.Name(), language, clocOpts)
-	tmpfile.Close()
+	clocFile := AnalyzeFile(tmpfile, language, clocOpts)
 
 	if clocFile.Blanks != 1 {
 		t.Errorf("invalid logic. blanks=%v", clocFile.Blanks)
@@ -47,14 +42,9 @@ class A:
 }
 
 func TestAnalyzeFile4PythonInvalid(t *testing.T) {
-	tmpfile, err := os.CreateTemp("", "tmp.py")
-	if err != nil {
-		t.Logf("os.CreateTemp() error. err=[%v]", err)
-		return
-	}
-	defer os.Remove(tmpfile.Name())
+	tmpfile := filepath.Join(t.TempDir(), "tmp.py")
 
-	if _, err := tmpfile.Write([]byte(`#!/bin/python
+	if err := os.WriteFile(tmpfile, []byte(`#!/bin/python
 
 class A:
 	"""comment1
@@ -62,14 +52,13 @@ class A:
 	comment3"""
 	pass
 `),
-	); err != nil {
-		t.Fatalf("tmpfile.Write() error. err=[%v]", err)
+		0o600); err != nil {
+		t.Fatalf("os.WriteFile() error. err=[%v]", err)
 	}
 
 	language := NewLanguage("Python", []string{"#"}, [][]string{{"\"\"\"", "\"\"\""}})
 	clocOpts := NewClocOptions()
-	clocFile := AnalyzeFile(tmpfile.Name(), language, clocOpts)
-	tmpfile.Close()
+	clocFile := AnalyzeFile(tmpfile, language, clocOpts)
 
 	if clocFile.Blanks != 1 {
 		t.Errorf("invalid logic. blanks=%v", clocFile.Blanks)
@@ -86,14 +75,9 @@ class A:
 }
 
 func TestAnalyzeFile4PythonNoShebang(t *testing.T) {
-	tmpfile, err := os.CreateTemp("", "tmp.py")
-	if err != nil {
-		t.Logf("os.CreateTemp() error. err=[%v]", err)
-		return
-	}
-	defer os.Remove(tmpfile.Name())
+	tmpfile := filepath.Join(t.TempDir(), "tmp.py")
 
-	if _, err := tmpfile.Write([]byte(`a = '''hello
+	if err := os.WriteFile(tmpfile, []byte(`#!/bin/python
 	world
 	'''
 
@@ -104,14 +88,13 @@ func TestAnalyzeFile4PythonNoShebang(t *testing.T) {
 
 	print a, b
 `),
-	); err != nil {
-		t.Fatalf("tmpfile.Write() error. err=[%v]", err)
+		0o600); err != nil {
+		t.Fatalf("os.WriteFile() error. err=[%v]", err)
 	}
 
 	language := NewLanguage("Python", []string{"#"}, [][]string{{"\"\"\"", "\"\"\""}})
 	clocOpts := NewClocOptions()
-	clocFile := AnalyzeFile(tmpfile.Name(), language, clocOpts)
-	tmpfile.Close()
+	clocFile := AnalyzeFile(tmpfile, language, clocOpts)
 
 	if clocFile.Blanks != 2 {
 		t.Errorf("invalid logic. blanks=%v", clocFile.Blanks)
@@ -128,14 +111,9 @@ func TestAnalyzeFile4PythonNoShebang(t *testing.T) {
 }
 
 func TestAnalyzeFile4Go(t *testing.T) {
-	tmpfile, err := os.CreateTemp("", "tmp.go")
-	if err != nil {
-		t.Logf("os.CreateTemp() error. err=[%v]", err)
-		return
-	}
-	defer os.Remove(tmpfile.Name())
+	tmpfile := filepath.Join(t.TempDir(), "tmp.go")
 
-	if _, err := tmpfile.Write([]byte(`package main
+	if err := os.WriteFile(tmpfile, []byte(`package main
 
 func main() {
 	var n string /*
@@ -144,14 +122,13 @@ func main() {
 	*/
 }
 `),
-	); err != nil {
-		t.Fatalf("tmpfile.Write() error. err=[%v]", err)
+		0o600); err != nil {
+		t.Fatalf("os.WriteFile() error. err=[%v]", err)
 	}
 
 	language := NewLanguage("Go", []string{"//"}, [][]string{{"/*", "*/"}})
 	clocOpts := NewClocOptions()
-	clocFile := AnalyzeFile(tmpfile.Name(), language, clocOpts)
-	tmpfile.Close()
+	clocFile := AnalyzeFile(tmpfile, language, clocOpts)
 
 	if clocFile.Blanks != 1 {
 		t.Errorf("invalid logic. blanks=%v", clocFile.Blanks)
@@ -169,14 +146,9 @@ func main() {
 
 func TestAnalyzeFile4GoWithOnelineBlockComment(t *testing.T) {
 	t.SkipNow()
-	tmpfile, err := os.CreateTemp("", "tmp.go")
-	if err != nil {
-		t.Logf("os.CreateTemp() error. err=[%v]", err)
-		return
-	}
-	defer os.Remove(tmpfile.Name())
+	tmpfile := filepath.Join(t.TempDir(), "tmp.go")
 
-	if _, err := tmpfile.Write([]byte(`package main
+	if err := os.WriteFile(tmpfile, []byte(`package main
 
 func main() {
 	st := "/*"
@@ -185,14 +157,13 @@ func main() {
 	/* comment */
 }
 `),
-	); err != nil {
-		t.Fatalf("tmpfile.Write() error. err=[%v]", err)
+		0o600); err != nil {
+		t.Fatalf("os.WriteFile() error. err=[%v]", err)
 	}
 
 	language := NewLanguage("Go", []string{"//"}, [][]string{{"/*", "*/"}})
 	clocOpts := NewClocOptions()
-	clocFile := AnalyzeFile(tmpfile.Name(), language, clocOpts)
-	tmpfile.Close()
+	clocFile := AnalyzeFile(tmpfile, language, clocOpts)
 
 	if clocFile.Blanks != 1 {
 		t.Errorf("invalid logic. blanks=%v", clocFile.Blanks)
@@ -209,14 +180,9 @@ func main() {
 }
 
 func TestAnalyzeFile4GoWithCommentInnerBlockComment(t *testing.T) {
-	tmpfile, err := os.CreateTemp("", "tmp.go")
-	if err != nil {
-		t.Logf("os.CreateTemp() error. err=[%v]", err)
-		return
-	}
-	defer os.Remove(tmpfile.Name())
+	tmpfile := filepath.Join(t.TempDir(), "tmp.go")
 
-	if _, err := tmpfile.Write([]byte(`package main
+	if err := os.WriteFile(tmpfile, []byte(`package main
 
 func main() {
 	// comment /*
@@ -224,14 +190,13 @@ func main() {
 	b := 2
 }
 `),
-	); err != nil {
-		t.Fatalf("tmpfile.Write() error. err=[%v]", err)
+		0o600); err != nil {
+		t.Fatalf("os.WriteFile() error. err=[%v]", err)
 	}
 
 	language := NewLanguage("Go", []string{"//"}, [][]string{{"/*", "*/"}})
 	clocOpts := NewClocOptions()
-	clocFile := AnalyzeFile(tmpfile.Name(), language, clocOpts)
-	tmpfile.Close()
+	clocFile := AnalyzeFile(tmpfile, language, clocOpts)
 
 	if clocFile.Blanks != 1 {
 		t.Errorf("invalid logic. blanks=%v", clocFile.Blanks)
@@ -248,28 +213,22 @@ func main() {
 }
 
 func TestAnalyzeFile4GoWithNoComment(t *testing.T) {
-	tmpfile, err := os.CreateTemp("", "tmp.go")
-	if err != nil {
-		t.Logf("os.CreateTemp() error. err=[%v]", err)
-		return
-	}
-	defer os.Remove(tmpfile.Name())
+	tmpfile := filepath.Join(t.TempDir(), "tmp.go")
 
-	if _, err := tmpfile.Write([]byte(`package main
+	if err := os.WriteFile(tmpfile, []byte(`package main
 
 	func main() {
 		a := "/*                */"
 		b := "//                  "
 	}
 `),
-	); err != nil {
-		t.Fatalf("tmpfile.Write() error. err=[%v]", err)
+		0o600); err != nil {
+		t.Fatalf("os.WriteFile() error. err=[%v]", err)
 	}
 
 	language := NewLanguage("Go", []string{"//"}, [][]string{{"/*", "*/"}})
 	clocOpts := NewClocOptions()
-	clocFile := AnalyzeFile(tmpfile.Name(), language, clocOpts)
-	tmpfile.Close()
+	clocFile := AnalyzeFile(tmpfile, language, clocOpts)
 
 	if clocFile.Blanks != 1 {
 		t.Errorf("invalid logic. blanks=%v", clocFile.Blanks)
@@ -286,14 +245,9 @@ func TestAnalyzeFile4GoWithNoComment(t *testing.T) {
 }
 
 func TestAnalyzeFile4ATSWithDoubleMultilineComments(t *testing.T) {
-	tmpfile, err := os.CreateTemp("", "tmp.java")
-	if err != nil {
-		t.Logf("os.CreateTemp() error. err=[%v]", err)
-		return
-	}
-	defer os.Remove(tmpfile.Name())
+	tmpfile := filepath.Join(t.TempDir(), "tmp.java")
 
-	if _, err := tmpfile.Write([]byte(`/* com */
+	if err := os.WriteFile(tmpfile, []byte(`/* com */
 (* co *)
 
 vo (*
@@ -304,14 +258,13 @@ jife */
 
 vo /* ff */
 `),
-	); err != nil {
-		t.Fatalf("tmpfile.Write() error. err=[%v]", err)
+		0o600); err != nil {
+		t.Fatalf("os.WriteFile() error. err=[%v]", err)
 	}
 
 	language := NewLanguage("ATS", []string{"//"}, [][]string{{"(*", "*)"}, {"/*", "*/"}})
 	clocOpts := NewClocOptions()
-	clocFile := AnalyzeFile(tmpfile.Name(), language, clocOpts)
-	tmpfile.Close()
+	clocFile := AnalyzeFile(tmpfile, language, clocOpts)
 
 	if clocFile.Blanks != 3 {
 		t.Errorf("invalid logic. blanks=%v", clocFile.Blanks)
@@ -328,14 +281,9 @@ vo /* ff */
 }
 
 func TestAnalyzeFile4JavaWithCommentInCodeLine(t *testing.T) {
-	tmpfile, err := os.CreateTemp("", "tmp.java")
-	if err != nil {
-		t.Logf("os.CreateTemp() error. err=[%v]", err)
-		return
-	}
-	defer os.Remove(tmpfile.Name())
+	tmpfile := filepath.Join(t.TempDir(), "tmp.java")
 
-	if _, err := tmpfile.Write([]byte(`public class Sample {
+	if err := os.WriteFile(tmpfile, []byte(`public class Sample {
 		public static void main(String args[]){
 		int a; /* A takes care of counts */
 		int b;
@@ -351,14 +299,13 @@ func TestAnalyzeFile4JavaWithCommentInCodeLine(t *testing.T) {
 		}
 		}
 `),
-	); err != nil {
-		t.Fatalf("tmpfile.Write() error. err=[%v]", err)
+		0o600); err != nil {
+		t.Fatalf("os.WriteFile() error. err=[%v]", err)
 	}
 
 	language := NewLanguage("Java", []string{"//"}, [][]string{{"/*", "*/"}})
 	clocOpts := NewClocOptions()
-	clocFile := AnalyzeFile(tmpfile.Name(), language, clocOpts)
-	tmpfile.Close()
+	clocFile := AnalyzeFile(tmpfile, language, clocOpts)
 
 	if clocFile.Blanks != 0 {
 		t.Errorf("invalid logic. blanks=%v", clocFile.Blanks)
@@ -375,14 +322,9 @@ func TestAnalyzeFile4JavaWithCommentInCodeLine(t *testing.T) {
 }
 
 func TestAnalyzeFile4Makefile(t *testing.T) {
-	tmpfile, err := os.CreateTemp("", "Makefile.am")
-	if err != nil {
-		t.Logf("os.CreateTemp() error. err=[%v]", err)
-		return
-	}
-	defer os.Remove(tmpfile.Name())
+	tmpfile := filepath.Join(t.TempDir(), "Makefile.am")
 
-	if _, err := tmpfile.Write([]byte(`# This is a simple Makefile with comments
+	if err := os.WriteFile(tmpfile, []byte(`# This is a simple Makefile with comments
 	.PHONY: test build
 
 	build:
@@ -400,14 +342,13 @@ func TestAnalyzeFile4Makefile(t *testing.T) {
 	test:
 		GO111MODULE=on go test -v
 `),
-	); err != nil {
-		t.Fatalf("tmpfile.Write() error. err=[%v]", err)
+		0o600); err != nil {
+		t.Fatalf("os.WriteFile() error. err=[%v]", err)
 	}
 
 	language := NewLanguage("Makefile", []string{"#"}, [][]string{{"", ""}})
 	clocOpts := NewClocOptions()
-	clocFile := AnalyzeFile(tmpfile.Name(), language, clocOpts)
-	tmpfile.Close()
+	clocFile := AnalyzeFile(tmpfile, language, clocOpts)
 
 	if clocFile.Blanks != 4 {
 		t.Errorf("invalid logic. blanks=%v", clocFile.Blanks)
@@ -490,14 +431,9 @@ func TestAnalyzeReader_OnCallbacks(t *testing.T) {
 }
 
 func TestAnalyzeFile4Imba(t *testing.T) {
-	tmpfile, err := os.CreateTemp("", "test.imba")
-	if err != nil {
-		t.Logf("os.CreateTemp() error. err=[%v]", err)
-		return
-	}
-	defer os.Remove(tmpfile.Name())
+	tmpfile := filepath.Join(t.TempDir(), "test.imba")
 
-	if _, err := tmpfile.Write([]byte(`###
+	if err := os.WriteFile(tmpfile, []byte(`###
 This color is my favorite
 I need several lines to really
 emphasize this fact.
@@ -506,14 +442,13 @@ const color = "blue"
 
 # this is line comment
 `),
-	); err != nil {
-		t.Fatalf("tmpfile.Write() error. err=[%v]", err)
+		0o600); err != nil {
+		t.Fatalf("os.WriteFile() error. err=[%v]", err)
 	}
 
 	language := NewLanguage("Imba", []string{"#"}, [][]string{{"###", "###"}})
 	clocOpts := NewClocOptions()
-	clocFile := AnalyzeFile(tmpfile.Name(), language, clocOpts)
-	tmpfile.Close()
+	clocFile := AnalyzeFile(tmpfile, language, clocOpts)
 
 	if clocFile.Blanks != 1 {
 		t.Errorf("invalid logic. blanks=%v", clocFile.Blanks)
@@ -530,14 +465,9 @@ const color = "blue"
 }
 
 func TestAnalyzeFile4Just(t *testing.T) {
-	tmpfile, err := os.CreateTemp("", "tmp.go")
-	if err != nil {
-		t.Logf("os.CreateTemp() error. err=[%v]", err)
-		return
-	}
-	defer os.Remove(tmpfile.Name())
+	tmpfile := filepath.Join(t.TempDir(), "tmp.jf")
 
-	if _, err := tmpfile.Write([]byte(`polyglot: python js perl sh ruby nu
+	if err := os.WriteFile(tmpfile, []byte(`polyglot: python js perl sh ruby nu
 
 python:
   #!/usr/bin/env python3
@@ -549,15 +479,14 @@ js:
 
 # this is comment
 `),
-	); err != nil {
-		t.Fatalf("tmpfile.Write() error. err=[%v]", err)
+		0o600); err != nil {
+		t.Fatalf("os.WriteFile() error. err=[%v]", err)
 	}
 
 	language := NewLanguage("Just", []string{"#"}, [][]string{{"", ""}}).
 		WithRegexLineComments([]string{`^#[^!].*`})
 	clocOpts := NewClocOptions()
-	clocFile := AnalyzeFile(tmpfile.Name(), language, clocOpts)
-	tmpfile.Close()
+	clocFile := AnalyzeFile(tmpfile, language, clocOpts)
 
 	if clocFile.Blanks != 3 {
 		t.Errorf("invalid logic. blanks=%v", clocFile.Blanks)
