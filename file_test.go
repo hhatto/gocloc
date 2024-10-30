@@ -6,7 +6,7 @@ import (
 	"testing"
 )
 
-func TestAnalayzeFile4Python(t *testing.T) {
+func TestAnalyzeFile4Python(t *testing.T) {
 	tmpfile, err := os.CreateTemp("", "tmp.py")
 	if err != nil {
 		t.Logf("os.CreateTemp() error. err=[%v]", err)
@@ -46,7 +46,7 @@ class A:
 	}
 }
 
-func TestAnalayzeFile4PythonInvalid(t *testing.T) {
+func TestAnalyzeFile4PythonInvalid(t *testing.T) {
 	tmpfile, err := os.CreateTemp("", "tmp.py")
 	if err != nil {
 		t.Logf("os.CreateTemp() error. err=[%v]", err)
@@ -85,7 +85,7 @@ class A:
 	}
 }
 
-func TestAnalayzeFile4PythonNoShebang(t *testing.T) {
+func TestAnalyzeFile4PythonNoShebang(t *testing.T) {
 	tmpfile, err := os.CreateTemp("", "tmp.py")
 	if err != nil {
 		t.Logf("os.CreateTemp() error. err=[%v]", err)
@@ -127,7 +127,7 @@ func TestAnalayzeFile4PythonNoShebang(t *testing.T) {
 	}
 }
 
-func TestAnalayzeFile4Go(t *testing.T) {
+func TestAnalyzeFile4Go(t *testing.T) {
 	tmpfile, err := os.CreateTemp("", "tmp.go")
 	if err != nil {
 		t.Logf("os.CreateTemp() error. err=[%v]", err)
@@ -167,7 +167,7 @@ func main() {
 	}
 }
 
-func TestAnalayzeFile4GoWithOnelineBlockComment(t *testing.T) {
+func TestAnalyzeFile4GoWithOnelineBlockComment(t *testing.T) {
 	t.SkipNow()
 	tmpfile, err := os.CreateTemp("", "tmp.go")
 	if err != nil {
@@ -208,7 +208,7 @@ func main() {
 	}
 }
 
-func TestAnalayzeFile4GoWithCommentInnerBlockComment(t *testing.T) {
+func TestAnalyzeFile4GoWithCommentInnerBlockComment(t *testing.T) {
 	tmpfile, err := os.CreateTemp("", "tmp.go")
 	if err != nil {
 		t.Logf("os.CreateTemp() error. err=[%v]", err)
@@ -423,7 +423,7 @@ func TestAnalyzeFile4Makefile(t *testing.T) {
 	}
 }
 
-func TestAnalayzeReader(t *testing.T) {
+func TestAnalyzeReader(t *testing.T) {
 	buf := bytes.NewBuffer([]byte(`#!/bin/python
 
 class A:
@@ -452,7 +452,7 @@ class A:
 	}
 }
 
-func TestAnalayzeReader_OnCallbacks(t *testing.T) {
+func TestAnalyzeReader_OnCallbacks(t *testing.T) {
 	buf := bytes.NewBuffer([]byte(`foo
 		"""bar
 
@@ -529,7 +529,7 @@ const color = "blue"
 	}
 }
 
-func TestAnalayzeFile4Just(t *testing.T) {
+func TestAnalyzeFile4Just(t *testing.T) {
 	tmpfile, err := os.CreateTemp("", "tmp.go")
 	if err != nil {
 		t.Logf("os.CreateTemp() error. err=[%v]", err)
