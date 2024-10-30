@@ -80,12 +80,12 @@ func checkDefaultIgnore(path string, info os.FileInfo, isVCS bool) bool {
 	return false
 }
 
-func checkOptionMatch(path string, info os.FileInfo, opts *ClocOptions) bool {
+func checkOptionMatch(path string, opts *ClocOptions) bool {
 	// check match directory & file options
-	if opts.ReNotMatch != nil && opts.ReNotMatch.MatchString(info.Name()) {
+	if opts.ReNotMatch != nil && opts.ReNotMatch.MatchString(path) {
 		return false
 	}
-	if opts.ReMatch != nil && !opts.ReMatch.MatchString(info.Name()) {
+	if opts.ReMatch != nil && !opts.ReMatch.MatchString(path) {
 		return false
 	}
 
@@ -118,7 +118,7 @@ func getAllFiles(paths []string, languages *DefinedLanguages, opts *ClocOptions)
 			}
 
 			// check match & not-match directory
-			if match := checkOptionMatch(path, info, opts); !match {
+			if match := checkOptionMatch(path, opts); !match {
 				return nil
 			}
 

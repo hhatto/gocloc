@@ -4,7 +4,6 @@ import (
 	"os"
 	"regexp"
 	"testing"
-	"time"
 
 	"github.com/spf13/afero"
 )
@@ -54,55 +53,37 @@ func TestCheckDefaultIgnore(t *testing.T) {
 	}
 }
 
-type MockFileInfo struct {
-	FileName    string
-	IsDirectory bool
-}
-
-func (mfi MockFileInfo) Name() string       { return mfi.FileName }
-func (mfi MockFileInfo) Size() int64        { return int64(8) }
-func (mfi MockFileInfo) Mode() os.FileMode  { return os.ModePerm }
-func (mfi MockFileInfo) ModTime() time.Time { return time.Now() }
-func (mfi MockFileInfo) IsDir() bool        { return mfi.IsDirectory }
-func (mfi MockFileInfo) Sys() interface{}   { return nil }
-
 func TestCheckOptionMatch(t *testing.T) {
 	opts := &ClocOptions{}
-	fi := MockFileInfo{FileName: "/", IsDirectory: true}
-	if !checkOptionMatch("/", fi, opts) {
+	if !checkOptionMatch("/", opts) {
 		t.Errorf("invalid logic: renotmatchdir is nil")
 	}
 
 	opts.ReNotMatchDir = regexp.MustCompile("thisisdir-not-match")
-	fi = MockFileInfo{FileName: "one.go", IsDirectory: false}
-	if !checkOptionMatch("/thisisdir/one.go", fi, opts) {
+	if !checkOptionMatch("/thisisdir/one.go", opts) {
 		t.Errorf("invalid logic: renotmatchdir is nil")
 	}
 
 	opts.ReNotMatchDir = regexp.MustCompile("thisisdir")
-	fi = MockFileInfo{FileName: "one.go", IsDirectory: false}
-	if checkOptionMatch("/thisisdir/one.go", fi, opts) {
+	if checkOptionMatch("/thisisdir/one.go", opts) {
 		t.Errorf("invalid logic: renotmatchdir is ignore")
 	}
 
 	opts = &ClocOptions{}
 	opts.ReMatchDir = regexp.MustCompile("thisisdir")
-	fi = MockFileInfo{FileName: "one.go", IsDirectory: false}
-	if !checkOptionMatch("/thisisdir/one.go", fi, opts) {
+	if !checkOptionMatch("/thisisdir/one.go", opts) {
 		t.Errorf("invalid logic: renotmatchdir is not ignore")
 	}
 
 	opts.ReMatchDir = regexp.MustCompile("thisisdir-not-match")
-	fi = MockFileInfo{FileName: "one.go", IsDirectory: false}
-	if checkOptionMatch("/thisisdir/one.go", fi, opts) {
+	if checkOptionMatch("/thisisdir/one.go", opts) {
 		t.Errorf("invalid logic: renotmatchdir is ignore")
 	}
 
 	opts = &ClocOptions{}
 	opts.ReNotMatchDir = regexp.MustCompile("thisisdir-not-match")
 	opts.ReMatchDir = regexp.MustCompile("thisisdir")
-	fi = MockFileInfo{FileName: "one.go", IsDirectory: false}
-	if !checkOptionMatch("/thisisdir/one.go", fi, opts) {
+	if !checkOptionMatch("/thisisdir/one.go", opts) {
 		t.Errorf("invalid logic: renotmatchdir is not ignore")
 	}
 }
