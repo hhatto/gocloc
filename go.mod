@@ -1,6 +1,6 @@
 module github.com/hhatto/gocloc
 
-go 1.19
+go 1.23
 
 require (
 	github.com/go-enry/go-enry/v2 v2.8.0
