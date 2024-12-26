@@ -12,6 +12,7 @@ type ClocOptions struct {
 	ReMatch        *regexp.Regexp
 	ReNotMatchDir  *regexp.Regexp
 	ReMatchDir     *regexp.Regexp
+	Fullpath       bool
 
 	// OnCode is triggered for each line of code.
 	OnCode func(line string)
