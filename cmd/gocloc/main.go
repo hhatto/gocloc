@@ -50,6 +50,7 @@ type CmdOptions struct {
 	NotMatch       string `long:"not-match" description:"exclude file name (regex)"`
 	MatchDir       string `long:"match-d" description:"include dir name (regex)"`
 	NotMatchDir    string `long:"not-match-d" description:"exclude dir name (regex)"`
+	Fullpath       bool   `long:"fullpath" description:"apply match/not-match options to full file paths instead of base names"`
 	Debug          bool   `long:"debug" description:"dump debug log for developer"`
 	SkipDuplicated bool   `long:"skip-duplicated" description:"skip duplicated files"`
 	ShowLang       bool   `long:"show-lang" description:"print about all languages and extensions"`
@@ -289,6 +290,7 @@ func main() {
 
 	clocOpts.Debug = opts.Debug
 	clocOpts.SkipDuplicated = opts.SkipDuplicated
+	clocOpts.Fullpath = opts.Fullpath
 
 	processor := gocloc.NewProcessor(languages, clocOpts)
 	result, err := processor.Analyze(paths)

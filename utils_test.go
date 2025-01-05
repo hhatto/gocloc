@@ -105,4 +105,42 @@ func TestCheckOptionMatch(t *testing.T) {
 	if !checkOptionMatch("/thisisdir/one.go", fi, opts) {
 		t.Errorf("invalid logic: renotmatchdir is not ignore")
 	}
+
+	t.Run("--match option", func(t *testing.T) {
+		opts = &ClocOptions{
+			ReMatch: regexp.MustCompile("app.py"),
+		}
+		fi = MockFileInfo{FileName: "app.py", IsDirectory: false}
+		if !checkOptionMatch("test_dir/app.py", fi, opts) {
+			t.Errorf("invalid logic: match is not ignore")
+		}
+	})
+
+	t.Run("--match option with --fullpath option", func(t *testing.T) {
+		opts = &ClocOptions{
+			ReMatch:  regexp.MustCompile("test_dir/app.py"),
+			Fullpath: true,
+		}
+		fi = MockFileInfo{FileName: "app.py", IsDirectory: false}
+		if !checkOptionMatch("test_dir/app.py", fi, opts) {
+			t.Errorf("invalid logic: match(with fullpath) is not ignore")
+		}
+		if checkOptionMatch("app.py", fi, opts) {
+			t.Errorf("invalid logic: match(with fullpath) is ignore")
+		}
+	})
+
+	t.Run("--not-match option with --fullpath option", func(t *testing.T) {
+		opts = &ClocOptions{
+			ReNotMatch: regexp.MustCompile("test_dir/app.py"),
+			Fullpath:   true,
+		}
+		fi = MockFileInfo{FileName: "app.py", IsDirectory: false}
+		if checkOptionMatch("test_dir/app.py", fi, opts) {
+			t.Errorf("invalid logic: not-match(with fullpath) is ignore")
+		}
+		if !checkOptionMatch("app.py", fi, opts) {
+			t.Errorf("invalid logic: not-match(with fullpath) is not ignore")
+		}
+	})
 }
