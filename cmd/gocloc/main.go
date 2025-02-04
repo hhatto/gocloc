@@ -29,12 +29,17 @@ const OutputTypeSloccount string = "sloccount"
 // OutputTypeJSON is JSON output format for --output-type option
 const OutputTypeJSON string = "json"
 
-const fileHeader string = "File"
-const languageHeader string = "Language"
-const commonHeader string = "files          blank        comment           code"
-const defaultOutputSeparator string = "-------------------------------------------------------------------------" +
-	"-------------------------------------------------------------------------" +
-	"-------------------------------------------------------------------------"
+// OutputTypeMarkdown is Markdown output format for --output-type option
+const OutputTypeMarkdown string = "markdown"
+
+const (
+	fileHeader             string = "File"
+	languageHeader         string = "Language"
+	commonHeader           string = "files          blank        comment           code"
+	defaultOutputSeparator string = "-------------------------------------------------------------------------" +
+		"-------------------------------------------------------------------------" +
+		"-------------------------------------------------------------------------"
+)
 
 var rowLen = 79
 
@@ -43,7 +48,7 @@ var rowLen = 79
 type CmdOptions struct {
 	ByFile         bool   `long:"by-file" description:"report results for every encountered source file"`
 	SortTag        string `long:"sort" default:"code" description:"sort based on a certain column" choice:"name" choice:"files" choice:"blank" choice:"comment" choice:"code"`
-	OutputType     string `long:"output-type" default:"default" description:"output type [values: default,cloc-xml,sloccount,json]"`
+	OutputType     string `long:"output-type" default:"default" description:"output type [values: default,markdown,cloc-xml,sloccount,json]"`
 	ExcludeExt     string `long:"exclude-ext" description:"exclude file name extensions (separated commas)"`
 	IncludeLang    string `long:"include-lang" description:"include language name (separated commas)"`
 	Match          string `long:"match" description:"include file name (regex)"`
@@ -79,10 +84,37 @@ func (o *outputBuilder) WriteHeader() {
 		rowLen = maxPathLen + len(commonHeader) + 2
 		header = fileHeader
 	}
+
 	if o.opts.OutputType == OutputTypeDefault {
 		fmt.Printf("%.[2]*[1]s\n", defaultOutputSeparator, rowLen)
 		fmt.Printf("%-[2]*[1]s %[3]s\n", header, headerLen, commonHeader)
 		fmt.Printf("%.[2]*[1]s\n", defaultOutputSeparator, rowLen)
+	}
+
+	if o.opts.OutputType == OutputTypeMarkdown {
+		allHeaders := fmt.Sprintf("%s%s%s", header, strings.Repeat(" ", headerLen), commonHeader)
+		headerString := "| " + gocloc.InsertPipesInTheMiddle(allHeaders)
+		fmt.Println(headerString)
+
+		for i := 0; i < len(headerString); i++ {
+			if headerString[i] == '|' {
+				fmt.Print("|")
+			} else {
+				if i == 1 {
+					// Align the first column to the left
+					fmt.Print(":")
+				} else {
+					// Align the other columns to the right
+					if headerString[i+1] == '|' && i > headerLen {
+						fmt.Print(":")
+					} else {
+						fmt.Print("-")
+					}
+				}
+			}
+		}
+
+		fmt.Println()
 	}
 }
 
@@ -100,6 +132,16 @@ func (o *outputBuilder) WriteFooter() {
 				"TOTAL", total.Total, total.Blanks, total.Comments, total.Code)
 		}
 		fmt.Printf("%.[2]*[1]s\n", defaultOutputSeparator, rowLen)
+	}
+
+	if o.opts.OutputType == OutputTypeMarkdown {
+		if o.opts.ByFile {
+			fmt.Printf("| %-[1]*[2]v |%10v|%12v|%14v|%8v |\n", maxPathLen, "", "", "", "", "")
+			fmt.Printf("| %-[1]*[2]v |%9v |%11v |%13v |%8v |\n", maxPathLen, "TOTAL", total.Total, total.Blanks, total.Comments, total.Code)
+		} else {
+			fmt.Printf("| %21v|%22v|%12v|%14v|%8v |\n", "", "", "", "", "")
+			fmt.Printf("| %20v |%21v |%11v |%13v |%8v |\n", "TOTAL", total.Total, total.Blanks, total.Comments, total.Code)
+		}
 	}
 }
 
@@ -158,6 +200,13 @@ func writeResultWithByFile(opts *CmdOptions, result *gocloc.Result) {
 			panic("json marshal error")
 		}
 		os.Stdout.Write(buf)
+	case OutputTypeMarkdown:
+		for _, file := range sortedFiles {
+			clocFile := file
+			fmt.Printf("| %-[1]*[2]s |%8[3]v  |%11[4]v |%13[5]v |%8[6]v |\n",
+				maxPathLen, file.Name, 1, clocFile.Blanks, clocFile.Comments, clocFile.Code)
+		}
+
 	default:
 		for _, file := range sortedFiles {
 			clocFile := file
@@ -208,6 +257,11 @@ func (o *outputBuilder) WriteResult() {
 				panic("json marshal error")
 			}
 			os.Stdout.Write(buf)
+		case OutputTypeMarkdown:
+			for _, language := range sortedLanguages {
+				fmt.Printf("| %-20v |%21v |%11v |%13v |%8v |\n",
+					language.Name, len(language.Files), language.Blanks, language.Comments, language.Code)
+			}
 		default:
 			for _, language := range sortedLanguages {
 				fmt.Printf("%-27v %6v %14v %14v %14v\n",
