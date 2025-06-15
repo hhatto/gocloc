@@ -146,6 +146,7 @@ var Exts = map[string]string{
 	"dtrace":      "DTrace",
 	"dts":         "Device Tree",
 	"dtsi":        "Device Tree",
+	"dune":        "Dune",
 	"e":           "Eiffel",
 	"elm":         "Elm",
 	"el":          "LISP",
@@ -442,6 +443,8 @@ func getFileType(path string, opts *ClocOptions) (ext string, ok bool) {
 		return "makefile", true
 	case "nukefile":
 		return "nu", true
+	case "dune":
+		return "dune", true
 	case "rebar": // skip
 		return "", false
 	}
@@ -568,6 +571,7 @@ func NewDefinedLanguages() *DefinedLanguages {
 			"Dhall":               NewLanguage("Dhall", []string{"--"}, [][]string{{"{-", "-}"}}),
 			"DTrace":              NewLanguage("DTrace", []string{}, [][]string{{"/*", "*/"}}),
 			"Device Tree":         NewLanguage("Device Tree", []string{"//"}, [][]string{{"/*", "*/"}}),
+			"Dune":                NewLanguage("Dune", []string{";"}, [][]string{{"", ""}}),
 			"Eiffel":              NewLanguage("Eiffel", []string{"--"}, [][]string{{"", ""}}),
 			"Elm":                 NewLanguage("Elm", []string{"--"}, [][]string{{"{-", "-}"}}),
 			"Elixir":              NewLanguage("Elixir", []string{"#"}, [][]string{{"", ""}}),
