@@ -144,20 +144,16 @@ func (o *outputBuilder) WriteFooter() {
 	if o.opts.OutputType == OutputTypeMarkdown {
 		totalLines := total.Blanks + total.Comments + total.Code
 		if o.opts.ByFile {
-			// empty-row separator
+			fmt.Printf("| %-[1]*[2]v |%10v|%12v|%14v|%12v|%9v |\n", maxPathLen, "", "", "", "", "", "") // empty-row separator
+			// totals
 			fmt.Printf(
-				"| %-[1]*[2]v |%10v|%12v|%14v|%14v|%8v |\n",
-				maxPathLen, "", "", "", "", "",
-			)
-			// actual totals
-			fmt.Printf(
-				"| %-[1]*[2]v |%9v |%11v |%13v |%13v |%8v |\n",
+				"| %-[1]*[2]v |%9v |%11v |%13v |%11v |%9v |\n",
 				maxPathLen, "TOTAL", total.Total, total.Blanks, total.Comments, total.Code, totalLines,
 			)
 		} else {
-			fmt.Printf("| %21v|%22v|%12v|%14v|%14v|%8v |\n", "", "", "", "", "", "")
+			fmt.Printf("| %21v|%22v|%12v|%14v|%12v|%9v |\n", "", "", "", "", "", "")
 			fmt.Printf(
-				"| %20v |%21v |%11v |%13v |%13v |%8v |\n",
+				"| %20v |%21v |%11v |%13v |%11v |%9v |\n",
 				"TOTAL", total.Total, total.Blanks, total.Comments, total.Code, totalLines,
 			)
 		}
@@ -224,7 +220,7 @@ func writeResultWithByFile(opts *CmdOptions, result *gocloc.Result) {
 			clocFile := file
 			totalLines := clocFile.Blanks + clocFile.Comments + clocFile.Code
 			fmt.Printf(
-				"| %-[1]*[2]s | %6v | %8v | %10v | %12v | %8v |\n",
+				"| %-[1]*[2]s |%9[3]v |%11[4]v |%13[5]v |%11[6]v |%8[7]v  |\n",
 				maxPathLen,
 				file.Name,
 				1, // files count per-file is always 1
@@ -297,7 +293,7 @@ func (o *outputBuilder) WriteResult() {
 			for _, language := range sortedLanguages {
 				totalLines := language.Blanks + language.Comments + language.Code
 				fmt.Printf(
-					"| %-20v | %6v | %8v | %10v | %12v | %8v |\n",
+					"| %20v |%21v |%11v |%13v |%11v |%9v |\n",
 					language.Name,
 					len(language.Files),
 					language.Blanks,
@@ -322,7 +318,6 @@ func (o *outputBuilder) WriteResult() {
 		}
 	}
 
-	// write footer
 	o.WriteFooter()
 }
 
