@@ -318,6 +318,7 @@ func (o *outputBuilder) WriteResult() {
 		}
 	}
 
+	// write footer
 	o.WriteFooter()
 }
 
