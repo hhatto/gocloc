@@ -153,7 +153,7 @@ func (o *outputBuilder) WriteFooter() {
 		} else {
 			fmt.Printf("| %21v|%22v|%12v|%14v|%12v|%9v |\n", "", "", "", "", "", "")
 			fmt.Printf(
-				"| %20v |%21v |%11v |%13v |%11v |%9v |\n",
+				"| %-20v |%21v |%11v |%13v |%11v |%9v |\n",
 				"TOTAL", total.Total, total.Blanks, total.Comments, total.Code, totalLines,
 			)
 		}
@@ -293,7 +293,7 @@ func (o *outputBuilder) WriteResult() {
 			for _, language := range sortedLanguages {
 				totalLines := language.Blanks + language.Comments + language.Code
 				fmt.Printf(
-					"| %20v |%21v |%11v |%13v |%11v |%9v |\n",
+					"| %-20v |%21v |%11v |%13v |%11v |%9v |\n",
 					language.Name,
 					len(language.Files),
 					language.Blanks,
