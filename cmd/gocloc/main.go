@@ -35,7 +35,7 @@ const OutputTypeMarkdown string = "markdown"
 const (
 	fileHeader             string = "File"
 	languageHeader         string = "Language"
-	commonHeader           string = "files          blank        comment           code"
+	commonHeader           string = "files          blank        comment           code          total"
 	defaultOutputSeparator string = "-------------------------------------------------------------------------" +
 		"-------------------------------------------------------------------------" +
 		"-------------------------------------------------------------------------"
@@ -83,6 +83,8 @@ func (o *outputBuilder) WriteHeader() {
 		headerLen = maxPathLen + 1
 		rowLen = maxPathLen + len(commonHeader) + 2
 		header = fileHeader
+	} else {
+		rowLen = headerLen + 1 + len(commonHeader)
 	}
 
 	if o.opts.OutputType == OutputTypeDefault {
@@ -124,23 +126,40 @@ func (o *outputBuilder) WriteFooter() {
 
 	if o.opts.OutputType == OutputTypeDefault {
 		fmt.Printf("%.[2]*[1]s\n", defaultOutputSeparator, rowLen)
+		totalLines := total.Blanks + total.Comments + total.Code
 		if o.opts.ByFile {
-			fmt.Printf("%-[1]*[2]v %6[3]v %14[4]v %14[5]v %14[6]v\n",
-				maxPathLen, "TOTAL", total.Total, total.Blanks, total.Comments, total.Code)
+			fmt.Printf(
+				"%-[1]*[2]v %6[3]v %14[4]v %14[5]v %14[6]v %14[7]v\n",
+				maxPathLen, "TOTAL", total.Total, total.Blanks, total.Comments, total.Code, totalLines,
+			)
 		} else {
-			fmt.Printf("%-27v %6v %14v %14v %14v\n",
-				"TOTAL", total.Total, total.Blanks, total.Comments, total.Code)
+			fmt.Printf(
+				"%-27v %6v %14v %14v %14v %14v\n",
+				"TOTAL", total.Total, total.Blanks, total.Comments, total.Code, totalLines,
+			)
 		}
 		fmt.Printf("%.[2]*[1]s\n", defaultOutputSeparator, rowLen)
 	}
 
 	if o.opts.OutputType == OutputTypeMarkdown {
+		totalLines := total.Blanks + total.Comments + total.Code
 		if o.opts.ByFile {
-			fmt.Printf("| %-[1]*[2]v |%10v|%12v|%14v|%8v |\n", maxPathLen, "", "", "", "", "")
-			fmt.Printf("| %-[1]*[2]v |%9v |%11v |%13v |%8v |\n", maxPathLen, "TOTAL", total.Total, total.Blanks, total.Comments, total.Code)
+			// empty-row separator
+			fmt.Printf(
+				"| %-[1]*[2]v |%10v|%12v|%14v|%14v|%8v |\n",
+				maxPathLen, "", "", "", "", "",
+			)
+			// actual totals
+			fmt.Printf(
+				"| %-[1]*[2]v |%9v |%11v |%13v |%13v |%8v |\n",
+				maxPathLen, "TOTAL", total.Total, total.Blanks, total.Comments, total.Code, totalLines,
+			)
 		} else {
-			fmt.Printf("| %21v|%22v|%12v|%14v|%8v |\n", "", "", "", "", "")
-			fmt.Printf("| %20v |%21v |%11v |%13v |%8v |\n", "TOTAL", total.Total, total.Blanks, total.Comments, total.Code)
+			fmt.Printf("| %21v|%22v|%12v|%14v|%14v|%8v |\n", "", "", "", "", "", "")
+			fmt.Printf(
+				"| %20v |%21v |%11v |%13v |%13v |%8v |\n",
+				"TOTAL", total.Total, total.Blanks, total.Comments, total.Code, totalLines,
+			)
 		}
 	}
 }
@@ -203,15 +222,32 @@ func writeResultWithByFile(opts *CmdOptions, result *gocloc.Result) {
 	case OutputTypeMarkdown:
 		for _, file := range sortedFiles {
 			clocFile := file
-			fmt.Printf("| %-[1]*[2]s |%8[3]v  |%11[4]v |%13[5]v |%8[6]v |\n",
-				maxPathLen, file.Name, 1, clocFile.Blanks, clocFile.Comments, clocFile.Code)
+			totalLines := clocFile.Blanks + clocFile.Comments + clocFile.Code
+			fmt.Printf(
+				"| %-[1]*[2]s | %6v | %8v | %10v | %12v | %8v |\n",
+				maxPathLen,
+				file.Name,
+				1, // files count per-file is always 1
+				clocFile.Blanks,
+				clocFile.Comments,
+				clocFile.Code,
+				totalLines,
+			)
 		}
 
 	default:
 		for _, file := range sortedFiles {
 			clocFile := file
-			fmt.Printf("%-[1]*[2]s %21[3]v %14[4]v %14[5]v\n",
-				maxPathLen, file.Name, clocFile.Blanks, clocFile.Comments, clocFile.Code)
+			totalLines := clocFile.Blanks + clocFile.Comments + clocFile.Code
+			fmt.Printf(
+				"%-[1]*[2]s %21[3]v %14[4]v %14[5]v %14[6]v\n",
+				maxPathLen,
+				file.Name,
+				clocFile.Blanks,
+				clocFile.Comments,
+				clocFile.Code,
+				totalLines,
+			)
 		}
 	}
 }
@@ -259,13 +295,29 @@ func (o *outputBuilder) WriteResult() {
 			os.Stdout.Write(buf)
 		case OutputTypeMarkdown:
 			for _, language := range sortedLanguages {
-				fmt.Printf("| %-20v |%21v |%11v |%13v |%8v |\n",
-					language.Name, len(language.Files), language.Blanks, language.Comments, language.Code)
+				totalLines := language.Blanks + language.Comments + language.Code
+				fmt.Printf(
+					"| %-20v | %6v | %8v | %10v | %12v | %8v |\n",
+					language.Name,
+					len(language.Files),
+					language.Blanks,
+					language.Comments,
+					language.Code,
+					totalLines,
+				)
 			}
 		default:
 			for _, language := range sortedLanguages {
-				fmt.Printf("%-27v %6v %14v %14v %14v\n",
-					language.Name, len(language.Files), language.Blanks, language.Comments, language.Code)
+				totalLines := language.Blanks + language.Comments + language.Code
+				fmt.Printf(
+					"%-27v %6v %14v %14v %14v %14v\n",
+					language.Name,
+					len(language.Files),
+					language.Blanks,
+					language.Comments,
+					language.Code,
+					totalLines,
+				)
 			}
 		}
 	}
