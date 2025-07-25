@@ -36,12 +36,10 @@ const (
 	fileHeader             string = "File"
 	languageHeader         string = "Language"
 	commonHeader           string = "files          blank        comment           code          total"
-	defaultOutputSeparator string = "-------------------------------------------------------------------------" +
-		"-------------------------------------------------------------------------" +
-		"-------------------------------------------------------------------------"
+	defaultOutputSeparator string = "-"
 )
 
-var rowLen = 79
+var rowLen int // set in WriteHeader()
 
 // CmdOptions is gocloc command options.
 // It is necessary to use notation that follows go-flags.
@@ -84,13 +82,17 @@ func (o *outputBuilder) WriteHeader() {
 		rowLen = maxPathLen + len(commonHeader) + 2
 		header = fileHeader
 	} else {
-		rowLen = headerLen + 1 + len(commonHeader)
+		rowLen = headerLen + len(commonHeader) + 1
 	}
 
 	if o.opts.OutputType == OutputTypeDefault {
-		fmt.Printf("%.[2]*[1]s\n", defaultOutputSeparator, rowLen)
-		fmt.Printf("%-[2]*[1]s %[3]s\n", header, headerLen, commonHeader)
-		fmt.Printf("%.[2]*[1]s\n", defaultOutputSeparator, rowLen)
+		// insert a `|` in the header for better looking output
+		// cant put `|` in commonHeader direcly because it is used by md output
+		headerWithSeperator := commonHeader[:53] + "|" + commonHeader[54:]
+
+		fmt.Println(strings.Repeat(defaultOutputSeparator, rowLen)) // seperator
+		fmt.Printf("%-[2]*[1]s %[3]s\n", header, headerLen, headerWithSeperator)
+		fmt.Println(strings.Repeat(defaultOutputSeparator, rowLen)) // seperator
 	}
 
 	if o.opts.OutputType == OutputTypeMarkdown {
@@ -125,20 +127,21 @@ func (o *outputBuilder) WriteFooter() {
 	maxPathLen := o.result.MaxPathLength
 
 	if o.opts.OutputType == OutputTypeDefault {
-		fmt.Printf("%.[2]*[1]s\n", defaultOutputSeparator, rowLen)
+		fmt.Println(strings.Repeat(defaultOutputSeparator, rowLen)) // seperator
+
 		totalLines := total.Blanks + total.Comments + total.Code
 		if o.opts.ByFile {
 			fmt.Printf(
-				"%-[1]*[2]v %6[3]v %14[4]v %14[5]v %14[6]v %14[7]v\n",
+				"%-[1]*[2]v %6[3]v %14[4]v %14[5]v %14[6]v   | %10[7]v\n",
 				maxPathLen, "TOTAL", total.Total, total.Blanks, total.Comments, total.Code, totalLines,
 			)
 		} else {
 			fmt.Printf(
-				"%-27v %6v %14v %14v %14v %14v\n",
+				"%-27v %6v %14v %14v %14v   | %10v\n",
 				"TOTAL", total.Total, total.Blanks, total.Comments, total.Code, totalLines,
 			)
 		}
-		fmt.Printf("%.[2]*[1]s\n", defaultOutputSeparator, rowLen)
+		fmt.Println(strings.Repeat(defaultOutputSeparator, rowLen)) // seperator
 	}
 
 	if o.opts.OutputType == OutputTypeMarkdown {
@@ -236,7 +239,7 @@ func writeResultWithByFile(opts *CmdOptions, result *gocloc.Result) {
 			clocFile := file
 			totalLines := clocFile.Blanks + clocFile.Comments + clocFile.Code
 			fmt.Printf(
-				"%-[1]*[2]s %21[3]v %14[4]v %14[5]v %14[6]v\n",
+				"%-[1]*[2]s %21[3]v %14[4]v %14[5]v   |  %9[6]v\n",
 				maxPathLen,
 				file.Name,
 				clocFile.Blanks,
@@ -306,7 +309,7 @@ func (o *outputBuilder) WriteResult() {
 			for _, language := range sortedLanguages {
 				totalLines := language.Blanks + language.Comments + language.Code
 				fmt.Printf(
-					"%-27v %6v %14v %14v %14v %14v\n",
+					"%-27v %6v %14v %14v %14v   | %10v\n",
 					language.Name,
 					len(language.Files),
 					language.Blanks,
