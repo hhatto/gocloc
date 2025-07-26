@@ -87,15 +87,13 @@ func AnalyzeReader(filename string, language *Language, file io.Reader, opts *Cl
 
 scannerloop:
 	for {
-		// lineBytes, err := reader.ReadBytes('\n')
 		lineOrg, err := reader.ReadString('\n')
 		if err != nil && err != io.EOF {
 			fmt.Printf("ERROR - could not read file (-> skip): %v\n", err)
 			break
 		}
 
-		// If the file does not end with newline, lineBytes may not end in \n
-		// without this we get infinite loop
+		// prevent infinite loop
 		if len(lineOrg) == 0 && err == io.EOF {
 			break
 		}
@@ -204,7 +202,7 @@ scannerloop:
 		}
 
 		if err == io.EOF {
-			break // End of file
+			break
 		}
 	}
 
