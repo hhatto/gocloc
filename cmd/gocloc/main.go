@@ -35,13 +35,11 @@ const OutputTypeMarkdown string = "markdown"
 const (
 	fileHeader             string = "File"
 	languageHeader         string = "Language"
-	commonHeader           string = "files          blank        comment           code"
-	defaultOutputSeparator string = "-------------------------------------------------------------------------" +
-		"-------------------------------------------------------------------------" +
-		"-------------------------------------------------------------------------"
+	commonHeader           string = "files          blank        comment           code          total"
+	defaultOutputSeparator string = "-"
 )
 
-var rowLen = 79
+var rowLen int // set in WriteHeader()
 
 // CmdOptions is gocloc command options.
 // It is necessary to use notation that follows go-flags.
@@ -83,12 +81,18 @@ func (o *outputBuilder) WriteHeader() {
 		headerLen = maxPathLen + 1
 		rowLen = maxPathLen + len(commonHeader) + 2
 		header = fileHeader
+	} else {
+		rowLen = headerLen + len(commonHeader) + 1
 	}
 
 	if o.opts.OutputType == OutputTypeDefault {
-		fmt.Printf("%.[2]*[1]s\n", defaultOutputSeparator, rowLen)
-		fmt.Printf("%-[2]*[1]s %[3]s\n", header, headerLen, commonHeader)
-		fmt.Printf("%.[2]*[1]s\n", defaultOutputSeparator, rowLen)
+		// insert a `|` in the header for better looking output
+		// cant put `|` in commonHeader direcly because it is used by md output
+		headerWithSeperator := commonHeader[:53] + "|" + commonHeader[54:]
+
+		fmt.Println(strings.Repeat(defaultOutputSeparator, rowLen)) // seperator
+		fmt.Printf("%-[2]*[1]s %[3]s\n", header, headerLen, headerWithSeperator)
+		fmt.Println(strings.Repeat(defaultOutputSeparator, rowLen)) // seperator
 	}
 
 	if o.opts.OutputType == OutputTypeMarkdown {
@@ -123,24 +127,38 @@ func (o *outputBuilder) WriteFooter() {
 	maxPathLen := o.result.MaxPathLength
 
 	if o.opts.OutputType == OutputTypeDefault {
-		fmt.Printf("%.[2]*[1]s\n", defaultOutputSeparator, rowLen)
+		fmt.Println(strings.Repeat(defaultOutputSeparator, rowLen)) // seperator
+
+		totalLines := total.Blanks + total.Comments + total.Code
 		if o.opts.ByFile {
-			fmt.Printf("%-[1]*[2]v %6[3]v %14[4]v %14[5]v %14[6]v\n",
-				maxPathLen, "TOTAL", total.Total, total.Blanks, total.Comments, total.Code)
+			fmt.Printf(
+				"%-[1]*[2]v %6[3]v %14[4]v %14[5]v %14[6]v   | %10[7]v\n",
+				maxPathLen, "TOTAL", total.Total, total.Blanks, total.Comments, total.Code, totalLines,
+			)
 		} else {
-			fmt.Printf("%-27v %6v %14v %14v %14v\n",
-				"TOTAL", total.Total, total.Blanks, total.Comments, total.Code)
+			fmt.Printf(
+				"%-27v %6v %14v %14v %14v   | %10v\n",
+				"TOTAL", total.Total, total.Blanks, total.Comments, total.Code, totalLines,
+			)
 		}
-		fmt.Printf("%.[2]*[1]s\n", defaultOutputSeparator, rowLen)
+		fmt.Println(strings.Repeat(defaultOutputSeparator, rowLen)) // seperator
 	}
 
 	if o.opts.OutputType == OutputTypeMarkdown {
+		totalLines := total.Blanks + total.Comments + total.Code
 		if o.opts.ByFile {
-			fmt.Printf("| %-[1]*[2]v |%10v|%12v|%14v|%8v |\n", maxPathLen, "", "", "", "", "")
-			fmt.Printf("| %-[1]*[2]v |%9v |%11v |%13v |%8v |\n", maxPathLen, "TOTAL", total.Total, total.Blanks, total.Comments, total.Code)
+			fmt.Printf("| %-[1]*[2]v |%10v|%12v|%14v|%12v|%9v |\n", maxPathLen, "", "", "", "", "", "") // empty-row separator
+			// totals
+			fmt.Printf(
+				"| %-[1]*[2]v |%9v |%11v |%13v |%11v |%9v |\n",
+				maxPathLen, "TOTAL", total.Total, total.Blanks, total.Comments, total.Code, totalLines,
+			)
 		} else {
-			fmt.Printf("| %21v|%22v|%12v|%14v|%8v |\n", "", "", "", "", "")
-			fmt.Printf("| %20v |%21v |%11v |%13v |%8v |\n", "TOTAL", total.Total, total.Blanks, total.Comments, total.Code)
+			fmt.Printf("| %21v|%22v|%12v|%14v|%12v|%9v |\n", "", "", "", "", "", "")
+			fmt.Printf(
+				"| %-20v |%21v |%11v |%13v |%11v |%9v |\n",
+				"TOTAL", total.Total, total.Blanks, total.Comments, total.Code, totalLines,
+			)
 		}
 	}
 }
@@ -203,15 +221,32 @@ func writeResultWithByFile(opts *CmdOptions, result *gocloc.Result) {
 	case OutputTypeMarkdown:
 		for _, file := range sortedFiles {
 			clocFile := file
-			fmt.Printf("| %-[1]*[2]s |%8[3]v  |%11[4]v |%13[5]v |%8[6]v |\n",
-				maxPathLen, file.Name, 1, clocFile.Blanks, clocFile.Comments, clocFile.Code)
+			totalLines := clocFile.Blanks + clocFile.Comments + clocFile.Code
+			fmt.Printf(
+				"| %-[1]*[2]s |%9[3]v |%11[4]v |%13[5]v |%11[6]v |%8[7]v  |\n",
+				maxPathLen,
+				file.Name,
+				1, // files count per-file is always 1
+				clocFile.Blanks,
+				clocFile.Comments,
+				clocFile.Code,
+				totalLines,
+			)
 		}
 
 	default:
 		for _, file := range sortedFiles {
 			clocFile := file
-			fmt.Printf("%-[1]*[2]s %21[3]v %14[4]v %14[5]v\n",
-				maxPathLen, file.Name, clocFile.Blanks, clocFile.Comments, clocFile.Code)
+			totalLines := clocFile.Blanks + clocFile.Comments + clocFile.Code
+			fmt.Printf(
+				"%-[1]*[2]s %21[3]v %14[4]v %14[5]v   |  %9[6]v\n",
+				maxPathLen,
+				file.Name,
+				clocFile.Blanks,
+				clocFile.Comments,
+				clocFile.Code,
+				totalLines,
+			)
 		}
 	}
 }
@@ -259,13 +294,29 @@ func (o *outputBuilder) WriteResult() {
 			os.Stdout.Write(buf)
 		case OutputTypeMarkdown:
 			for _, language := range sortedLanguages {
-				fmt.Printf("| %-20v |%21v |%11v |%13v |%8v |\n",
-					language.Name, len(language.Files), language.Blanks, language.Comments, language.Code)
+				totalLines := language.Blanks + language.Comments + language.Code
+				fmt.Printf(
+					"| %-20v |%21v |%11v |%13v |%11v |%9v |\n",
+					language.Name,
+					len(language.Files),
+					language.Blanks,
+					language.Comments,
+					language.Code,
+					totalLines,
+				)
 			}
 		default:
 			for _, language := range sortedLanguages {
-				fmt.Printf("%-27v %6v %14v %14v %14v\n",
-					language.Name, len(language.Files), language.Blanks, language.Comments, language.Code)
+				totalLines := language.Blanks + language.Comments + language.Code
+				fmt.Printf(
+					"%-27v %6v %14v %14v %14v   | %10v\n",
+					language.Name,
+					len(language.Files),
+					language.Blanks,
+					language.Comments,
+					language.Code,
+					totalLines,
+				)
 			}
 		}
 	}
