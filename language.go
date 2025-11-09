@@ -143,6 +143,7 @@ var Exts = map[string]string{
 	"d":           "D",
 	"dart":        "Dart",
 	"dhall":       "Dhall",
+	"Dockerfile":  "Dockerfile",
 	"dtrace":      "DTrace",
 	"dts":         "Device Tree",
 	"dtsi":        "Device Tree",
@@ -449,6 +450,8 @@ func getFileType(path string, opts *ClocOptions) (ext string, ok bool) {
 		return "dune", true
 	case "rebar": // skip
 		return "", false
+	case "dockerfile":
+		return "Dockerfile", true
 	}
 
 	shebangLang, ok := getFileTypeByShebang(path)
@@ -573,6 +576,7 @@ func NewDefinedLanguages() *DefinedLanguages {
 			"Dhall":               NewLanguage("Dhall", []string{"--"}, [][]string{{"{-", "-}"}}),
 			"DTrace":              NewLanguage("DTrace", []string{}, [][]string{{"/*", "*/"}}),
 			"Device Tree":         NewLanguage("Device Tree", []string{"//"}, [][]string{{"/*", "*/"}}),
+			"Dockerfile":          NewLanguage("Dockerfile", []string{"#"}, [][]string{{"", ""}}),
 			"Dune":                NewLanguage("Dune", []string{";"}, [][]string{{"", ""}}),
 			"Eiffel":              NewLanguage("Eiffel", []string{"--"}, [][]string{{"", ""}}),
 			"Elm":                 NewLanguage("Elm", []string{"--"}, [][]string{{"{-", "-}"}}),
