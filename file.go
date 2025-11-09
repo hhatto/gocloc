@@ -81,17 +81,24 @@ func AnalyzeReader(filename string, language *Language, file io.Reader, opts *Cl
 
 	isFirstLine := true
 	var inComments [][2]string
-	buf := getByteSlice()
-	defer putByteSlice(buf)
-	scanner := bufio.NewScanner(file)
-	scanner.Buffer(buf.Bytes(), 1024*1024)
+	reader := bufio.NewReader(file)
 
 scannerloop:
-	for scanner.Scan() {
-		lineOrg := scanner.Text()
+	for {
+		lineOrg, err := reader.ReadString('\n')
+		if err != nil && err != io.EOF {
+			fmt.Printf("ERROR - could not read file (-> skip): %v\n", err)
+			break
+		}
+
+		// prevent infinite loop
+		if len(lineOrg) == 0 && err == io.EOF {
+			break
+		}
+
 		line := strings.TrimSpace(lineOrg)
 
-		if len(strings.TrimSpace(line)) == 0 {
+		if len(line) == 0 {
 			onBlank(clocFile, opts, len(inComments) > 0, line, lineOrg)
 			continue
 		}
@@ -190,6 +197,10 @@ scannerloop:
 			onCode(clocFile, opts, len(inComments) > 0, line, lineOrg)
 		} else {
 			onComment(clocFile, opts, len(inComments) > 0, line, lineOrg)
+		}
+
+		if err == io.EOF {
+			break
 		}
 	}
 
