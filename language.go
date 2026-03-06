@@ -159,6 +159,8 @@ var Exts = map[string]string{
 	"fish":        "Fish",
 	"fr":          "Frege",
 	"fst":         "F*",
+	"gd":          "GDScript",
+	"gdshader":    "GDShader",
 	"F#":          "F#",   // deplicated F#/GLSL
 	"GLSL":        "GLSL", // both use ext '.fs'
 	"vs":          "GLSL",
@@ -596,6 +598,8 @@ func NewDefinedLanguages() *DefinedLanguages {
 			"Factor":              NewLanguage("Factor", []string{"! "}, [][]string{{"", ""}}),
 			"FORTRAN Legacy":      NewLanguage("FORTRAN Legacy", []string{"c", "C", "!", "*"}, [][]string{{"", ""}}),
 			"FORTRAN Modern":      NewLanguage("FORTRAN Modern", []string{"!"}, [][]string{{"", ""}}),
+			"GDScript":            NewLanguage("GDScript", []string{"#"}, [][]string{{"", ""}}),
+			"GDShader":            NewLanguage("GDShader", []string{"//"}, [][]string{{"/*", "*/"}}),
 			"Gherkin":             NewLanguage("Gherkin", []string{"#"}, [][]string{{"", ""}}),
 			"Gleam":               NewLanguage("Gleam", []string{"//"}, [][]string{{"", ""}}),
 			"GLSL":                NewLanguage("GLSL", []string{"//"}, [][]string{{"/*", "*/"}}),
