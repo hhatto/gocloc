@@ -53,11 +53,8 @@ jobs:
     steps:
       - uses: actions/checkout@master
 
-      - name: Login GitHub Registry
-        run: docker login docker.pkg.github.com -u owner -p ${{ secrets.GITHUB_TOKEN }}
-
       - name: Run gocloc
-        run: docker run --rm -v "${PWD}":/workdir docker.pkg.github.com/hhatto/gocloc/gocloc:latest .
+        run: docker run --rm -v "${PWD}":/workdir ghcr.io/hhatto/gocloc/gocloc:latest .
 ```
 
 ### Integration Jenkins CI
