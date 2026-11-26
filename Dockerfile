@@ -1,4 +1,4 @@
-FROM golang:1.23-bullseye AS builder
+FROM golang:1.27-trixie AS builder
 
 # hadolint ignore=DL3008
 RUN apt-get update \

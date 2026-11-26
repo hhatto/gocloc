@@ -49,7 +49,7 @@ with [GitHub Packages](https://github.com/hhatto/gocloc/packages/350535) on GitH
 jobs:
   build:
     name: example of code measurement using gocloc
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
 
