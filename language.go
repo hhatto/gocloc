@@ -256,6 +256,7 @@ var Exts = map[string]string{
 	"njk":         "Nunjucks",
 	"odin":        "Odin",
 	"ohm":         "Ohm",
+	"pddl":        "PDDL",
 	"php":         "PHP",
 	"pas":         "Pascal",
 	"PL":          "Perl",
@@ -522,7 +523,7 @@ func (langs *DefinedLanguages) GetFormattedString() string {
 	}
 	sort.Strings(printLangs)
 	for _, lang := range printLangs {
-		buf.WriteString(fmt.Sprintf("%-30v (%s)\n", lang, lang2exts(lang)))
+		fmt.Fprintf(&buf, "%-30v (%s)\n", lang, lang2exts(lang))
 	}
 	return buf.String()
 }
@@ -651,6 +652,7 @@ func NewDefinedLanguages() *DefinedLanguages {
 			"lex":                 NewLanguage("lex", []string{}, [][]string{{"/*", "*/"}}),
 			"Odin":                NewLanguage("Odin", []string{"//"}, [][]string{{"/*", "*/"}}),
 			"Ohm":                 NewLanguage("Ohm", []string{"//"}, [][]string{{"/*", "*/"}}),
+			"PDDL":                NewLanguage("PDDL", []string{";"}, [][]string{{"", ""}}),
 			"PHP":                 NewLanguage("PHP", []string{"#", "//"}, [][]string{{"/*", "*/"}}),
 			"Pascal":              NewLanguage("Pascal", []string{"//"}, [][]string{{"{", ")"}}),
 			"Perl":                NewLanguage("Perl", []string{"#"}, [][]string{{":=", ":=cut"}}),
