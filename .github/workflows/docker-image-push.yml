@@ -6,8 +6,6 @@ on:
       - master
   release:
     types: [published]
-  pull_request:
-    types: [opened, synchronize]
 
 env:
   DOCKER_BASE_NAME: docker.pkg.github.com/${{ github.repository }}/gocloc
@@ -47,7 +45,6 @@ jobs:
           docker build . -t "${PKG_TAG}" --build-arg BASE_IMAGE="${{ matrix.baseimage }}"
           docker tag "${PKG_TAG}" "${HUB_TAG}"
       - name: Login to Registries
-        if: github.event_name != 'pull_request'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           DOCKER_HUB_TOKEN: ${{ secrets.DOCKER_HUB_TOKEN }}
@@ -55,8 +52,6 @@ jobs:
           echo "${GITHUB_TOKEN}" | docker login docker.pkg.github.com -u hhatto --password-stdin
           echo "${DOCKER_HUB_TOKEN}" | docker login -u hhatto --password-stdin
       - name: Push to GitHub Packages
-        if: github.event_name != 'pull_request'
         run: docker push "${PKG_TAG}"
       - name: Push to Docker Hub
-        if: github.event_name != 'pull_request'
         run: docker push "${HUB_TAG}"
