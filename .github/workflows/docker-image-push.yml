@@ -24,10 +24,6 @@ jobs:
   push:
     runs-on: ubuntu-latest
     needs: lint
-    strategy:
-      matrix:
-        baseimage:
-          - "alpine:3.24"
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -40,9 +36,9 @@ jobs:
           fi
           echo "PKG_TAG=${DOCKER_BASE_NAME}:${TAG_NAME}" >> $GITHUB_ENV
           echo "HUB_TAG=${DOCKER_HUB_BASE_NAME}:${TAG_NAME}" >> $GITHUB_ENV
-      - name: Build ${{ matrix.baseimage }} base image
+      - name: Build image
         run: |
-          docker build . -t "${PKG_TAG}" --build-arg BASE_IMAGE="${{ matrix.baseimage }}"
+          docker build . -t "${PKG_TAG}"
           docker tag "${PKG_TAG}" "${HUB_TAG}"
       - name: Login to Registries
         env:
